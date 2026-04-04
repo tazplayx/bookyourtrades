@@ -233,13 +233,15 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   background: var(--n800);
   position: relative; overflow: hidden;
   padding: 80px 0 90px;
+  background-image: url('https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=1600&q=80&auto=format&fit=crop');
+  background-size: cover;
+  background-position: center 40%;
+  background-repeat: no-repeat;
 }
 .hero::before {
   content: ''; position: absolute; inset: 0;
-  background-image: repeating-linear-gradient(
-    -45deg, transparent, transparent 40px,
-    rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 41px
-  );
+  background: linear-gradient(105deg, rgba(6,14,26,0.93) 0%, rgba(11,25,41,0.87) 55%, rgba(6,14,26,0.72) 100%);
+  z-index: 0;
 }
 .hero::after {
   content: ''; position: absolute; bottom: 0; left: 0; right: 0;
@@ -674,6 +676,42 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .analytics-fill {
   height:100%; background:linear-gradient(90deg,var(--o600),var(--o400));
   border-radius:5px; transition:width 0.8s ease;
+}
+
+/* ============================================================
+   PAYMENT MODAL
+============================================================ */
+#payModal {
+  display:none; position:fixed; inset:0; z-index:9000;
+  background:rgba(6,14,26,0.88); backdrop-filter:blur(6px);
+  align-items:center; justify-content:center; padding:20px;
+}
+#payModal.open { display:flex; }
+.pay-box {
+  background:var(--n700); border:1px solid var(--n400);
+  border-top:4px solid var(--o500); border-radius:8px;
+  padding:36px; max-width:460px; width:100%;
+  box-shadow:0 24px 64px rgba(0,0,0,0.6);
+}
+.pay-lock-icon {
+  width:52px; height:52px; background:var(--o500);
+  border-radius:50%; display:flex; align-items:center;
+  justify-content:center; font-size:22px; margin:0 auto 16px;
+}
+.card-row { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.unclaimed-banner {
+  background:linear-gradient(135deg,#1A2C3E,#102030);
+  border:2px dashed var(--o500); border-radius:8px;
+  padding:28px; text-align:center; margin-bottom:20px;
+}
+.lock-overlay {
+  filter:blur(4px); user-select:none; pointer-events:none;
+}
+.lead-locked {
+  background:var(--n600); border:1px solid var(--n400);
+  border-radius:4px; padding:10px 14px;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:12px; margin-bottom:8px;
 }
 
 /* ============================================================
@@ -1456,6 +1494,80 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 <!-- Toast -->
 <div id="toast"></div>
 
+<!-- Payment Modal -->
+<div id="payModal">
+  <div class="pay-box">
+    <div class="pay-lock-icon">🔒</div>
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:26px;color:white;margin-bottom:6px;">Confirm Your Booking</div>
+      <div style="font-size:14px;color:var(--s300);line-height:1.6;">A one-time <strong style="color:var(--o400);">$2.99 lead connection fee</strong> is collected to confirm your appointment request and connect you with this contractor.</div>
+    </div>
+    <div style="background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:16px;margin-bottom:20px;" id="payBookingSummary"></div>
+    <form id="payForm" onsubmit="handlePaymentSubmit(event)">
+      <div class="form-group">
+        <label class="form-label">Name on Card *</label>
+        <input class="form-control" type="text" id="payName" required placeholder="Full name" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Card Number *</label>
+        <input class="form-control" type="text" id="payCard" required placeholder="4242 4242 4242 4242" maxlength="19" oninput="fmtCard(this)" />
+      </div>
+      <div class="card-row">
+        <div class="form-group">
+          <label class="form-label">Expiry *</label>
+          <input class="form-control" type="text" id="payExp" required placeholder="MM / YY" maxlength="7" oninput="fmtExp(this)" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">CVV *</label>
+          <input class="form-control" type="text" id="payCVV" required placeholder="123" maxlength="4" />
+        </div>
+      </div>
+      <div style="background:rgba(26,77,46,0.3);border:1px solid #2A6D3E;border-radius:4px;padding:10px 14px;font-size:13px;color:#86EFAC;margin-bottom:20px;">
+        🔒 Secured by SSL. Your card details are never stored.
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button type="button" class="btn btn-navy" style="flex:1;justify-content:center;" onclick="closePayModal()">Cancel</button>
+        <button type="submit" class="btn btn-orange" style="flex:2;justify-content:center;" id="paySubmitBtn">Pay $2.99 &amp; Confirm →</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Claim Modal -->
+<div id="claimModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(6,14,26,0.88);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--n700);border:1px solid var(--n400);border-top:4px solid var(--o500);border-radius:8px;padding:36px;max-width:480px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.6);">
+    <div style="text-align:center;margin-bottom:24px;">
+      <div style="font-size:36px;margin-bottom:8px;">🏢</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:26px;color:white;margin-bottom:6px;">Claim This Listing</div>
+      <div style="font-size:14px;color:var(--s300);line-height:1.6;">This business is listed but hasn't been claimed yet. Is this your company? Create a free account to claim it and start receiving bookings.</div>
+    </div>
+    <div id="claimAlert"></div>
+    <form id="claimForm" onsubmit="handleClaim(event)">
+      <input type="hidden" id="claimProviderId" />
+      <div class="form-group">
+        <label class="form-label">Your Name *</label>
+        <input class="form-control" type="text" name="contactName" required placeholder="Full name" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Business Email *</label>
+        <input class="form-control" type="email" name="email" required placeholder="you@company.ca" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Create Password *</label>
+        <input class="form-control" type="password" name="password" required placeholder="Min. 8 characters" minlength="8" />
+      </div>
+      <div style="background:var(--n600);border:1px solid var(--n400);border-radius:4px;padding:12px;font-size:13px;color:var(--s300);margin-bottom:20px;">
+        By claiming this listing you confirm you are an authorized representative of this business. Claimed listings are subject to verification.
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button type="button" class="btn btn-navy" style="flex:1;justify-content:center;" onclick="closeClaimModal()">Cancel</button>
+        <button type="submit" class="btn btn-orange" style="flex:2;justify-content:center;">Claim Free →</button>
+      </div>
+    </form>
+    <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--s400);">Already have an account? <a onclick="closeClaimModal();navigate('/login')" style="color:var(--o400);cursor:pointer;">Sign in here</a></p>
+  </div>
+</div>
+
 <script>
 /* ============================================================
    SEED DATA
@@ -1485,7 +1597,7 @@ const SEED_PROVIDERS = [
     serviceAreas:['Toronto','Mississauga','Brampton','Oakville','Burlington'],
     rating:4.8, reviewCount:142,
     certifications:['ESA Licensed','ECRA Certified','IBEW Local 353','LEED AP'],
-    featured:true, password:'password123'
+    featured:true, claimed:true, requestCount:18, password:'password123'
   },
   {
     id:'p2', companyName:'Superior HVAC Solutions', tradeType:'HVAC',
@@ -1496,7 +1608,7 @@ const SEED_PROVIDERS = [
     serviceAreas:['Ottawa','Barrie','Sudbury'],
     rating:4.6, reviewCount:89,
     certifications:['TSSA Certified','NATE Certified','EPA 608','Carrier Factory Authorized'],
-    featured:true, password:'password123'
+    featured:true, claimed:true, requestCount:11, password:'password123'
   },
   {
     id:'p3', companyName:'Crown Plumbing & Gas', tradeType:'Plumbing',
@@ -1507,7 +1619,7 @@ const SEED_PROVIDERS = [
     serviceAreas:['Hamilton','Burlington','St. Catharines','Kitchener'],
     rating:4.9, reviewCount:203,
     certifications:['Master Plumber','TSSA Gas Fitter Class A','Medical Gas Installer','PHCC Member'],
-    featured:true, password:'password123'
+    featured:true, claimed:true, requestCount:24, password:'password123'
   },
   {
     id:'p4', companyName:'SkyHigh Roofing & Waterproofing', tradeType:'Roofing',
@@ -1518,7 +1630,7 @@ const SEED_PROVIDERS = [
     serviceAreas:['Mississauga','Toronto','Brampton','Oakville'],
     rating:4.5, reviewCount:67,
     certifications:['CRCA Member','RRO Certified','GAF Certified','OSHA 10'],
-    featured:false, password:'password123'
+    featured:false, claimed:false, requestCount:9, password:'password123'
   },
   {
     id:'p5', companyName:'Ironclad Welding & Fabrication', tradeType:'Welding & Fabrication',
@@ -1529,7 +1641,7 @@ const SEED_PROVIDERS = [
     serviceAreas:['Windsor','London','Sarnia','Chatham'],
     rating:4.7, reviewCount:51,
     certifications:['CWB W47.1','Red Seal Welder','ASME Section IX','CSA W47.2'],
-    featured:false, password:'password123'
+    featured:false, claimed:true, requestCount:7, password:'password123'
   },
   {
     id:'p6', companyName:'Solid Foundation Concrete', tradeType:'Concrete & Masonry',
@@ -1540,7 +1652,29 @@ const SEED_PROVIDERS = [
     serviceAreas:['London','Kitchener','Hamilton','Barrie'],
     rating:4.4, reviewCount:38,
     certifications:['ACI Certified','ICPI Installer','OSHA 10','CSC Member'],
-    featured:false, password:'password123'
+    featured:false, claimed:false, requestCount:5, password:'password123'
+  },
+  {
+    id:'p7', companyName:'Northern Pipefitting Co.', tradeType:'Pipefitting',
+    licenseNumber:'UA Local 463', yearsInBusiness:'11-20 years',
+    description:"Sudbury-based industrial pipefitting contractor specializing in process piping, steam systems, and hydronic heating for mining, pulp & paper, and municipal facilities across Northern Ontario. Fully unionized UA Local 463 crew with extensive underground and surface plant experience.",
+    contactName:'Dave Larocque', email:'northernpipe@example.ca', phone:'(705) 671-4400',
+    website:'',
+    serviceAreas:['Sudbury','Barrie','Thunder Bay'],
+    rating:4.3, reviewCount:22,
+    certifications:['UA Local 463','TSSA Pressure Piping','OSHA 10','Red Seal Pipefitter'],
+    featured:false, claimed:false, requestCount:14, password:'password123'
+  },
+  {
+    id:'p8', companyName:'Apex Sheet Metal & HVAC', tradeType:'Sheet Metal',
+    licenseNumber:'SMWIA Local 285', yearsInBusiness:'6-10 years',
+    description:"Kitchener-Waterloo commercial sheet metal fabrication and installation. Custom ductwork, kitchen exhaust systems, architectural cladding, and industrial ventilation. In-house fabrication shop with plasma cutter and brake press. Serving ICI construction across the Tri-Cities and Golden Horseshoe.",
+    contactName:'Kim Brubacher', email:'apexsheet@example.ca', phone:'(519) 894-7700',
+    website:'https://apexsheetmetal.ca',
+    serviceAreas:['Kitchener','Hamilton','Toronto','Burlington'],
+    rating:4.6, reviewCount:31,
+    certifications:['SMWIA Local 285','Red Seal Sheet Metal Worker','OSHA 10'],
+    featured:false, claimed:false, requestCount:8, password:'password123'
   }
 ];
 
@@ -1787,15 +1921,17 @@ function navigateToCategory(cat) {
 
 function providerCardHTML(p) {
   const ini = p.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
+  const reqCount = getRequestCount(p.id);
   return `
     <div class="provider-card" onclick="navigate('/provider/${p.id}')">
       <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:14px;">
-        <div style="width:52px;height:52px;background:var(--o500);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;color:white;flex-shrink:0;">${ini}</div>
+        <div style="width:52px;height:52px;background:${p.claimed?'var(--o500)':'var(--n500)'};border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;color:white;flex-shrink:0;">${ini}</div>
         <div style="flex:1;min-width:0;">
           <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;color:white;margin-bottom:4px;">${p.companyName}</div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
             <span class="badge badge-orange">${p.tradeType}</span>
             <span style="font-size:13px;color:var(--s400);">${p.yearsInBusiness}</span>
+            ${p.claimed ? '<span style="font-size:12px;color:#6FE09A;">✓ Claimed</span>' : '<span style="font-size:12px;color:var(--o400);">⚑ Unclaimed</span>'}
           </div>
         </div>
       </div>
@@ -1806,10 +1942,19 @@ function providerCardHTML(p) {
           <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:white;">${p.rating}</span>
           <span style="font-size:13px;color:var(--s400);">(${p.reviewCount} reviews)</span>
         </div>
-        <div style="font-size:13px;color:var(--s400);">&#128205; ${p.serviceAreas[0]}</div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;">📋 ${reqCount} request${reqCount!==1?'s':''}</div>
+          <div style="font-size:13px;color:var(--s400);">&#128205; ${p.serviceAreas[0]}</div>
+        </div>
       </div>
     </div>
   `;
+}
+
+function getRequestCount(pid) {
+  const bookings = App.bookings.filter(b=>b.providerId===pid);
+  const p = App.providers.find(x=>x.id===pid);
+  return bookings.length + (p?.requestCount||0);
 }
 
 function doHeroSearch() {
@@ -1875,17 +2020,19 @@ function filterDirectory() {
 
   grid.innerHTML = res.map(p => {
     const ini = p.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
+    const reqCount = getRequestCount(p.id);
     return `
       <div class="provider-card" onclick="navigate('/provider/${p.id}')">
         <div style="display:flex;align-items:flex-start;gap:20px;">
-          <div style="width:60px;height:60px;background:var(--o500);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:white;flex-shrink:0;">${ini}</div>
+          <div style="width:60px;height:60px;background:${p.claimed?'var(--o500)':'var(--n500)'};border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:white;flex-shrink:0;">${ini}</div>
           <div style="flex:1;min-width:0;">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap;">
               <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:21px;color:white;">${p.companyName}</div>
-              <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
-                <span class="stars">&#9733;</span>
-                <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:white;">${p.rating}</span>
-                <span style="font-size:13px;color:var(--s400);">(${p.reviewCount})</span>
+              <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                ${p.claimed
+                  ? '<span style="font-size:12px;color:#6FE09A;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;">✓ CLAIMED</span>'
+                  : '<span style="font-size:12px;color:var(--o400);font-family:\'Barlow Condensed\',sans-serif;font-weight:700;">⚑ UNCLAIMED</span>'}
+                <span style="display:flex;align-items:center;gap:4px;"><span class="stars" style="font-size:12px;">&#9733;</span><span style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;color:white;">${p.rating}</span><span style="font-size:13px;color:var(--s400);">(${p.reviewCount})</span></span>
               </div>
             </div>
             <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
@@ -1894,8 +2041,11 @@ function filterDirectory() {
               <span style="font-size:13px;color:var(--s400);">&#128205; ${p.serviceAreas.join(', ')}</span>
             </div>
             <div style="font-size:14px;color:var(--s300);line-height:1.65;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.description}</div>
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              ${p.certifications.slice(0,3).map(c=>`<span class="badge badge-navy">${c}</span>`).join('')}
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                ${p.certifications.slice(0,3).map(c=>`<span class="badge badge-navy">${c}</span>`).join('')}
+              </div>
+              <div style="font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;">📋 ${reqCount} booking request${reqCount!==1?'s':''}</div>
             </div>
           </div>
         </div>
@@ -1982,8 +2132,12 @@ function renderProvider(id) {
             </div>
           </div>
           <div style="display:flex;flex-direction:column;gap:10px;">
-            <a href="tel:${p.phone}" class="btn btn-orange btn-lg">&#128222; ${p.phone}</a>
-            <button class="btn btn-navy btn-sm" style="justify-content:center;" onclick="document.getElementById('bookingForm').scrollIntoView({behavior:'smooth'})">Book Appointment</button>
+            ${p.claimed
+              ? `<a href="tel:${p.phone}" class="btn btn-orange btn-lg">&#128222; ${p.phone}</a>
+                 <button class="btn btn-navy btn-sm" style="justify-content:center;" onclick="document.getElementById('bookingForm').scrollIntoView({behavior:'smooth'})">Book Appointment</button>`
+              : `<button class="btn btn-orange btn-lg" onclick="openClaimModal('${p.id}')">⚑ Claim This Listing</button>
+                 <div style="font-size:12px;color:var(--s400);text-align:center;">Is this your business? Claim it free.</div>`
+            }
           </div>
         </div>
       </div>
@@ -2095,11 +2249,23 @@ function renderProvider(id) {
 
         <!-- Right: Booking -->
         <div class="profile-right" style="position:sticky;top:90px;">
-          <div style="background:var(--n700);border:2px solid var(--o500);border-radius:8px;padding:28px;">
+          ${!p.claimed ? `
+          <div class="unclaimed-banner">
+            <div style="font-size:32px;margin-bottom:10px;">⚑</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;color:white;margin-bottom:8px;">This Listing is Unclaimed</div>
+            <div style="font-size:13px;color:var(--s300);margin-bottom:16px;line-height:1.7;">
+              <strong style="color:var(--o400);">${getRequestCount(p.id)} booking requests</strong> have been submitted to this listing. Claim it free to start receiving and managing them.
+            </div>
+            <button class="btn btn-orange" style="width:100%;justify-content:center;" onclick="openClaimModal('${p.id}')">Claim This Listing Free →</button>
+            <div style="font-size:12px;color:var(--s400);margin-top:10px;">No credit card required to claim.</div>
+          </div>
+          ` : ''}
+          <div style="background:var(--n700);border:2px solid ${p.claimed ? 'var(--o500)' : 'var(--n400)'};border-radius:8px;padding:28px;">
             <h2 style="font-size:26px;margin-bottom:4px;color:white;">Book an Appointment</h2>
-            <p style="color:var(--s400);font-size:14px;margin-bottom:22px;">${p.companyName} will confirm within 1 business day.</p>
-            <div id="bookingSuccess" style="display:none;" class="alert alert-success">&#10003; Booking request submitted!</div>
-            <form id="bookingForm" onsubmit="handleBooking(event,'${p.id}')">
+            <p style="color:var(--s400);font-size:14px;margin-bottom:6px;">${p.claimed ? p.companyName+' will confirm within 1 business day.' : 'Submit a request — the business owner will be notified.'}</p>
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:18px;font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;">🔒 $2.99 lead connection fee at checkout</div>
+            <div id="bookingSuccess" style="display:none;" class="alert alert-success">&#10003; Booking confirmed! You'll hear back within 1 business day.</div>
+            <form id="bookingForm" onsubmit="handleBookingGate(event,'${p.id}')">
               <div class="form-group"><label class="form-label">Your Name / Company *</label><input class="form-control" type="text" name="customerName" required placeholder="Full name or company" /></div>
               <div class="form-group"><label class="form-label">Email *</label><input class="form-control" type="email" name="customerEmail" required placeholder="you@company.ca" /></div>
               <div class="form-group"><label class="form-label">Phone *</label><input class="form-control" type="tel" name="customerPhone" required placeholder="(416) 555-0000" /></div>
@@ -2112,7 +2278,7 @@ function renderProvider(id) {
                 <input type="hidden" name="serviceTime" id="selectedTime" />
               </div>
               <div class="form-group"><label class="form-label">Job Description *</label><textarea class="form-control" name="jobDescription" required placeholder="Describe the work, scope, location, and requirements..."></textarea></div>
-              <button type="submit" class="btn btn-orange" style="width:100%;justify-content:center;">Request Appointment &rarr;</button>
+              <button type="submit" class="btn btn-orange" style="width:100%;justify-content:center;">Continue to Payment $2.99 →</button>
             </form>
           </div>
         </div>
@@ -2164,26 +2330,122 @@ function selectTime(el, time) {
   document.getElementById('selectedTime').value = time;
 }
 
-function handleBooking(e, providerId) {
+/* pending booking held here until payment clears */
+let _pendingBooking = null;
+
+function handleBookingGate(e, providerId) {
   e.preventDefault();
   const time = document.getElementById('selectedTime').value;
   if (!time) { showToast('Please select a preferred time.','error'); return; }
-
   const data = Object.fromEntries(new FormData(e.target));
-  const booking = {
+  _pendingBooking = {
     id:'b'+Date.now(), providerId,
     customerName: data.customerName, customerEmail: data.customerEmail,
     customerPhone: data.customerPhone, serviceDate: data.serviceDate,
     serviceTime: time, jobDescription: data.jobDescription,
     status:'pending', createdAt: new Date().toISOString().split('T')[0]
   };
-  App.bookings.push(booking);
-  saveBookings();
-  pushNotification(providerId, `New booking from ${data.customerName} — ${data.serviceDate}`, booking.id);
+  openPayModal(_pendingBooking);
+}
 
-  document.getElementById('bookingSuccess').style.display='block';
-  document.getElementById('bookingForm').style.display='none';
-  showToast('Booking request submitted!','success');
+function handleBooking(e, providerId) {
+  /* legacy — kept for dashboard compat */
+  e.preventDefault();
+}
+
+function openPayModal(booking) {
+  const p = App.providers.find(x=>x.id===booking.providerId);
+  document.getElementById('payBookingSummary').innerHTML = `
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--s400);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Booking Summary</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text);">
+      <div style="display:flex;justify-content:space-between;"><span style="color:var(--s400);">Contractor</span><span style="font-weight:500;">${p?.companyName||''}</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:var(--s400);">Date</span><span>${formatDate(booking.serviceDate)}</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:var(--s400);">Time</span><span>${booking.serviceTime}</span></div>
+      <div style="border-top:1px solid var(--n400);margin-top:6px;padding-top:8px;display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;">
+        <span>Lead Connection Fee</span><span style="color:var(--o400);">$2.99</span>
+      </div>
+    </div>
+  `;
+  document.getElementById('payForm').reset();
+  document.getElementById('payModal').classList.add('open');
+}
+
+function closePayModal() {
+  document.getElementById('payModal').classList.remove('open');
+  _pendingBooking = null;
+}
+
+function handlePaymentSubmit(e) {
+  e.preventDefault();
+  const btn = document.getElementById('paySubmitBtn');
+  btn.textContent = 'Processing…'; btn.disabled = true;
+  /* Simulate payment processing */
+  setTimeout(() => {
+    btn.textContent = 'Pay $2.99 & Confirm →'; btn.disabled = false;
+    if (!_pendingBooking) return;
+    App.bookings.push(_pendingBooking);
+    saveBookings();
+    pushNotification(_pendingBooking.providerId, `New booking from ${_pendingBooking.customerName} — ${_pendingBooking.serviceDate}`, _pendingBooking.id);
+    /* increment provider request count in storage */
+    const idx = App.providers.findIndex(p=>p.id===_pendingBooking.providerId);
+    if (idx>-1) { App.providers[idx].requestCount = (App.providers[idx].requestCount||0)+1; saveProviders(); }
+    closePayModal();
+    const suc = document.getElementById('bookingSuccess');
+    const frm = document.getElementById('bookingForm');
+    if (suc) suc.style.display='block';
+    if (frm) frm.style.display='none';
+    showToast('Payment confirmed! Booking submitted.','success');
+    _pendingBooking = null;
+  }, 1600);
+}
+
+function fmtCard(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,16);
+  el.value = v.match(/.{1,4}/g)?.join(' ')||v;
+}
+function fmtExp(el) {
+  let v = el.value.replace(/\D/g,'').slice(0,4);
+  if (v.length>=3) v = v.slice(0,2)+' / '+v.slice(2);
+  el.value = v;
+}
+
+function openClaimModal(pid) {
+  document.getElementById('claimProviderId').value = pid;
+  document.getElementById('claimAlert').innerHTML = '';
+  document.getElementById('claimForm').reset();
+  document.getElementById('claimModal').style.display = 'flex';
+}
+function closeClaimModal() {
+  document.getElementById('claimModal').style.display = 'none';
+}
+
+function handleClaim(e) {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  const pid  = document.getElementById('claimProviderId').value;
+
+  if (App.users.find(u=>u.email.toLowerCase()===data.email.toLowerCase())) {
+    document.getElementById('claimAlert').innerHTML=`<div class="alert alert-error">An account with this email already exists. <a onclick="closeClaimModal();navigate('/login')" style="color:var(--o400);cursor:pointer;">Sign in instead.</a></div>`;
+    return;
+  }
+  /* Mark provider as claimed */
+  const idx = App.providers.findIndex(p=>p.id===pid);
+  if (idx>-1) {
+    App.providers[idx].claimed = true;
+    App.providers[idx].contactName = data.contactName;
+    App.providers[idx].email = data.email;
+    App.providers[idx].password = data.password;
+    saveProviders();
+  }
+  const user = { id:'u'+Date.now(), email:data.email, password:data.password, providerId:pid };
+  App.users.push(user);
+  saveUsers();
+  App.currentUser = {...user, provider:App.providers[idx]};
+  sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
+  updateNav();
+  closeClaimModal();
+  navigate('/dashboard');
+  showToast(`Listing claimed! Welcome to BookYourTrades.`,'success');
 }
 
 /* ============================================================
