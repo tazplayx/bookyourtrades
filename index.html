@@ -1,0 +1,2800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BookYourTrades — Book Ontario's Best Trade Contractors</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
+  <style>
+/* ============================================================
+   VARIABLES & RESET
+============================================================ */
+:root {
+  --n900: #060E1A;
+  --n800: #0B1929;
+  --n700: #102338;
+  --n600: #162D49;
+  --n500: #1D3A5C;
+  --n400: #2A4F78;
+  --s400: #4E728E;
+  --s300: #7A9AB5;
+  --s200: #B0C8D9;
+  --s100: #DDE9F0;
+  --o600: #BE5215;
+  --o500: #E0621A;
+  --o400: #F07030;
+  --o300: #F59460;
+  --white: #FFFFFF;
+  --text: #EAF0F6;
+  --muted: #7A9AB5;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--n900);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.03em;
+}
+
+a { color: inherit; text-decoration: none; cursor: pointer; }
+button { cursor: pointer; font-family: inherit; }
+input, textarea, select { font-family: inherit; }
+
+/* ============================================================
+   UTILITIES
+============================================================ */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.page { display: none; }
+.page.active { display: block; }
+
+.badge {
+  display: inline-block;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 2px;
+}
+.badge-orange { background: var(--o500); color: white; }
+.badge-navy   { background: var(--n500); color: var(--s200); }
+.badge-green  { background: #1A4D2E; color: #6FE09A; }
+.badge-red    { background: #4D1A1A; color: #F08080; }
+.badge-yellow { background: #4D3D0A; color: #F0C060; }
+
+/* ============================================================
+   NAVIGATION
+============================================================ */
+#navbar {
+  background: var(--n800);
+  border-bottom: 3px solid var(--o500);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+}
+
+.nav-logo { display: flex; align-items: center; gap: 10px; }
+
+.nav-logo-mark {
+  width: 38px; height: 38px;
+  background: var(--o500);
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800; font-size: 16px; color: white; flex-shrink: 0;
+}
+
+.nav-logo-name {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 800; font-size: 22px; color: white;
+  letter-spacing: 0.05em; line-height: 1; display: block;
+}
+
+.nav-logo-sub {
+  font-size: 10px; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--o400); line-height: 1;
+  margin-top: 2px; display: block;
+}
+
+.nav-links { display: flex; align-items: center; gap: 4px; }
+
+.nav-link {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600; font-size: 15px; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--s200);
+  padding: 6px 14px; border-radius: 3px;
+  transition: color 0.2s, background 0.2s;
+}
+.nav-link:hover { color: white; background: var(--n600); }
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+.btn {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700; font-size: 15px;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 10px 22px; border-radius: 3px; border: none;
+  transition: all 0.2s; display: inline-flex; align-items: center; gap: 8px;
+}
+
+.btn-orange {
+  background: var(--o500); color: white;
+  box-shadow: 0 2px 8px rgba(232,98,26,0.3);
+}
+.btn-orange:hover { background: var(--o400); box-shadow: 0 4px 16px rgba(232,98,26,0.4); transform: translateY(-1px); }
+
+.btn-outline {
+  background: transparent; color: var(--o400);
+  border: 2px solid var(--o500);
+}
+.btn-outline:hover { background: var(--o500); color: white; }
+
+.btn-navy {
+  background: var(--n600); color: var(--text);
+  border: 1px solid var(--n400);
+}
+.btn-navy:hover { background: var(--n500); }
+
+.btn-sm  { padding: 7px 16px; font-size: 13px; }
+.btn-lg  { padding: 14px 32px; font-size: 17px; }
+
+/* ============================================================
+   FORM ELEMENTS
+============================================================ */
+.form-group { margin-bottom: 20px; }
+
+.form-label {
+  display: block;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600; font-size: 13px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--s200); margin-bottom: 8px;
+}
+
+.form-control {
+  width: 100%;
+  background: var(--n700);
+  border: 1.5px solid var(--n400);
+  color: var(--text);
+  padding: 11px 14px; border-radius: 4px;
+  font-size: 15px; outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.form-control:focus { border-color: var(--o500); box-shadow: 0 0 0 3px rgba(224,98,26,0.15); }
+.form-control::placeholder { color: var(--s400); }
+.form-control option { background: var(--n700); }
+textarea.form-control { resize: vertical; min-height: 100px; }
+
+.form-row   { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+/* ============================================================
+   CARDS
+============================================================ */
+.provider-card {
+  background: var(--n700);
+  border: 1px solid var(--n500);
+  border-left: 4px solid var(--o500);
+  border-radius: 6px; padding: 24px;
+  transition: all 0.2s; cursor: pointer;
+}
+.provider-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+  border-color: var(--o400); background: var(--n600);
+}
+
+/* ============================================================
+   HERO
+============================================================ */
+.hero {
+  background: var(--n800);
+  position: relative; overflow: hidden;
+  padding: 80px 0 90px;
+}
+.hero::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(
+    -45deg, transparent, transparent 40px,
+    rgba(255,255,255,0.012) 40px, rgba(255,255,255,0.012) 41px
+  );
+}
+.hero::after {
+  content: ''; position: absolute; bottom: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--o600), var(--o500), var(--o400));
+}
+
+.hero-eyebrow {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700; font-size: 12px; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--o400);
+  margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+}
+.hero-eyebrow::before {
+  content: ''; display: block; width: 32px; height: 2px; background: var(--o500);
+}
+
+.hero h1 {
+  font-size: clamp(48px, 6vw, 84px); font-weight: 800;
+  line-height: 1; letter-spacing: 0.02em; color: white; margin-bottom: 20px;
+}
+.hero h1 span { color: var(--o400); }
+
+.hero p {
+  font-size: 18px; color: var(--s300); max-width: 560px;
+  margin-bottom: 40px; font-weight: 300; line-height: 1.7;
+}
+
+/* Search Bar */
+.search-bar {
+  display: flex; max-width: 660px;
+  background: var(--n600); border: 2px solid var(--n400);
+  border-radius: 5px; overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  transition: border-color 0.2s;
+}
+.search-bar:focus-within { border-color: var(--o500); }
+.search-bar input {
+  flex: 1; background: transparent; border: none;
+  color: var(--text); padding: 14px 18px; font-size: 16px; outline: none;
+}
+.search-bar input::placeholder { color: var(--s400); }
+.search-bar select {
+  background: var(--n500); border: none;
+  border-left: 1px solid var(--n400);
+  color: var(--s200); padding: 0 14px; font-size: 15px; outline: none; min-width: 160px;
+}
+.search-bar button {
+  background: var(--o500); border: none; color: white; padding: 0 24px;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700; font-size: 16px; letter-spacing: 0.08em; text-transform: uppercase;
+  transition: background 0.2s; white-space: nowrap;
+}
+.search-bar button:hover { background: var(--o400); }
+
+/* ============================================================
+   CATEGORY GRID
+============================================================ */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 12px;
+}
+
+.category-card {
+  background: var(--n700); border: 1px solid var(--n500);
+  border-radius: 6px; padding: 20px 12px; text-align: center;
+  cursor: pointer; transition: all 0.2s;
+}
+.category-card:hover { background: var(--n600); border-color: var(--o500); transform: translateY(-2px); }
+.category-card:hover .cat-icon { color: var(--o400); }
+
+.cat-icon { font-size: 28px; margin-bottom: 8px; color: var(--s300); transition: color 0.2s; }
+.cat-name {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 600; font-size: 14px;
+  letter-spacing: 0.05em; text-transform: uppercase; color: var(--s200);
+}
+
+/* ============================================================
+   SECTION HEADERS
+============================================================ */
+.section-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 32px; padding-bottom: 16px; border-bottom: 1px solid var(--n500);
+}
+
+.section-label {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--o500); margin-bottom: 4px;
+}
+
+.section-title {
+  font-size: clamp(28px, 3.5vw, 42px); font-weight: 800;
+  color: white; letter-spacing: 0.02em;
+}
+
+/* ============================================================
+   FILTER SIDEBAR
+============================================================ */
+.filter-sidebar {
+  background: var(--n700); border: 1px solid var(--n500);
+  border-radius: 6px; padding: 24px;
+  position: sticky; top: 90px;
+}
+
+.filter-title {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  font-size: 13px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--s200); margin-bottom: 12px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--n500);
+}
+
+.filter-option {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0; cursor: pointer; color: var(--s300);
+  font-size: 14px; transition: color 0.15s;
+}
+.filter-option:hover { color: var(--text); }
+.filter-option input[type="checkbox"],
+.filter-option input[type="radio"] { accent-color: var(--o500); width: 16px; height: 16px; }
+
+/* ============================================================
+   DASHBOARD
+============================================================ */
+.stat-card {
+  background: var(--n700); border: 1px solid var(--n500);
+  border-radius: 6px; padding: 24px; border-top: 3px solid var(--o500);
+}
+.stat-value {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 800;
+  font-size: 48px; color: var(--o400); line-height: 1;
+}
+.stat-label {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+  font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--s300); margin-top: 6px;
+}
+
+.table-container {
+  background: var(--n700); border: 1px solid var(--n500);
+  border-radius: 6px; overflow: hidden; overflow-x: auto;
+}
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  background: var(--n600);
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--s300); padding: 14px 20px; text-align: left;
+  border-bottom: 1px solid var(--n400);
+}
+.data-table td {
+  padding: 16px 20px; font-size: 14px; color: var(--text);
+  border-bottom: 1px solid var(--n600);
+}
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--n600); }
+
+/* ============================================================
+   TABS
+============================================================ */
+.tab-bar {
+  display: flex; border-bottom: 2px solid var(--n500); margin-bottom: 32px;
+}
+.tab-btn {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  font-size: 15px; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--s300); padding: 14px 24px; background: none; border: none;
+  border-bottom: 3px solid transparent; margin-bottom: -2px; transition: all 0.2s;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--o400); border-bottom-color: var(--o500); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* ============================================================
+   MISC
+============================================================ */
+.stars { color: var(--o400); font-size: 14px; }
+.divider { height: 1px; background: var(--n500); margin: 32px 0; }
+.page-section { padding: 60px 0; }
+
+.alert {
+  padding: 14px 18px; border-radius: 4px; font-size: 14px;
+  margin-bottom: 20px; border-left: 3px solid;
+}
+.alert-info    { background: rgba(26,52,80,0.8); border-color: var(--s300); color: var(--s200); }
+.alert-success { background: rgba(20,60,30,0.8); border-color: #22C55E; color: #86EFAC; }
+.alert-error   { background: rgba(60,20,20,0.8); border-color: #EF4444; color: #FCA5A5; }
+
+/* Booking time slots */
+.time-slots { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.time-slot {
+  background: var(--n600); border: 1.5px solid var(--n400);
+  color: var(--s200); padding: 7px 14px; border-radius: 3px;
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+  font-size: 14px; cursor: pointer; transition: all 0.15s;
+}
+.time-slot:hover { border-color: var(--o500); color: var(--o400); }
+.time-slot.selected { background: var(--o500); border-color: var(--o500); color: white; }
+
+/* Checkbox grid */
+.checkbox-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.checkbox-item {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 14px; color: var(--s300); cursor: pointer; padding: 4px 0;
+}
+.checkbox-item input { accent-color: var(--o500); }
+
+/* Toast */
+#toast {
+  position: fixed; bottom: 30px; right: 30px;
+  background: var(--n600); border: 1px solid var(--n400);
+  border-left: 4px solid var(--o500); color: var(--text);
+  padding: 16px 24px; border-radius: 4px; font-size: 15px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  transform: translateY(100px); opacity: 0;
+  transition: all 0.3s; z-index: 9999; max-width: 360px;
+}
+#toast.show    { transform: translateY(0); opacity: 1; }
+#toast.success { border-left-color: #22C55E; }
+#toast.error   { border-left-color: #EF4444; }
+
+/* ============================================================
+   RESPONSIVE
+============================================================ */
+@media (max-width: 900px) {
+  .dir-layout { grid-template-columns: 1fr !important; }
+  .filter-sidebar { position: static; }
+  .profile-right { position: static !important; }
+}
+@media (max-width: 768px) {
+  .form-row, .form-row-3 { grid-template-columns: 1fr; }
+  .nav-link { padding: 6px 8px; font-size: 13px; }
+  .hero { padding: 50px 0 60px; }
+  .search-bar { flex-direction: column; }
+  .search-bar select { border-left: none; border-top: 1px solid var(--n400); }
+  .provider-profile-flex { flex-direction: column !important; }
+  .dash-stats { grid-template-columns: repeat(2,1fr) !important; }
+  .pricing-grid { grid-template-columns: 1fr !important; }
+  .hiw-grid { grid-template-columns: 1fr !important; }
+  .hamburger { display:flex !important; }
+  .nav-links { display:none !important; }
+  .nav-links.mob-open { display:flex !important; flex-direction:column; position:fixed; inset:0; background:var(--n800); z-index:999; padding:80px 30px 40px; gap:8px; overflow-y:auto; }
+}
+
+/* ============================================================
+   MOBILE HAMBURGER
+============================================================ */
+.hamburger {
+  display:none; flex-direction:column; gap:5px; cursor:pointer;
+  padding:8px; border-radius:4px; background:transparent; border:none;
+  z-index:1001; position:relative;
+}
+.hamburger span {
+  display:block; width:24px; height:2px; background:var(--s200);
+  border-radius:2px; transition:all 0.25s;
+}
+.hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.hamburger.open span:nth-child(2) { opacity:0; transform:scaleX(0); }
+.hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+.mob-nav-close {
+  position:absolute; top:20px; right:24px;
+  font-size:28px; color:var(--s300); cursor:pointer; background:none; border:none;
+}
+
+/* ============================================================
+   REVIEWS
+============================================================ */
+.review-card {
+  background:var(--n700); border:1px solid var(--n500);
+  border-radius:6px; padding:22px; margin-bottom:14px;
+}
+.review-stars { color:var(--o400); font-size:16px; margin-bottom:8px; }
+.review-text { font-size:14px; color:var(--s200); line-height:1.8; margin-bottom:12px; }
+.review-author { font-size:13px; color:var(--s400); }
+.review-author strong { color:var(--s200); }
+
+.rating-bar-row {
+  display:flex; align-items:center; gap:10px; margin-bottom:8px;
+}
+.rating-bar-label {
+  font-family:'Barlow Condensed',sans-serif; font-weight:600;
+  font-size:13px; color:var(--s300); min-width:16px; text-align:right;
+}
+.rating-bar-track {
+  flex:1; height:8px; background:var(--n500); border-radius:4px; overflow:hidden;
+}
+.rating-bar-fill { height:100%; background:var(--o500); border-radius:4px; transition:width 0.6s; }
+.rating-bar-count { font-size:12px; color:var(--s400); min-width:24px; }
+
+/* ============================================================
+   GALLERY
+============================================================ */
+.gallery-grid {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+}
+.gallery-thumb {
+  border-radius:5px; aspect-ratio:4/3; overflow:hidden;
+  position:relative; cursor:pointer;
+}
+.gallery-thumb-inner {
+  width:100%; height:100%; display:flex; align-items:flex-end;
+  padding:10px; transition:transform 0.3s;
+}
+.gallery-thumb:hover .gallery-thumb-inner { transform:scale(1.04); }
+.gallery-thumb-label {
+  font-family:'Barlow Condensed',sans-serif; font-weight:600;
+  font-size:12px; color:rgba(255,255,255,0.85);
+  background:rgba(0,0,0,0.5); padding:3px 8px; border-radius:2px;
+  letter-spacing:0.04em; text-transform:uppercase;
+}
+
+/* ============================================================
+   PRICING
+============================================================ */
+.pricing-grid {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:24px;
+}
+.pricing-card {
+  background:var(--n700); border:1px solid var(--n500);
+  border-radius:8px; padding:32px; display:flex; flex-direction:column;
+}
+.pricing-card.popular {
+  border-color:var(--o500); position:relative;
+  box-shadow:0 0 0 1px var(--o500), 0 16px 40px rgba(224,98,26,0.15);
+}
+.pricing-popular-tag {
+  position:absolute; top:-13px; left:50%; transform:translateX(-50%);
+  background:var(--o500); color:white; padding:4px 18px;
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+  border-radius:20px; white-space:nowrap;
+}
+.pricing-price {
+  font-family:'Barlow Condensed',sans-serif; font-weight:800;
+  font-size:54px; color:white; line-height:1;
+}
+.pricing-period { font-size:15px; color:var(--s400); font-weight:400; }
+.pricing-feature {
+  display:flex; align-items:flex-start; gap:10px;
+  font-size:14px; color:var(--s300); padding:7px 0;
+  border-bottom:1px solid var(--n600);
+}
+.pricing-feature:last-child { border-bottom:none; }
+.pricing-check { color:var(--o400); font-size:16px; flex-shrink:0; margin-top:1px; }
+.pricing-x { color:var(--s400); font-size:16px; flex-shrink:0; margin-top:1px; }
+
+/* ============================================================
+   HOW IT WORKS
+============================================================ */
+.hiw-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
+.hiw-step {
+  text-align:center; padding:28px 16px;
+  background:var(--n700); border:1px solid var(--n500);
+  border-radius:6px; position:relative;
+}
+.hiw-num {
+  width:44px; height:44px; border-radius:50%;
+  background:var(--o500); color:white;
+  font-family:'Barlow Condensed',sans-serif; font-weight:800; font-size:20px;
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 16px;
+}
+.hiw-icon { font-size:30px; margin-bottom:12px; }
+.hiw-title {
+  font-family:'Barlow Condensed',sans-serif; font-weight:700;
+  font-size:18px; color:white; margin-bottom:8px;
+}
+.hiw-desc { font-size:13px; color:var(--s300); line-height:1.7; }
+
+/* ============================================================
+   FAQ
+============================================================ */
+.faq-item {
+  border-bottom:1px solid var(--n500); overflow:hidden;
+}
+.faq-q {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:18px 0; cursor:pointer; font-family:'Barlow Condensed',sans-serif;
+  font-weight:600; font-size:17px; color:var(--text);
+  transition:color 0.2s; user-select:none;
+}
+.faq-q:hover { color:var(--o400); }
+.faq-arrow {
+  font-size:18px; color:var(--o500); transition:transform 0.25s; flex-shrink:0;
+}
+.faq-a {
+  max-height:0; overflow:hidden; transition:max-height 0.35s ease, padding 0.25s;
+  font-size:14px; color:var(--s300); line-height:1.8; padding:0;
+}
+
+/* ============================================================
+   NOTIFICATION BELL
+============================================================ */
+.notif-bell {
+  position:relative; cursor:pointer; display:flex;
+  align-items:center; padding:6px 10px; border-radius:3px;
+  transition:background 0.2s; font-size:18px;
+}
+.notif-bell:hover { background:var(--n600); }
+.notif-dot {
+  position:absolute; top:4px; right:6px;
+  width:10px; height:10px; border-radius:50%;
+  background:var(--o500); border:2px solid var(--n800);
+  display:none;
+}
+.notif-dot.show { display:block; }
+
+/* ============================================================
+   QUOTE / RFQ
+============================================================ */
+.rfq-match-card {
+  background:var(--n700); border:1px solid var(--n500);
+  border-left:4px solid var(--o500); border-radius:6px;
+  padding:20px; margin-bottom:12px; cursor:pointer;
+  transition:all 0.2s;
+}
+.rfq-match-card:hover { background:var(--n600); transform:translateX(4px); }
+
+/* ============================================================
+   ANALYTICS BARS
+============================================================ */
+.analytics-bar-wrap { margin-bottom:16px; }
+.analytics-bar-label {
+  display:flex; justify-content:space-between;
+  font-size:13px; color:var(--s300); margin-bottom:6px;
+}
+.analytics-track {
+  height:10px; background:var(--n500); border-radius:5px; overflow:hidden;
+}
+.analytics-fill {
+  height:100%; background:linear-gradient(90deg,var(--o600),var(--o400));
+  border-radius:5px; transition:width 0.8s ease;
+}
+
+/* ============================================================
+   MISC ADDITIONS
+============================================================ */
+.section-divider {
+  height:3px;
+  background:linear-gradient(90deg,var(--o600),var(--o500),transparent);
+  margin:40px 0; border-radius:2px;
+}
+.provider-verified {
+  display:inline-flex; align-items:center; gap:5px;
+  font-size:12px; color:#6FE09A; font-family:'Barlow Condensed',sans-serif;
+  font-weight:600; letter-spacing:0.06em;
+}
+  </style>
+</head>
+<body>
+
+<!-- ============================================================
+     NAVBAR
+============================================================ -->
+<nav id="navbar">
+  <div class="container">
+    <div class="nav-inner">
+      <a class="nav-logo" onclick="navigate('/')">
+        <img src="logo.png" alt="BookYourTrades" style="height:44px;width:auto;display:block;" />
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a class="nav-link" onclick="navigate('/directory')">Directory</a>
+        <a class="nav-link" onclick="navigate('/rfq')">Post a Job</a>
+        <a class="nav-link" onclick="navigate('/how-it-works')">How It Works</a>
+        <a class="nav-link" onclick="navigate('/pricing')">Pricing</a>
+        <div id="navAuth" style="display:flex;align-items:center;gap:6px;"></div>
+        <button class="mob-nav-close" onclick="closeMobileNav()" style="display:none;" id="mobClose">&times;</button>
+      </div>
+      <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================
+     PAGE: HOME
+============================================================ -->
+<div id="page-home" class="page">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="container" style="position:relative;z-index:1;">
+      <div class="hero-eyebrow">Ontario's Commercial Trades Registry</div>
+      <h1>Find Certified<br><span>Trade Professionals</span><br>Across Ontario</h1>
+      <p>Connect with licensed electricians, plumbers, HVAC specialists, welders, roofers, and more. Verified Ontario trade contractors ready to quote your next project.</p>
+      <div class="search-bar">
+        <input type="text" id="heroSearch" placeholder="Search trades, companies, services..." />
+        <select id="heroCity">
+          <option value="">All Ontario Cities</option>
+          <option>Toronto</option><option>Ottawa</option><option>Hamilton</option>
+          <option>Mississauga</option><option>London</option><option>Windsor</option>
+          <option>Brampton</option><option>Kitchener</option><option>Barrie</option><option>Sudbury</option>
+        </select>
+        <button onclick="doHeroSearch()">Search</button>
+      </div>
+      <div style="margin-top:24px;display:flex;gap:32px;flex-wrap:wrap;">
+        <div style="font-size:14px;color:var(--s300);">
+          <span style="color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;">500+</span>
+          <span style="margin-left:6px;">Listed Contractors</span>
+        </div>
+        <div style="font-size:14px;color:var(--s300);">
+          <span style="color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;">18</span>
+          <span style="margin-left:6px;">Trade Categories</span>
+        </div>
+        <div style="font-size:14px;color:var(--s300);">
+          <span style="color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;">Ontario-Wide</span>
+          <span style="margin-left:6px;">Coverage</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories -->
+  <section class="page-section" style="background:var(--n800);border-bottom:1px solid var(--n600);">
+    <div class="container">
+      <div style="margin-bottom:28px;">
+        <div class="section-label">Browse By Trade</div>
+        <div class="section-title">What Are You Looking For?</div>
+      </div>
+      <div class="category-grid" id="categoryGrid"></div>
+    </div>
+  </section>
+
+  <!-- Featured Providers -->
+  <section class="page-section">
+    <div class="container">
+      <div class="section-header">
+        <div>
+          <div class="section-label">Verified Contractors</div>
+          <div class="section-title">Featured Providers</div>
+        </div>
+        <a class="btn btn-outline btn-sm" onclick="navigate('/directory')">View All &rarr;</a>
+      </div>
+      <div id="featuredGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:20px;"></div>
+    </div>
+  </section>
+
+  <!-- Why BookYourTrades -->
+  <section class="page-section" style="background:var(--n800);border-top:1px solid var(--n500);">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:48px;">
+        <div class="section-label">Why Choose Us</div>
+        <div class="section-title">Built For Ontario Trade Businesses</div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:24px;">
+        <div style="padding:28px;background:var(--n700);border-radius:6px;border-top:3px solid var(--o500);">
+          <div style="font-size:32px;margin-bottom:12px;">⚡</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;margin-bottom:8px;color:white;">Verified Licenses</div>
+          <div style="font-size:14px;color:var(--s300);line-height:1.7;">All listed contractors are verified against Ontario trade licensing and certification databases.</div>
+        </div>
+        <div style="padding:28px;background:var(--n700);border-radius:6px;border-top:3px solid var(--o500);">
+          <div style="font-size:32px;margin-bottom:12px;">📅</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;margin-bottom:8px;color:white;">Online Booking</div>
+          <div style="font-size:14px;color:var(--s300);line-height:1.7;">Book service appointments directly through provider profiles — no phone tag required.</div>
+        </div>
+        <div style="padding:28px;background:var(--n700);border-radius:6px;border-top:3px solid var(--o500);">
+          <div style="font-size:32px;margin-bottom:12px;">🏗️</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;margin-bottom:8px;color:white;">Commercial Focus</div>
+          <div style="font-size:14px;color:var(--s300);line-height:1.7;">Specialized in commercial, industrial, and institutional projects across all of Ontario.</div>
+        </div>
+        <div style="padding:28px;background:var(--n700);border-radius:6px;border-top:3px solid var(--o500);">
+          <div style="font-size:32px;margin-bottom:12px;">📍</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;margin-bottom:8px;color:white;">Province-Wide</div>
+          <div style="font-size:14px;color:var(--s300);line-height:1.7;">Coverage across all major Ontario cities from Windsor to Ottawa, Hamilton to Sudbury.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Banner -->
+  <section style="padding:60px 0;background:linear-gradient(135deg,var(--o600) 0%,var(--o500) 50%,var(--o400) 100%);position:relative;overflow:hidden;">
+    <div style="position:absolute;inset:0;background-image:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(0,0,0,0.08) 40px,rgba(0,0,0,0.08) 41px);"></div>
+    <div class="container" style="position:relative;z-index:1;text-align:center;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:12px;">For Trade Businesses</div>
+      <h2 style="font-size:clamp(36px,5vw,56px);color:white;margin-bottom:16px;font-weight:800;">List Your Business Today</h2>
+      <p style="font-size:17px;color:rgba(255,255,255,0.88);max-width:520px;margin:0 auto 32px;font-weight:300;">Join Ontario's leading commercial trades directory. Get discovered, manage bookings, and grow your business — at no cost to list.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-lg" style="background:white;color:var(--o600);font-weight:800;" onclick="navigate('/register')">Create Your Listing</button>
+        <button class="btn btn-lg btn-outline" style="border-color:rgba(255,255,255,0.5);color:white;" onclick="navigate('/directory')">Browse Directory</button>
+      </div>
+    </div>
+  </section>
+
+</div><!-- end page-home -->
+
+
+<!-- ============================================================
+     PAGE: DIRECTORY
+============================================================ -->
+<div id="page-directory" class="page">
+  <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
+    <div class="container">
+      <div class="section-label">Commercial Trades Directory</div>
+      <h1 style="font-size:40px;margin-bottom:16px;">Ontario Trades Contractors</h1>
+      <div class="search-bar" style="max-width:620px;">
+        <input type="text" id="dirSearch" placeholder="Search by name, trade, or keyword..." />
+        <select id="dirCity">
+          <option value="">All Cities</option>
+          <option>Toronto</option><option>Ottawa</option><option>Hamilton</option>
+          <option>Mississauga</option><option>London</option><option>Windsor</option>
+          <option>Brampton</option><option>Kitchener</option><option>Barrie</option><option>Sudbury</option>
+        </select>
+        <button onclick="filterDirectory()">Search</button>
+      </div>
+    </div>
+  </div>
+  <div class="container" style="padding-top:40px;padding-bottom:60px;">
+    <div class="dir-layout" style="display:grid;grid-template-columns:260px 1fr;gap:32px;align-items:start;">
+      <div class="filter-sidebar">
+        <div class="filter-title">Filter By Trade</div>
+        <div id="tradeFilters"></div>
+        <div class="filter-title" style="margin-top:24px;">Minimum Rating</div>
+        <label class="filter-option"><input type="radio" name="ratingFilter" value="0" checked onchange="filterDirectory()"> Any Rating</label>
+        <label class="filter-option"><input type="radio" name="ratingFilter" value="4" onchange="filterDirectory()"> &#9733; 4.0+</label>
+        <label class="filter-option"><input type="radio" name="ratingFilter" value="4.5" onchange="filterDirectory()"> &#9733; 4.5+</label>
+        <div class="filter-title" style="margin-top:24px;">Sort By</div>
+        <select class="form-control" id="sortDir" onchange="filterDirectory()">
+          <option value="rating">Highest Rated</option>
+          <option value="name">Company Name</option>
+          <option value="reviews">Most Reviews</option>
+        </select>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+          <div id="dirCount" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;color:var(--s300);font-size:15px;letter-spacing:0.05em;"></div>
+        </div>
+        <div id="dirGrid" style="display:flex;flex-direction:column;gap:16px;"></div>
+      </div>
+    </div>
+  </div>
+</div><!-- end page-directory -->
+
+
+<!-- ============================================================
+     PAGE: PROVIDER PROFILE
+============================================================ -->
+<div id="page-provider" class="page">
+  <div id="providerContent"></div>
+</div>
+
+
+<!-- ============================================================
+     PAGE: REGISTER
+============================================================ -->
+<div id="page-register" class="page">
+  <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
+    <div class="container">
+      <div class="section-label">Join BookYourTrades</div>
+      <h1 style="font-size:40px;">List Your Trade Business</h1>
+      <p style="color:var(--s300);margin-top:8px;font-size:16px;">Create your free listing and start receiving booking requests from commercial clients across Ontario.</p>
+    </div>
+  </div>
+  <div class="container" style="padding-top:48px;padding-bottom:80px;">
+    <div style="max-width:760px;">
+      <div id="registerAlert"></div>
+      <form id="registerForm" onsubmit="handleRegister(event)">
+
+        <!-- Section 01 -->
+        <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:32px;margin-bottom:24px;">
+          <h3 style="font-size:22px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--n500);color:white;">
+            <span style="color:var(--o500);margin-right:10px;">01</span> Company Information
+          </h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Company Name *</label>
+              <input class="form-control" type="text" name="companyName" required placeholder="e.g. Volt Pro Electrical Inc." />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Trade Type *</label>
+              <select class="form-control" name="tradeType" required>
+                <option value="">Select Trade...</option>
+                <option>Electrical</option><option>Plumbing</option><option>HVAC</option>
+                <option>Roofing</option><option>Welding &amp; Fabrication</option>
+                <option>Concrete &amp; Masonry</option><option>Millwright</option>
+                <option>Pipefitting</option><option>Sheet Metal</option>
+                <option>Refrigeration</option><option>Boilermaker</option>
+                <option>Carpentry</option><option>Painting &amp; Coating</option>
+                <option>General Contracting</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Ontario Trade License #</label>
+              <input class="form-control" type="text" name="licenseNumber" placeholder="e.g. ECRA/ESA 7013312" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Years in Business *</label>
+              <select class="form-control" name="yearsInBusiness" required>
+                <option value="">Select...</option>
+                <option>1-2 years</option><option>3-5 years</option>
+                <option>6-10 years</option><option>11-20 years</option><option>20+ years</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Company Description *</label>
+            <textarea class="form-control" name="description" required placeholder="Describe your services, specializations, and what sets your business apart..."></textarea>
+          </div>
+        </div>
+
+        <!-- Section 02 -->
+        <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:32px;margin-bottom:24px;">
+          <h3 style="font-size:22px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--n500);color:white;">
+            <span style="color:var(--o500);margin-right:10px;">02</span> Contact Information
+          </h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Contact Name *</label>
+              <input class="form-control" type="text" name="contactName" required placeholder="Your full name" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Business Phone *</label>
+              <input class="form-control" type="tel" name="phone" required placeholder="(416) 555-0100" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Business Website</label>
+            <input class="form-control" type="url" name="website" placeholder="https://yourcompany.ca" />
+          </div>
+        </div>
+
+        <!-- Section 03 -->
+        <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:32px;margin-bottom:24px;">
+          <h3 style="font-size:22px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--n500);color:white;">
+            <span style="color:var(--o500);margin-right:10px;">03</span> Service Areas
+          </h3>
+          <p style="color:var(--s300);font-size:14px;margin-bottom:16px;">Select all Ontario cities/regions where you provide services:</p>
+          <div class="checkbox-grid">
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Toronto"> Toronto</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Ottawa"> Ottawa</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Hamilton"> Hamilton</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Mississauga"> Mississauga</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="London"> London</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Windsor"> Windsor</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Brampton"> Brampton</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Kitchener"> Kitchener</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Barrie"> Barrie</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Sudbury"> Sudbury</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Thunder Bay"> Thunder Bay</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Oakville"> Oakville</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Burlington"> Burlington</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="St. Catharines"> St. Catharines</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Sarnia"> Sarnia</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Chatham"> Chatham</label>
+          </div>
+        </div>
+
+        <!-- Section 04 -->
+        <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:32px;margin-bottom:32px;">
+          <h3 style="font-size:22px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--n500);color:white;">
+            <span style="color:var(--o500);margin-right:10px;">04</span> Account Credentials
+          </h3>
+          <div class="form-group">
+            <label class="form-label">Email Address *</label>
+            <input class="form-control" type="email" name="email" required placeholder="you@company.ca" />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Password *</label>
+              <input class="form-control" type="password" name="password" required placeholder="Min. 8 characters" minlength="8" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm Password *</label>
+              <input class="form-control" type="password" name="confirmPassword" required placeholder="Repeat password" />
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-orange btn-lg" style="width:100%;justify-content:center;">Create My Listing &rarr;</button>
+        <p style="text-align:center;margin-top:16px;color:var(--s400);font-size:14px;">Already have an account? <a onclick="navigate('/login')" style="color:var(--o400);">Sign in here</a></p>
+      </form>
+    </div>
+  </div>
+</div><!-- end page-register -->
+
+
+<!-- ============================================================
+     PAGE: LOGIN
+============================================================ -->
+<div id="page-login" class="page">
+  <div style="min-height:calc(100vh - 71px);display:flex;align-items:center;justify-content:center;padding:40px 24px;">
+    <div style="width:100%;max-width:440px;">
+      <div style="text-align:center;margin-bottom:40px;">
+        <div style="width:56px;height:56px;background:var(--o500);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;">
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;color:white;">T</span>
+        </div>
+        <h1 style="font-size:36px;margin-bottom:8px;">Provider Login</h1>
+        <p style="color:var(--s300);font-size:15px;">Access your BookYourTrades dashboard</p>
+      </div>
+      <div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:36px;">
+        <div id="loginAlert"></div>
+        <form onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input class="form-control" type="email" id="loginEmail" required placeholder="you@company.ca" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input class="form-control" type="password" id="loginPassword" required placeholder="Your password" />
+          </div>
+          <button type="submit" class="btn btn-orange" style="width:100%;justify-content:center;margin-top:8px;">Sign In to Dashboard</button>
+        </form>
+        <div class="divider"></div>
+        <p style="text-align:center;color:var(--s400);font-size:14px;">Don't have an account? <a onclick="navigate('/register')" style="color:var(--o400);">Register your business</a></p>
+        <div style="margin-top:20px;padding:14px;background:var(--n600);border-radius:4px;font-size:12px;color:var(--s400);border:1px solid var(--n400);">
+          <strong style="color:var(--s300);display:block;margin-bottom:8px;">Demo Credentials:</strong>
+          <div style="margin-bottom:4px;">&#128231; voltpro@example.ca &nbsp;/&nbsp; <strong>password123</strong></div>
+          <div style="margin-bottom:4px;">&#128231; superior@example.ca &nbsp;/&nbsp; <strong>password123</strong></div>
+          <div>&#128231; crown@example.ca &nbsp;/&nbsp; <strong>password123</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end page-login -->
+
+
+<!-- ============================================================
+     PAGE: DASHBOARD
+============================================================ -->
+<div id="page-dashboard" class="page">
+  <div id="dashboardContent"></div>
+</div>
+
+
+<!-- ============================================================
+     PAGE: HOW IT WORKS
+============================================================ -->
+<div id="page-how-it-works" class="page">
+  <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
+    <div class="container">
+      <div class="section-label">Getting Started</div>
+      <h1 style="font-size:44px;">How BookYourTrades Works</h1>
+      <p style="color:var(--s300);font-size:16px;margin-top:8px;max-width:560px;">Whether you're hiring a contractor or growing your trade business, we make the process fast, simple, and reliable.</p>
+    </div>
+  </div>
+
+  <!-- Toggle -->
+  <div style="background:var(--n800);padding:24px 0;border-bottom:1px solid var(--n500);">
+    <div class="container">
+      <div style="display:inline-flex;background:var(--n600);border-radius:5px;padding:4px;gap:4px;">
+        <button id="hiwTabClient" class="btn btn-orange btn-sm" onclick="switchHIW('client')">For Clients</button>
+        <button id="hiwTabContractor" class="btn btn-navy btn-sm" onclick="switchHIW('contractor')">For Contractors</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Client steps -->
+  <div id="hiwClient" class="page-section">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:48px;">
+        <div class="section-label">Hiring a Contractor</div>
+        <div class="section-title">Find & Book in Minutes</div>
+      </div>
+      <div class="hiw-grid">
+        <div class="hiw-step">
+          <div class="hiw-num">1</div>
+          <div class="hiw-icon">🔍</div>
+          <div class="hiw-title">Search the Directory</div>
+          <div class="hiw-desc">Filter by trade type, city, and rating to find licensed Ontario contractors that match your project needs.</div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">2</div>
+          <div class="hiw-icon">👤</div>
+          <div class="hiw-title">Review Profiles</div>
+          <div class="hiw-desc">Read verified reviews, check certifications, confirm service areas, and review past project galleries.</div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">3</div>
+          <div class="hiw-icon">📅</div>
+          <div class="hiw-title">Book an Appointment</div>
+          <div class="hiw-desc">Submit a booking request directly on the provider's profile. Choose your preferred date and time slot.</div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">4</div>
+          <div class="hiw-icon">✅</div>
+          <div class="hiw-title">Get the Work Done</div>
+          <div class="hiw-desc">The contractor confirms within 1 business day. After the job, leave a review to help future clients.</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:48px;">
+        <button class="btn btn-orange btn-lg" onclick="navigate('/directory')">Browse Contractors Now</button>
+        <span style="margin:0 12px;color:var(--s400);">or</span>
+        <button class="btn btn-outline btn-lg" onclick="navigate('/rfq')">Post Your Job</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contractor steps -->
+  <div id="hiwContractor" style="display:none;" class="page-section">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:48px;">
+        <div class="section-label">Growing Your Business</div>
+        <div class="section-title">List, Manage & Grow</div>
+      </div>
+      <div class="hiw-grid">
+        <div class="hiw-step">
+          <div class="hiw-num">1</div>
+          <div class="hiw-icon">📝</div>
+          <div class="hiw-title">Create Your Listing</div>
+          <div class="hiw-desc">Register in minutes. Add your trade type, license number, service areas, certifications, and company description.</div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">2</div>
+          <div class="hiw-icon">🏆</div>
+          <div class="hiw-title">Get Discovered</div>
+          <div class="hiw-desc">Your profile appears in the directory immediately. Commercial clients searching your trade and region will find you.</div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">3</div>
+          <div class="hiw-icon">📲</div>
+          <div class="hiw-title">Receive Bookings</div>
+          <div class="hiw-desc">Clients submit appointment requests through your profile. Review job details and confirm or decline from your dashboard.</div>
+        </div>
+        <div class="hiw-step">
+          <div class="hiw-num">4</div>
+          <div class="hiw-icon">📈</div>
+          <div class="hiw-title">Build Your Reputation</div>
+          <div class="hiw-desc">Collect verified reviews, track analytics, and upgrade to a featured listing to reach more commercial clients.</div>
+        </div>
+      </div>
+      <div style="text-align:center;margin-top:48px;">
+        <button class="btn btn-orange btn-lg" onclick="navigate('/register')">List Your Business Free</button>
+        <span style="margin:0 12px;color:var(--s400);">or</span>
+        <button class="btn btn-outline btn-lg" onclick="navigate('/pricing')">View Pricing</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <section class="page-section" style="background:var(--n800);border-top:1px solid var(--n500);">
+    <div class="container" style="max-width:760px;">
+      <div style="text-align:center;margin-bottom:40px;">
+        <div class="section-label">Common Questions</div>
+        <div class="section-title">Frequently Asked</div>
+      </div>
+      <div id="faqList">
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">Is it free to list my trade business?<span class="faq-arrow">›</span></div><div class="faq-a">Yes — the Starter tier is completely free. You get a full public profile, searchable listing, and up to 10 booking requests per month. Paid tiers unlock unlimited bookings, featured placement, and advanced analytics.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">How are contractors verified?<span class="faq-arrow">›</span></div><div class="faq-a">Contractors self-declare their trade license numbers (ESA, TSSA, TSSA Gas, CWB, etc.) upon registration. Our team cross-references submitted license numbers against Ontario regulatory databases. Verified badges are issued to providers who pass this check.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">Can I book a contractor for emergency service?<span class="faq-arrow">›</span></div><div class="faq-a">Yes. Many contractors on BookYourTrades offer emergency service. When browsing the directory, filter by trade type and city, then review individual provider profiles — emergency availability and response times are listed on each profile.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">What types of projects is BookYourTrades suited for?<span class="faq-arrow">›</span></div><div class="faq-a">BookYourTrades is built for commercial, industrial, and institutional (ICI) projects. This includes office buildings, retail, warehouses, manufacturing facilities, healthcare, hospitality, and municipal infrastructure. Residential projects are not the primary focus of this platform.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">How does the booking system work for contractors?<span class="faq-arrow">›</span></div><div class="faq-a">When a client submits a booking request through your profile, it appears in your dashboard under "Pending." You review the job details, then Confirm or Decline. Confirmed appointments appear in your schedule. You can also mark jobs as Completed once done.</div></div>
+        <div class="faq-item"><div class="faq-q" onclick="toggleFAQ(this)">Can I list multiple locations or trade types?<span class="faq-arrow">›</span></div><div class="faq-a">The Professional tier supports a single listing with multiple service areas. The Enterprise tier supports multiple distinct business locations or trade types under one account. Contact us to set up an Enterprise account.</div></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<!-- ============================================================
+     PAGE: POST A JOB / RFQ
+============================================================ -->
+<div id="page-rfq" class="page">
+  <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
+    <div class="container">
+      <div class="section-label">Get Competing Quotes</div>
+      <h1 style="font-size:44px;">Post Your Job</h1>
+      <p style="color:var(--s300);font-size:16px;margin-top:8px;max-width:580px;">Describe your project and we'll match you with licensed Ontario trade contractors in your area. Free to post — no obligation.</p>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:48px;padding-bottom:80px;">
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:start;" class="dir-layout">
+
+      <!-- Form -->
+      <div>
+        <div id="rfqSuccess" style="display:none;" class="alert alert-success" >
+          &#10003; Your job request has been posted! Scroll down to see matched contractors.
+        </div>
+        <form id="rfqForm" onsubmit="handleRFQ(event)">
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
+            <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Project Details</h3>
+            <div class="form-group">
+              <label class="form-label">Job Title *</label>
+              <input class="form-control" type="text" name="jobTitle" required placeholder="e.g. 3-phase electrical upgrade for warehouse" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Trade Required *</label>
+                <select class="form-control" name="tradeType" required>
+                  <option value="">Select Trade...</option>
+                  <option>Electrical</option><option>Plumbing</option><option>HVAC</option>
+                  <option>Roofing</option><option>Welding &amp; Fabrication</option>
+                  <option>Concrete &amp; Masonry</option><option>Millwright</option>
+                  <option>Pipefitting</option><option>Sheet Metal</option>
+                  <option>Refrigeration</option><option>Carpentry</option>
+                  <option>Painting &amp; Coating</option><option>General Contracting</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">City / Region *</label>
+                <select class="form-control" name="city" required>
+                  <option value="">Select City...</option>
+                  <option>Toronto</option><option>Ottawa</option><option>Hamilton</option>
+                  <option>Mississauga</option><option>London</option><option>Windsor</option>
+                  <option>Brampton</option><option>Kitchener</option><option>Barrie</option><option>Sudbury</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Budget Range</label>
+                <select class="form-control" name="budget">
+                  <option value="">Not Specified</option>
+                  <option>Under $5,000</option><option>$5,000 – $25,000</option>
+                  <option>$25,000 – $100,000</option><option>$100,000 – $500,000</option>
+                  <option>$500,000+</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Timeline</label>
+                <select class="form-control" name="timeline">
+                  <option>ASAP / Emergency</option><option>Within 2 weeks</option>
+                  <option>Within 1 month</option><option>1–3 months</option><option>3–6 months</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Project Description *</label>
+              <textarea class="form-control" name="description" required style="min-height:120px;" placeholder="Describe the scope of work, location details, special requirements, and any relevant background..."></textarea>
+            </div>
+          </div>
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:24px;">
+            <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Your Contact Information</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Name / Company *</label>
+                <input class="form-control" type="text" name="contactName" required placeholder="Your name or company" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Email *</label>
+                <input class="form-control" type="email" name="contactEmail" required placeholder="you@company.ca" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone</label>
+              <input class="form-control" type="tel" name="contactPhone" placeholder="(416) 555-0000" />
+            </div>
+          </div>
+          <button type="submit" class="btn btn-orange btn-lg" style="width:100%;justify-content:center;">Post My Job &rarr;</button>
+        </form>
+
+        <!-- Matched results (shown after submit) -->
+        <div id="rfqResults" style="display:none;margin-top:40px;">
+          <div style="padding-bottom:16px;margin-bottom:20px;border-bottom:1px solid var(--n500);">
+            <div class="section-label">Matched Contractors</div>
+            <div class="section-title" style="font-size:28px;">Providers In Your Area</div>
+            <p style="color:var(--s300);font-size:14px;margin-top:6px;">These licensed contractors serve your region and match your trade requirement. Click any to view their profile and book directly.</p>
+          </div>
+          <div id="rfqMatchList"></div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div style="position:sticky;top:90px;">
+        <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:24px;margin-bottom:16px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:white;margin-bottom:16px;">How It Works</div>
+          <div style="display:flex;flex-direction:column;gap:14px;">
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="width:26px;height:26px;background:var(--o500);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:white;flex-shrink:0;">1</div>
+              <div style="font-size:13px;color:var(--s300);">Post your job — free, no account needed</div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="width:26px;height:26px;background:var(--o500);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:white;flex-shrink:0;">2</div>
+              <div style="font-size:13px;color:var(--s300);">We match your job to licensed Ontario contractors</div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start;">
+              <div style="width:26px;height:26px;background:var(--o500);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:12px;color:white;flex-shrink:0;">3</div>
+              <div style="font-size:13px;color:var(--s300);">Review profiles and book directly — no middleman</div>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:20px;">
+          <div style="font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">100% Free</div>
+          <div style="font-size:14px;color:var(--s300);line-height:1.7;">Posting a job is always free. BookYourTrades never charges clients a fee or commission.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     PAGE: PRICING
+============================================================ -->
+<div id="page-pricing" class="page">
+  <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
+    <div class="container">
+      <div class="section-label">For Trade Businesses</div>
+      <h1 style="font-size:44px;">Simple, Transparent Pricing</h1>
+      <p style="color:var(--s300);font-size:16px;margin-top:8px;">Start free. Upgrade when you're ready to grow.</p>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top:56px;padding-bottom:80px;">
+    <div class="pricing-grid">
+
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.15em;text-transform:uppercase;color:var(--s300);margin-bottom:12px;">Starter</div>
+        <div><span class="pricing-price">Free</span></div>
+        <div style="font-size:14px;color:var(--s400);margin:12px 0 24px;">Always free — no credit card</div>
+        <div style="flex:1;margin-bottom:28px;">
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Public directory listing</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Up to 10 booking requests/month</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Basic profile (description, areas, certs)</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Appointment dashboard</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Client reviews</div>
+          <div class="pricing-feature"><span class="pricing-x">&#10005;</span> Featured listing placement</div>
+          <div class="pricing-feature"><span class="pricing-x">&#10005;</span> Analytics &amp; profile views</div>
+          <div class="pricing-feature"><span class="pricing-x">&#10005;</span> Priority search ranking</div>
+          <div class="pricing-feature"><span class="pricing-x">&#10005;</span> Verified badge</div>
+        </div>
+        <button class="btn btn-outline" style="width:100%;justify-content:center;" onclick="navigate('/register')">Get Started Free</button>
+      </div>
+
+      <!-- Professional -->
+      <div class="pricing-card popular" style="position:relative;">
+        <div class="pricing-popular-tag">Most Popular</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.15em;text-transform:uppercase;color:var(--o400);margin-bottom:12px;">Professional</div>
+        <div><span class="pricing-price">$49</span><span class="pricing-period">/month</span></div>
+        <div style="font-size:14px;color:var(--s400);margin:12px 0 24px;">Billed monthly &middot; Cancel anytime</div>
+        <div style="flex:1;margin-bottom:28px;">
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Everything in Starter</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> <strong style="color:var(--text);">Unlimited</strong> booking requests</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Featured listing placement</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Full analytics dashboard</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Priority search ranking</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> <span class="provider-verified">&#10003; Verified</span> badge on profile</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Project photo gallery (up to 20)</div>
+          <div class="pricing-feature"><span class="pricing-x">&#10005;</span> Multi-location support</div>
+          <div class="pricing-feature"><span class="pricing-x">&#10005;</span> Dedicated account manager</div>
+        </div>
+        <button class="btn btn-orange" style="width:100%;justify-content:center;" onclick="navigate('/register')">Start 14-Day Free Trial</button>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.15em;text-transform:uppercase;color:var(--s300);margin-bottom:12px;">Enterprise</div>
+        <div><span class="pricing-price">$149</span><span class="pricing-period">/month</span></div>
+        <div style="font-size:14px;color:var(--s400);margin:12px 0 24px;">For large contractors &amp; multi-branch firms</div>
+        <div style="flex:1;margin-bottom:28px;">
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Everything in Professional</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Up to 5 business locations</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Multiple trade categories</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Dedicated account manager</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Custom profile branding</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> API access for integrations</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Quarterly performance reports</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Priority phone support</div>
+        </div>
+        <button class="btn btn-navy" style="width:100%;justify-content:center;" onclick="showToast('Contact us at hello@bookyourtrades.com','')">Contact Sales</button>
+      </div>
+    </div>
+
+    <!-- Comparison note -->
+    <div style="margin-top:48px;background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+      <div style="font-size:32px;">🍁</div>
+      <div style="flex:1;">
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:white;margin-bottom:4px;">Ontario-Focused. Trade-Specific.</div>
+        <div style="font-size:14px;color:var(--s300);">BookYourTrades is built exclusively for Ontario's commercial trades sector — not a generic national directory. All plans include unlimited client bookings (Starter: capped at 10/mo), full mobile access, and real-time appointment notifications.</div>
+      </div>
+      <button class="btn btn-orange" onclick="navigate('/register')">Get Started</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer style="background:var(--n800);border-top:3px solid var(--n600);margin-top:0;">
+  <div class="container" style="padding-top:48px;padding-bottom:48px;">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:40px;flex-wrap:wrap;">
+      <div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+          <div style="width:32px;height:32px;background:var(--o500);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);display:flex;align-items:center;justify-content:center;">
+            <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:14px;color:white;">T</span>
+          </div>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:white;">BookYourTrades</span>
+        </div>
+        <p style="font-size:14px;color:var(--s400);line-height:1.8;max-width:280px;">Ontario's trusted commercial trades directory. Connecting licensed contractors with businesses province-wide since 2024.</p>
+      </div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--s200);margin-bottom:16px;">Directory</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a onclick="navigate('/directory')" style="font-size:14px;color:var(--s400);">Browse All Trades</a>
+          <a onclick="navigateToCategory('Electrical')" style="font-size:14px;color:var(--s400);">Electrical</a>
+          <a onclick="navigateToCategory('Plumbing')" style="font-size:14px;color:var(--s400);">Plumbing</a>
+          <a onclick="navigateToCategory('HVAC')" style="font-size:14px;color:var(--s400);">HVAC</a>
+          <a onclick="navigateToCategory('Roofing')" style="font-size:14px;color:var(--s400);">Roofing</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--s200);margin-bottom:16px;">Contractors</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a onclick="navigate('/register')" style="font-size:14px;color:var(--s400);">List Your Business</a>
+          <a onclick="navigate('/login')" style="font-size:14px;color:var(--s400);">Provider Login</a>
+          <a onclick="navigate('/dashboard')" style="font-size:14px;color:var(--s400);">Dashboard</a>
+        </div>
+      </div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--s200);margin-bottom:16px;">Regions</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <span style="font-size:14px;color:var(--s400);">Greater Toronto Area</span>
+          <span style="font-size:14px;color:var(--s400);">Ottawa Region</span>
+          <span style="font-size:14px;color:var(--s400);">Golden Horseshoe</span>
+          <span style="font-size:14px;color:var(--s400);">Southwestern Ontario</span>
+          <span style="font-size:14px;color:var(--s400);">Northern Ontario</span>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid var(--n600);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
+      <div style="font-size:13px;color:var(--s400);">&copy; 2026 BookYourTrades Inc. All rights reserved. Ontario, Canada &middot; bookyourtrades.com</div>
+      <div style="font-size:13px;color:var(--s400);">Licensed Trade Directory &middot; Not affiliated with the Ontario College of Trades &middot; <a href="mailto:hello@bookyourtrades.com" style="color:var(--s400);">hello@bookyourtrades.com</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<script>
+/* ============================================================
+   SEED DATA
+============================================================ */
+const TRADE_CATEGORIES = [
+  { name:'Electrical',            icon:'⚡',  count:87  },
+  { name:'Plumbing',              icon:'🔧',  count:64  },
+  { name:'HVAC',                  icon:'❄️',  count:58  },
+  { name:'Roofing',               icon:'🏗️', count:42  },
+  { name:'Welding & Fabrication', icon:'🔥',  count:35  },
+  { name:'Concrete & Masonry',    icon:'🧱',  count:29  },
+  { name:'Millwright',            icon:'⚙️',  count:22  },
+  { name:'Pipefitting',           icon:'🔩',  count:31  },
+  { name:'Sheet Metal',           icon:'🔨',  count:18  },
+  { name:'Refrigeration',         icon:'🌡️', count:16  },
+  { name:'Carpentry',             icon:'🪚',  count:44  },
+  { name:'Painting & Coating',    icon:'🖌️', count:38  },
+];
+
+const SEED_PROVIDERS = [
+  {
+    id:'p1', companyName:'Volt Pro Electrical Inc.', tradeType:'Electrical',
+    licenseNumber:'ECRA/ESA 7013312', yearsInBusiness:'11-20 years',
+    description:"Commercial and industrial electrical contractor serving the Greater Toronto Area since 2006. Specializing in high-voltage switchgear installations, emergency power systems, data centre builds, and LEED-certified retrofits. Fully bonded and insured with 24/7 emergency response. Proudly serving Ontario's manufacturing, healthcare, and institutional sectors.",
+    contactName:'Marcus Webb', email:'voltpro@example.ca', phone:'(416) 882-4400',
+    website:'https://voltproelectrical.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Oakville','Burlington'],
+    rating:4.8, reviewCount:142,
+    certifications:['ESA Licensed','ECRA Certified','IBEW Local 353','LEED AP'],
+    featured:true, password:'password123'
+  },
+  {
+    id:'p2', companyName:'Superior HVAC Solutions', tradeType:'HVAC',
+    licenseNumber:'TSSA #ON-44812', yearsInBusiness:'6-10 years',
+    description:"Ottawa-based commercial HVAC specialists with a focus on large-scale commercial ventilation, chiller plant design, and Building Automation Systems. Serving government, office, and hospitality clients across Eastern Ontario. Factory-authorized for Carrier, Trane, and Lennox commercial systems. Full BAS integration and commissioning services.",
+    contactName:'Sandra Okafor', email:'superior@example.ca', phone:'(613) 744-9900',
+    website:'',
+    serviceAreas:['Ottawa','Barrie','Sudbury'],
+    rating:4.6, reviewCount:89,
+    certifications:['TSSA Certified','NATE Certified','EPA 608','Carrier Factory Authorized'],
+    featured:true, password:'password123'
+  },
+  {
+    id:'p3', companyName:'Crown Plumbing & Gas', tradeType:'Plumbing',
+    licenseNumber:'Master Plumber #PL-88203-ON', yearsInBusiness:'20+ years',
+    description:"Hamilton-area commercial plumbing and gas fitting contractor established 1997. Specializing in new construction rough-in, medical gas systems, grease trap installation, and backflow prevention for commercial kitchens and healthcare facilities. Serving industrial parks and ICI construction across the Golden Horseshoe for over 25 years.",
+    contactName:'Tom Riordan', email:'crown@example.ca', phone:'(905) 527-1188',
+    website:'https://crownplumbing.ca',
+    serviceAreas:['Hamilton','Burlington','St. Catharines','Kitchener'],
+    rating:4.9, reviewCount:203,
+    certifications:['Master Plumber','TSSA Gas Fitter Class A','Medical Gas Installer','PHCC Member'],
+    featured:true, password:'password123'
+  },
+  {
+    id:'p4', companyName:'SkyHigh Roofing & Waterproofing', tradeType:'Roofing',
+    licenseNumber:'RRO #ON-2291', yearsInBusiness:'11-20 years',
+    description:"Mississauga-based commercial flat roofing contractor specializing in TPO, EPDM, modified bitumen, and inverted roof assemblies. Full-service waterproofing including parkade decks, plaza decks, and green roof systems. Serving retail, industrial, and institutional property managers across the GTA with 24-hour emergency leak response.",
+    contactName:'Priya Desai', email:'skyhigh@example.ca', phone:'(905) 279-6622',
+    website:'',
+    serviceAreas:['Mississauga','Toronto','Brampton','Oakville'],
+    rating:4.5, reviewCount:67,
+    certifications:['CRCA Member','RRO Certified','GAF Certified','OSHA 10'],
+    featured:false, password:'password123'
+  },
+  {
+    id:'p5', companyName:'Ironclad Welding & Fabrication', tradeType:'Welding & Fabrication',
+    licenseNumber:'CWB Certified W47.1', yearsInBusiness:'6-10 years',
+    description:"Windsor-area structural and process welding contractor. CWB-certified for structural steel, pressure vessel, and pipeline work. Custom fabrication shop with CNC plasma cutting, pipe fitting, and hot-dip galvanizing. Serving automotive, petrochemical, and heavy construction industries across Southwestern Ontario.",
+    contactName:'Derek Fontaine', email:'ironclad@example.ca', phone:'(519) 253-7744',
+    website:'https://ironcladwelding.ca',
+    serviceAreas:['Windsor','London','Sarnia','Chatham'],
+    rating:4.7, reviewCount:51,
+    certifications:['CWB W47.1','Red Seal Welder','ASME Section IX','CSA W47.2'],
+    featured:false, password:'password123'
+  },
+  {
+    id:'p6', companyName:'Solid Foundation Concrete', tradeType:'Concrete & Masonry',
+    licenseNumber:'ON-CQ-44015', yearsInBusiness:'11-20 years',
+    description:"London, Ontario's premier commercial concrete contractor. Specializing in structural concrete, post-tension slabs, tilt-up construction, and industrial floor systems. Laser-screed flatwork, decorative concrete, and shotcrete for commercial and industrial clients across Southwestern Ontario. ACI-certified flat floor specialist.",
+    contactName:'Greg Horton', email:'solid@example.ca', phone:'(519) 668-3300',
+    website:'',
+    serviceAreas:['London','Kitchener','Hamilton','Barrie'],
+    rating:4.4, reviewCount:38,
+    certifications:['ACI Certified','ICPI Installer','OSHA 10','CSC Member'],
+    featured:false, password:'password123'
+  }
+];
+
+const SEED_BOOKINGS = [
+  {
+    id:'b1', providerId:'p1',
+    customerName:'Rajesh Patel', customerEmail:'r.patel@globalbuilders.ca', customerPhone:'(416) 222-5555',
+    jobDescription:'Require assessment for 200-amp service upgrade for commercial kitchen buildout in downtown Toronto. 3-phase power needed.',
+    serviceDate:'2026-04-08', serviceTime:'9:00 AM', status:'confirmed', createdAt:'2026-04-01'
+  },
+  {
+    id:'b2', providerId:'p1',
+    customerName:'Lisa Chen', customerEmail:'lchen@propertyco.ca', customerPhone:'(905) 333-9900',
+    jobDescription:'Emergency generator installation assessment for office building in Mississauga. 250kW standby system with ATS.',
+    serviceDate:'2026-04-10', serviceTime:'1:00 PM', status:'pending', createdAt:'2026-04-02'
+  },
+  {
+    id:'b3', providerId:'p1',
+    customerName:'NorthStar Realty Group', customerEmail:'maint@northstarrealty.ca', customerPhone:'(647) 888-1234',
+    jobDescription:'Annual electrical inspection for 4-storey commercial building. Approximately 28,000 sq ft.',
+    serviceDate:'2026-04-15', serviceTime:'8:00 AM', status:'pending', createdAt:'2026-04-03'
+  },
+  {
+    id:'b4', providerId:'p2',
+    customerName:'Capital Properties Ottawa', customerEmail:'ops@capitalproperties.ca', customerPhone:'(613) 555-7788',
+    jobDescription:'Chiller plant replacement for 12-storey office building. Interested in Trane or Carrier units.',
+    serviceDate:'2026-04-09', serviceTime:'10:00 AM', status:'confirmed', createdAt:'2026-04-01'
+  },
+  {
+    id:'b5', providerId:'p3',
+    customerName:'Hamilton Medical Centre', customerEmail:'facilities@hamiltonmed.ca', customerPhone:'(905) 521-2100',
+    jobDescription:'Medical gas system installation for new surgical wing. NFPA 99 compliance required. Full design-build scope.',
+    serviceDate:'2026-04-07', serviceTime:'7:00 AM', status:'confirmed', createdAt:'2026-03-28'
+  }
+];
+
+/* ============================================================
+   SEED REVIEWS
+============================================================ */
+const SEED_REVIEWS = [
+  { id:'r1', providerId:'p1', authorName:'Frank Stellato', authorCompany:'Meridian Properties Inc.', rating:5, comment:'Volt Pro did an exceptional job on our 40,000 sq ft warehouse service upgrade. Marcus and his crew were professional, on schedule, and under budget. The 3-phase installation was flawless. Highly recommend for any commercial project.', date:'2026-03-15' },
+  { id:'r2', providerId:'p1', authorName:'Amanda Torres', authorCompany:'Blue Crest Hotel Group', rating:5, comment:'Needed emergency panel replacement mid-renovation at our hotel. Volt Pro had a crew on-site within 4 hours of our call. Outstanding response time and quality work. Will be using them for all future projects.', date:'2026-02-28' },
+  { id:'r3', providerId:'p1', authorName:'CoreLink Data Solutions', authorCompany:'IT Infrastructure Team', rating:4, comment:'Completed our data centre electrical build on schedule. Good communication throughout the project. A few minor punch-list items took a couple extra days to close out but the overall quality is excellent.', date:'2026-01-20' },
+  { id:'r4', providerId:'p2', authorName:'Jennifer Blackwood', authorCompany:'Ottawa Civic Trust', rating:5, comment:'Superior HVAC designed and installed the complete chiller plant for our new civic building. BAS integration was seamless and the system has performed perfectly since commissioning. Sandra\'s team delivered exactly what was promised.', date:'2026-03-01' },
+  { id:'r5', providerId:'p2', authorName:'Darren Ng', authorCompany:'Rideau Valley Property Mgmt', rating:4, comment:'Very knowledgeable team with responsive communication. The rooftop unit replacement was handled professionally with minimal disruption to building tenants. Would use Superior again.', date:'2026-02-10' },
+  { id:'r6', providerId:'p3', authorName:'Dr. Patricia Lam', authorCompany:'Hamilton Medical Centre', rating:5, comment:'Crown installed our entire medical gas system for the new surgical wing. Their NFPA 99 expertise was evident throughout the project. Zero deficiencies on the final inspection — a remarkable result on a complex job.', date:'2026-03-20' },
+  { id:'r7', providerId:'p3', authorName:'Gino Rosario', authorCompany:'Rosario Restaurant Group', rating:5, comment:'Tom and his crew handled grease trap and rough-in plumbing for all three of our new restaurant locations. Always on schedule, always clean. Best commercial plumber in the Hamilton area, full stop.', date:'2026-03-05' },
+  { id:'r8', providerId:'p3', authorName:'Cynthia Park', authorCompany:'Park Development Corp', rating:5, comment:'Rough-in plumbing for a 6-storey mixed-use development. Crown delivered quality work on a tight ICI schedule. Tom knows commercial codes inside out and the inspectors love his work.', date:'2026-01-30' },
+  { id:'r9', providerId:'p4', authorName:'Mall Operations Team', authorCompany:'Westside Retail REIT', rating:4, comment:'SkyHigh replaced the TPO membrane on three of our mall buildings. Good quality workmanship. Scheduling took a bit longer than expected to coordinate with our tenants but the end result is solid.', date:'2026-02-20' },
+  { id:'r10', providerId:'p5', authorName:'Plant Manager', authorCompany:'Windsor Auto Parts Ltd.', rating:5, comment:'Ironclad fabricated custom structural steel supports for our new press line. CWB-quality welds, tight tolerances, delivered on time. Derek\'s team is first-class — this is our second major project with them.', date:'2026-03-10' },
+  { id:'r11', providerId:'p5', authorName:'Kyle Fontaine', authorCompany:'Great Lakes Petrochemical', rating:4, comment:'Solid pressure vessel welding work. ASME-certified welds with thorough documentation package. Would use Ironclad again for our next scheduled turnaround.', date:'2026-02-05' },
+  { id:'r12', providerId:'p6', authorName:'Brad Kowalski', authorCompany:'Kowalski Industrial Builders', rating:4, comment:'Solid Foundation poured our industrial floor slab — 18,000 sq ft laser-screed. Good flatness tolerances and they cleaned up properly each day. On time and professional.', date:'2026-02-14' },
+];
+
+const GALLERY_LABELS = {
+  'Electrical':            ['Service Upgrade – 400A','Switchgear Installation','Data Centre Wiring','Emergency Generator'],
+  'HVAC':                  ['Chiller Plant Install','Rooftop Unit Replacement','BAS Control Room','Ductwork Fabrication'],
+  'Plumbing':              ['Medical Gas System','Grease Trap Install','Commercial Rough-In','Backflow Prevention'],
+  'Roofing':               ['TPO Membrane System','Parapet Flashing','Green Roof Assembly','Waterproof Deck'],
+  'Welding & Fabrication': ['Structural Steel Frame','Pressure Vessel Weld','Custom Fabrication','Pipeline Welding'],
+  'Concrete & Masonry':    ['Post-Tension Slab','Tilt-Up Wall Panel','Industrial Floor','Foundation Pour'],
+};
+
+const GALLERY_GRADIENTS = [
+  'linear-gradient(135deg,#1A3A5C,#0B1929)',
+  'linear-gradient(135deg,#1A2C42,#102030)',
+  'linear-gradient(135deg,#1C3050,#0D1A30)',
+  'linear-gradient(135deg,#162840,#0A1625)',
+];
+
+/* ============================================================
+   APP STATE
+============================================================ */
+const App = { currentUser: null, providers: [], users: [], bookings: [], reviews: [], notifications: [] };
+
+/* ============================================================
+   STORAGE
+============================================================ */
+function loadStorage() {
+  const sp = localStorage.getItem('to_providers');
+  const su = localStorage.getItem('to_users');
+  const sb = localStorage.getItem('to_bookings');
+  const sr = localStorage.getItem('to_reviews');
+  const sn = localStorage.getItem('to_notifs');
+
+  App.providers = sp ? JSON.parse(sp) : [...SEED_PROVIDERS];
+  if (!sp) saveProviders();
+
+  App.users = su ? JSON.parse(su) : SEED_PROVIDERS.map(p => ({
+    id:'u'+p.id, email:p.email, password:p.password, providerId:p.id
+  }));
+  if (!su) saveUsers();
+
+  App.bookings = sb ? JSON.parse(sb) : [...SEED_BOOKINGS];
+  if (!sb) saveBookings();
+
+  App.reviews = sr ? JSON.parse(sr) : [...SEED_REVIEWS];
+  if (!sr) saveReviews();
+
+  App.notifications = sn ? JSON.parse(sn) : [
+    { id:'n1', providerId:'p1', message:'New booking from Rajesh Patel — Apr 8', bookingId:'b1', read:false, createdAt:'2026-04-01' },
+    { id:'n2', providerId:'p1', message:'New booking from Lisa Chen — Apr 10', bookingId:'b2', read:false, createdAt:'2026-04-02' },
+    { id:'n3', providerId:'p1', message:'New booking from NorthStar Realty — Apr 15', bookingId:'b3', read:false, createdAt:'2026-04-03' },
+    { id:'n4', providerId:'p2', message:'New booking from Capital Properties — Apr 9', bookingId:'b4', read:true,  createdAt:'2026-04-01' },
+    { id:'n5', providerId:'p3', message:'New booking from Hamilton Medical Centre — Apr 7', bookingId:'b5', read:true, createdAt:'2026-03-28' },
+  ];
+  if (!sn) saveNotifications();
+
+  const sess = sessionStorage.getItem('to_session');
+  if (sess) App.currentUser = JSON.parse(sess);
+}
+
+function saveReviews()       { localStorage.setItem('to_reviews', JSON.stringify(App.reviews)); }
+function saveNotifications() { localStorage.setItem('to_notifs',  JSON.stringify(App.notifications)); }
+
+function saveProviders() { localStorage.setItem('to_providers', JSON.stringify(App.providers)); }
+function saveUsers()     { localStorage.setItem('to_users',     JSON.stringify(App.users));     }
+function saveBookings()  { localStorage.setItem('to_bookings',  JSON.stringify(App.bookings));  }
+
+/* ============================================================
+   ROUTING
+============================================================ */
+function navigate(path) {
+  history.pushState({}, '', '#' + path);
+  router();
+  window.scrollTo(0, 0);
+}
+
+function router() {
+  const hash  = location.hash.replace('#', '') || '/';
+  const parts = hash.split('/').filter(Boolean);
+  const page  = parts[0] || '';
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  closeMobileNav();
+
+  if (!page) {
+    document.getElementById('page-home').classList.add('active');
+    renderHome();
+  } else if (page === 'directory') {
+    document.getElementById('page-directory').classList.add('active');
+    renderDirectory();
+  } else if (page === 'provider') {
+    document.getElementById('page-provider').classList.add('active');
+    renderProvider(parts[1]);
+  } else if (page === 'register') {
+    document.getElementById('page-register').classList.add('active');
+  } else if (page === 'login') {
+    document.getElementById('page-login').classList.add('active');
+  } else if (page === 'dashboard') {
+    if (!App.currentUser) { navigate('/login'); return; }
+    document.getElementById('page-dashboard').classList.add('active');
+    renderDashboard();
+  } else if (page === 'how-it-works') {
+    document.getElementById('page-how-it-works').classList.add('active');
+  } else if (page === 'rfq') {
+    document.getElementById('page-rfq').classList.add('active');
+    // reset form on nav
+    const f = document.getElementById('rfqForm');
+    const r = document.getElementById('rfqResults');
+    const s = document.getElementById('rfqSuccess');
+    if (f) f.style.display = '';
+    if (r) r.style.display = 'none';
+    if (s) s.style.display = 'none';
+  } else if (page === 'pricing') {
+    document.getElementById('page-pricing').classList.add('active');
+  } else {
+    document.getElementById('page-home').classList.add('active');
+    renderHome();
+  }
+
+  updateNav();
+}
+
+function updateNav() {
+  const el = document.getElementById('navAuth');
+  if (App.currentUser) {
+    const pid   = App.currentUser.providerId;
+    const unread = App.notifications.filter(n => n.providerId === pid && !n.read).length;
+    el.innerHTML = `
+      <div class="notif-bell" onclick="navigate('/dashboard')" title="Notifications">
+        &#128276;
+        <span class="notif-dot ${unread > 0 ? 'show' : ''}"></span>
+      </div>
+      <a class="nav-link" onclick="navigate('/dashboard')">Dashboard</a>
+      <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
+    `;
+  } else {
+    el.innerHTML = `
+      <button class="btn btn-orange btn-sm" onclick="navigate('/register')">List Your Business</button>
+      <a class="nav-link" onclick="navigate('/login')">Login</a>
+    `;
+  }
+}
+
+/* ============================================================
+   MOBILE NAV
+============================================================ */
+function toggleMobileNav() {
+  const links = document.getElementById('navLinks');
+  const burger = document.getElementById('hamburger');
+  const close  = document.getElementById('mobClose');
+  const open   = links.classList.toggle('mob-open');
+  burger.classList.toggle('open', open);
+  if (close) close.style.display = open ? 'block' : 'none';
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+
+function closeMobileNav() {
+  const links  = document.getElementById('navLinks');
+  const burger = document.getElementById('hamburger');
+  const close  = document.getElementById('mobClose');
+  if (!links) return;
+  links.classList.remove('mob-open');
+  burger.classList.remove('open');
+  if (close) close.style.display = 'none';
+  document.body.style.overflow = '';
+}
+
+/* ============================================================
+   HOME
+============================================================ */
+function renderHome() {
+  const cg = document.getElementById('categoryGrid');
+  if (cg) cg.innerHTML = TRADE_CATEGORIES.map(c => `
+    <div class="category-card" onclick="navigateToCategory('${c.name}')">
+      <div class="cat-icon">${c.icon}</div>
+      <div class="cat-name">${c.name}</div>
+      <div style="font-size:12px;color:var(--s400);margin-top:4px;">${c.count} listings</div>
+    </div>
+  `).join('');
+
+  const fg = document.getElementById('featuredGrid');
+  if (fg) fg.innerHTML = App.providers.filter(p => p.featured).slice(0,3).map(p => providerCardHTML(p)).join('');
+}
+
+function navigateToCategory(cat) {
+  navigate('/directory');
+  setTimeout(() => {
+    const cb = document.querySelector(`input[name="tradeFilter"][value="${cat}"]`);
+    if (cb) { cb.checked = true; filterDirectory(); }
+  }, 80);
+}
+
+function providerCardHTML(p) {
+  const ini = p.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
+  return `
+    <div class="provider-card" onclick="navigate('/provider/${p.id}')">
+      <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:14px;">
+        <div style="width:52px;height:52px;background:var(--o500);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;color:white;flex-shrink:0;">${ini}</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;color:white;margin-bottom:4px;">${p.companyName}</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+            <span class="badge badge-orange">${p.tradeType}</span>
+            <span style="font-size:13px;color:var(--s400);">${p.yearsInBusiness}</span>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:14px;color:var(--s300);line-height:1.65;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.description}</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="stars">&#9733;</span>
+          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:white;">${p.rating}</span>
+          <span style="font-size:13px;color:var(--s400);">(${p.reviewCount} reviews)</span>
+        </div>
+        <div style="font-size:13px;color:var(--s400);">&#128205; ${p.serviceAreas[0]}</div>
+      </div>
+    </div>
+  `;
+}
+
+function doHeroSearch() {
+  const q = document.getElementById('heroSearch').value;
+  const c = document.getElementById('heroCity').value;
+  navigate('/directory');
+  setTimeout(() => {
+    if (q) document.getElementById('dirSearch').value = q;
+    if (c) document.getElementById('dirCity').value = c;
+    filterDirectory();
+  }, 60);
+}
+
+/* ============================================================
+   DIRECTORY
+============================================================ */
+function renderDirectory() {
+  const fd = document.getElementById('tradeFilters');
+  if (fd && !fd.querySelector('input')) {
+    const trades = [...new Set(App.providers.map(p => p.tradeType))].sort();
+    fd.innerHTML = trades.map(t => `
+      <label class="filter-option">
+        <input type="checkbox" name="tradeFilter" value="${t}" onchange="filterDirectory()"> ${t}
+      </label>
+    `).join('');
+  }
+  filterDirectory();
+}
+
+function filterDirectory() {
+  const q     = (document.getElementById('dirSearch')?.value||'').toLowerCase();
+  const city  = document.getElementById('dirCity')?.value||'';
+  const trades = [...document.querySelectorAll('input[name="tradeFilter"]:checked')].map(c=>c.value);
+  const minR  = parseFloat(document.querySelector('input[name="ratingFilter"]:checked')?.value||'0');
+  const sort  = document.getElementById('sortDir')?.value||'rating';
+
+  let res = App.providers.filter(p => {
+    const ms = !q || p.companyName.toLowerCase().includes(q) || p.tradeType.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
+    const mc = !city || p.serviceAreas.includes(city);
+    const mt = trades.length===0 || trades.includes(p.tradeType);
+    const mr = p.rating >= minR;
+    return ms && mc && mt && mr;
+  });
+
+  if (sort==='rating')  res.sort((a,b)=>b.rating-a.rating);
+  if (sort==='name')    res.sort((a,b)=>a.companyName.localeCompare(b.companyName));
+  if (sort==='reviews') res.sort((a,b)=>b.reviewCount-a.reviewCount);
+
+  const cnt = document.getElementById('dirCount');
+  if (cnt) cnt.textContent = `${res.length} CONTRACTOR${res.length!==1?'S':''} FOUND`;
+
+  const grid = document.getElementById('dirGrid');
+  if (!grid) return;
+
+  if (res.length===0) {
+    grid.innerHTML = `<div style="text-align:center;padding:60px;color:var(--s400);">
+      <div style="font-size:40px;margin-bottom:12px;">&#128269;</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;margin-bottom:8px;">No contractors found</div>
+      <div style="font-size:14px;">Try adjusting your filters or search terms</div>
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = res.map(p => {
+    const ini = p.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
+    return `
+      <div class="provider-card" onclick="navigate('/provider/${p.id}')">
+        <div style="display:flex;align-items:flex-start;gap:20px;">
+          <div style="width:60px;height:60px;background:var(--o500);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:white;flex-shrink:0;">${ini}</div>
+          <div style="flex:1;min-width:0;">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:21px;color:white;">${p.companyName}</div>
+              <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+                <span class="stars">&#9733;</span>
+                <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:white;">${p.rating}</span>
+                <span style="font-size:13px;color:var(--s400);">(${p.reviewCount})</span>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
+              <span class="badge badge-orange">${p.tradeType}</span>
+              <span style="font-size:13px;color:var(--s400);">${p.yearsInBusiness}</span>
+              <span style="font-size:13px;color:var(--s400);">&#128205; ${p.serviceAreas.join(', ')}</span>
+            </div>
+            <div style="font-size:14px;color:var(--s300);line-height:1.65;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.description}</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              ${p.certifications.slice(0,3).map(c=>`<span class="badge badge-navy">${c}</span>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ============================================================
+   PROVIDER PROFILE
+============================================================ */
+function renderStars(rating) {
+  const full = Math.floor(rating);
+  const half = rating % 1 >= 0.5;
+  let s = '';
+  for (let i=0;i<full;i++) s += '<span style="color:var(--o400);">&#9733;</span>';
+  if (half) s += '<span style="color:var(--o400);">&#9734;</span>';
+  const empty = 5 - full - (half?1:0);
+  for (let i=0;i<empty;i++) s += '<span style="color:var(--n400);">&#9733;</span>';
+  return s;
+}
+
+function buildRatingBreakdown(reviews) {
+  const counts = [0,0,0,0,0];
+  reviews.forEach(r=>{ if(r.rating>=1&&r.rating<=5) counts[r.rating-1]++; });
+  const total = reviews.length || 1;
+  let html = '';
+  for (let star=5;star>=1;star--) {
+    const pct = Math.round((counts[star-1]/total)*100);
+    html += `<div class="rating-bar-row">
+      <span class="rating-bar-label">${star}</span>
+      <div class="rating-bar-track"><div class="rating-bar-fill" style="width:${pct}%"></div></div>
+      <span class="rating-bar-count">${counts[star-1]}</span>
+    </div>`;
+  }
+  return html;
+}
+
+function buildGallery(tradeType) {
+  const labels = GALLERY_LABELS[tradeType] || ['Project 1','Project 2','Project 3','Project 4'];
+  return labels.map((lbl,i) => `
+    <div class="gallery-thumb">
+      <div class="gallery-thumb-inner" style="background:${GALLERY_GRADIENTS[i%4]};">
+        <span class="gallery-thumb-label">${lbl}</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderProvider(id) {
+  const p = App.providers.find(x=>x.id===id);
+  const el = document.getElementById('providerContent');
+  if (!p) { el.innerHTML=`<div class="container" style="padding:80px 0;text-align:center;"><h2>Provider not found.</h2></div>`; return; }
+
+  const ini = p.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
+  const reviews = App.reviews.filter(r=>r.providerId===id);
+  const avgRating = reviews.length ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : p.rating;
+  const reviewCount = reviews.length || p.reviewCount;
+  const related = App.providers.filter(x=>x.id!==id && x.tradeType===p.tradeType).slice(0,3);
+
+  el.innerHTML = `
+    <!-- Profile Header -->
+    <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:48px 0 40px;">
+      <div class="container">
+        <div class="provider-profile-flex" style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap;">
+          <div style="width:80px;height:80px;background:var(--o500);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:28px;color:white;flex-shrink:0;">${ini}</div>
+          <div style="flex:1;min-width:200px;">
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
+              <h1 style="font-size:clamp(26px,4vw,42px);color:white;">${p.companyName}</h1>
+              <span class="badge badge-orange">${p.tradeType}</span>
+              <span class="provider-verified">&#10003; Verified</span>
+            </div>
+            <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
+              <div style="display:flex;align-items:center;gap:6px;">
+                ${renderStars(parseFloat(avgRating))}
+                <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:white;margin-left:4px;">${avgRating}</span>
+                <span style="color:var(--s400);font-size:14px;">(${reviewCount} reviews)</span>
+              </div>
+              <span style="color:var(--s400);font-size:14px;">&#128197; ${p.yearsInBusiness}</span>
+              <span style="color:var(--s400);font-size:14px;">&#128251; ${p.licenseNumber}</span>
+            </div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              ${p.certifications.map(c=>`<span class="badge badge-navy">${c}</span>`).join('')}
+            </div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a href="tel:${p.phone}" class="btn btn-orange btn-lg">&#128222; ${p.phone}</a>
+            <button class="btn btn-navy btn-sm" style="justify-content:center;" onclick="document.getElementById('bookingForm').scrollIntoView({behavior:'smooth'})">Book Appointment</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Body -->
+    <div class="container" style="padding-top:40px;padding-bottom:80px;">
+      <div style="display:grid;grid-template-columns:1fr 380px;gap:40px;align-items:start;" class="dir-layout">
+
+        <!-- Left -->
+        <div>
+          <!-- About -->
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:24px;">
+            <h2 style="font-size:24px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">About ${p.companyName}</h2>
+            <p style="color:var(--s200);line-height:1.85;font-size:15px;">${p.description}</p>
+          </div>
+
+          <!-- Gallery -->
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:24px;">
+            <h2 style="font-size:24px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Project Gallery</h2>
+            <div class="gallery-grid">${buildGallery(p.tradeType)}</div>
+          </div>
+
+          <!-- Service Areas -->
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:24px;">
+            <h2 style="font-size:24px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Service Areas</h2>
+            <div style="display:flex;flex-wrap:wrap;gap:8px;">
+              ${p.serviceAreas.map(a=>`<span style="background:var(--n600);border:1px solid var(--n400);color:var(--s200);padding:6px 14px;border-radius:3px;font-size:14px;">&#128205; ${a}</span>`).join('')}
+            </div>
+          </div>
+
+          <!-- Contact -->
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:24px;">
+            <h2 style="font-size:24px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Contact Information</h2>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--s400);margin-bottom:4px;">Contact Person</div><div style="font-size:15px;">${p.contactName}</div></div>
+              <div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--s400);margin-bottom:4px;">Phone</div><div style="font-size:15px;">${p.phone}</div></div>
+              ${p.email?`<div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--s400);margin-bottom:4px;">Email</div><div style="font-size:15px;">${p.email}</div></div>`:''}
+              ${p.website?`<div><div style="font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--s400);margin-bottom:4px;">Website</div><div style="font-size:15px;"><a href="${p.website}" target="_blank" style="color:var(--o400);">${p.website.replace('https://','')}</a></div></div>`:''}
+            </div>
+          </div>
+
+          <!-- Reviews -->
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:24px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">
+              <h2 style="font-size:24px;">Client Reviews</h2>
+              <div style="display:flex;align-items:center;gap:8px;">
+                <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:36px;color:var(--o400);">${avgRating}</span>
+                <div>
+                  <div>${renderStars(parseFloat(avgRating))}</div>
+                  <div style="font-size:12px;color:var(--s400);">${reviewCount} reviews</div>
+                </div>
+              </div>
+            </div>
+            ${reviews.length>0?`
+              <div style="margin-bottom:24px;">${buildRatingBreakdown(reviews)}</div>
+              ${reviews.map(r=>`
+                <div class="review-card">
+                  <div class="review-stars">${'&#9733;'.repeat(r.rating)}${'<span style="color:var(--n400);">&#9733;</span>'.repeat(5-r.rating)}</div>
+                  <div class="review-text">"${r.comment}"</div>
+                  <div class="review-author"><strong>${r.authorName}</strong>${r.authorCompany?' &middot; '+r.authorCompany:''} &middot; <span style="color:var(--s400);">${r.date}</span></div>
+                </div>
+              `).join('')}
+            `:`<p style="color:var(--s400);font-size:14px;">No reviews yet — be the first to book and leave a review.</p>`}
+            <!-- Write a Review -->
+            <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--n500);">
+              <button class="btn btn-navy btn-sm" onclick="document.getElementById('reviewForm').style.display=document.getElementById('reviewForm').style.display==='none'?'block':'none'">&#9998; Write a Review</button>
+              <form id="reviewForm" style="display:none;margin-top:16px;" onsubmit="handleReview(event,'${p.id}')">
+                <div class="form-row">
+                  <div class="form-group"><label class="form-label">Your Name *</label><input class="form-control" name="authorName" required placeholder="Name or company" /></div>
+                  <div class="form-group"><label class="form-label">Company</label><input class="form-control" name="authorCompany" placeholder="Optional" /></div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Rating *</label>
+                  <div style="display:flex;gap:8px;margin-top:4px;" id="starPicker">
+                    ${[1,2,3,4,5].map(n=>`<span data-val="${n}" onclick="pickStar(${n})" style="font-size:28px;cursor:pointer;color:var(--n400);transition:color 0.15s;">&#9733;</span>`).join('')}
+                  </div>
+                  <input type="hidden" id="pickedStar" name="rating" />
+                </div>
+                <div class="form-group"><label class="form-label">Review *</label><textarea class="form-control" name="comment" required placeholder="Share your experience working with this contractor..."></textarea></div>
+                <button type="submit" class="btn btn-orange btn-sm">Submit Review</button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Related Providers -->
+          ${related.length>0?`
+            <div>
+              <div style="margin-bottom:16px;">
+                <div class="section-label">Similar Contractors</div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;color:white;">Other ${p.tradeType} Providers</div>
+              </div>
+              ${related.map(r=>{
+                const ri=r.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
+                return `<div class="rfq-match-card" onclick="navigate('/provider/${r.id}')">
+                  <div style="display:flex;align-items:center;gap:14px;">
+                    <div style="width:44px;height:44px;background:var(--o500);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:16px;color:white;flex-shrink:0;">${ri}</div>
+                    <div style="flex:1;">
+                      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;color:white;">${r.companyName}</div>
+                      <div style="font-size:13px;color:var(--s400);">&#9733; ${r.rating} &middot; &#128205; ${r.serviceAreas[0]}</div>
+                    </div>
+                    <span style="color:var(--o400);font-size:18px;">&rsaquo;</span>
+                  </div>
+                </div>`;
+              }).join('')}
+            </div>
+          `:''}
+        </div>
+
+        <!-- Right: Booking -->
+        <div class="profile-right" style="position:sticky;top:90px;">
+          <div style="background:var(--n700);border:2px solid var(--o500);border-radius:8px;padding:28px;">
+            <h2 style="font-size:26px;margin-bottom:4px;color:white;">Book an Appointment</h2>
+            <p style="color:var(--s400);font-size:14px;margin-bottom:22px;">${p.companyName} will confirm within 1 business day.</p>
+            <div id="bookingSuccess" style="display:none;" class="alert alert-success">&#10003; Booking request submitted!</div>
+            <form id="bookingForm" onsubmit="handleBooking(event,'${p.id}')">
+              <div class="form-group"><label class="form-label">Your Name / Company *</label><input class="form-control" type="text" name="customerName" required placeholder="Full name or company" /></div>
+              <div class="form-group"><label class="form-label">Email *</label><input class="form-control" type="email" name="customerEmail" required placeholder="you@company.ca" /></div>
+              <div class="form-group"><label class="form-label">Phone *</label><input class="form-control" type="tel" name="customerPhone" required placeholder="(416) 555-0000" /></div>
+              <div class="form-group"><label class="form-label">Preferred Date *</label><input class="form-control" type="date" name="serviceDate" required min="${getTomorrowDate()}" /></div>
+              <div class="form-group">
+                <label class="form-label">Preferred Time *</label>
+                <div class="time-slots">
+                  ${['7:00 AM','8:00 AM','9:00 AM','10:00 AM','11:00 AM','1:00 PM','2:00 PM','3:00 PM','4:00 PM'].map(t=>`<div class="time-slot" onclick="selectTime(this,'${t}')">${t}</div>`).join('')}
+                </div>
+                <input type="hidden" name="serviceTime" id="selectedTime" />
+              </div>
+              <div class="form-group"><label class="form-label">Job Description *</label><textarea class="form-control" name="jobDescription" required placeholder="Describe the work, scope, location, and requirements..."></textarea></div>
+              <button type="submit" class="btn btn-orange" style="width:100%;justify-content:center;">Request Appointment &rarr;</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  `;
+}
+
+function pickStar(n) {
+  document.getElementById('pickedStar').value = n;
+  document.querySelectorAll('#starPicker span').forEach((s,i)=>{
+    s.style.color = i < n ? 'var(--o400)' : 'var(--n400)';
+  });
+}
+
+function handleReview(e, pid) {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  if (!data.rating) { showToast('Please select a star rating.','error'); return; }
+  const review = {
+    id:'r'+Date.now(), providerId:pid,
+    authorName:data.authorName, authorCompany:data.authorCompany||'',
+    rating:parseInt(data.rating), comment:data.comment,
+    date: new Date().toISOString().split('T')[0]
+  };
+  App.reviews.push(review);
+  // update provider rating
+  const idx = App.providers.findIndex(p=>p.id===pid);
+  if (idx>-1) {
+    const provRevs = App.reviews.filter(r=>r.providerId===pid);
+    App.providers[idx].rating = parseFloat((provRevs.reduce((s,r)=>s+r.rating,0)/provRevs.length).toFixed(1));
+    App.providers[idx].reviewCount = provRevs.length;
+    saveProviders();
+  }
+  saveReviews();
+  showToast('Review submitted — thank you!','success');
+  renderProvider(pid);
+}
+
+function getTomorrowDate() {
+  const d = new Date(); d.setDate(d.getDate()+1);
+  return d.toISOString().split('T')[0];
+}
+
+function selectTime(el, time) {
+  document.querySelectorAll('.time-slot').forEach(s=>s.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('selectedTime').value = time;
+}
+
+function handleBooking(e, providerId) {
+  e.preventDefault();
+  const time = document.getElementById('selectedTime').value;
+  if (!time) { showToast('Please select a preferred time.','error'); return; }
+
+  const data = Object.fromEntries(new FormData(e.target));
+  const booking = {
+    id:'b'+Date.now(), providerId,
+    customerName: data.customerName, customerEmail: data.customerEmail,
+    customerPhone: data.customerPhone, serviceDate: data.serviceDate,
+    serviceTime: time, jobDescription: data.jobDescription,
+    status:'pending', createdAt: new Date().toISOString().split('T')[0]
+  };
+  App.bookings.push(booking);
+  saveBookings();
+  pushNotification(providerId, `New booking from ${data.customerName} — ${data.serviceDate}`, booking.id);
+
+  document.getElementById('bookingSuccess').style.display='block';
+  document.getElementById('bookingForm').style.display='none';
+  showToast('Booking request submitted!','success');
+}
+
+/* ============================================================
+   AUTH
+============================================================ */
+function handleLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('loginPassword').value;
+
+  const user = App.users.find(u=>u.email.toLowerCase()===email);
+  if (!user || user.password!==pass) {
+    document.getElementById('loginAlert').innerHTML=`<div class="alert alert-error">Invalid email or password.</div>`;
+    return;
+  }
+  const prov = App.providers.find(p=>p.id===user.providerId);
+  App.currentUser = {...user, provider:prov};
+  sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
+  updateNav();
+  navigate('/dashboard');
+  showToast(`Welcome back, ${prov?.contactName||email}!`,'success');
+}
+
+function handleLogout() {
+  App.currentUser = null;
+  sessionStorage.removeItem('to_session');
+  updateNav();
+  navigate('/');
+  showToast('Logged out successfully.');
+}
+
+function handleRegister(e) {
+  e.preventDefault();
+  const form = e.target;
+  const data = Object.fromEntries(new FormData(form));
+  const areas = [...form.querySelectorAll('input[name="serviceAreas"]:checked')].map(c=>c.value);
+
+  if (data.password !== data.confirmPassword) {
+    document.getElementById('registerAlert').innerHTML=`<div class="alert alert-error">Passwords do not match.</div>`; return;
+  }
+  if (App.users.find(u=>u.email.toLowerCase()===data.email.toLowerCase())) {
+    document.getElementById('registerAlert').innerHTML=`<div class="alert alert-error">An account with this email already exists.</div>`; return;
+  }
+  if (areas.length===0) {
+    document.getElementById('registerAlert').innerHTML=`<div class="alert alert-error">Please select at least one service area.</div>`; return;
+  }
+
+  const pid = 'p'+Date.now();
+  const prov = {
+    id:pid, companyName:data.companyName, tradeType:data.tradeType,
+    licenseNumber:data.licenseNumber||'Pending Verification', yearsInBusiness:data.yearsInBusiness,
+    description:data.description, contactName:data.contactName,
+    email:data.email, phone:data.phone, website:data.website||'',
+    serviceAreas:areas, rating:0, reviewCount:0, certifications:[], featured:false,
+    password:data.password
+  };
+  const user = { id:'u'+pid, email:data.email, password:data.password, providerId:pid };
+
+  App.providers.push(prov);
+  App.users.push(user);
+  saveProviders(); saveUsers();
+
+  App.currentUser = {...user, provider:prov};
+  sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
+  updateNav();
+  navigate('/dashboard');
+  showToast(`Welcome to BookYourTrades, ${data.companyName}!`,'success');
+}
+
+/* ============================================================
+   DASHBOARD
+============================================================ */
+function renderDashboard() {
+  if (!App.currentUser) return;
+  const prov = App.providers.find(p=>p.id===App.currentUser.providerId);
+  if (!prov) return;
+
+  const bookings  = App.bookings.filter(b=>b.providerId===prov.id);
+  const pending   = bookings.filter(b=>b.status==='pending');
+  const confirmed = bookings.filter(b=>b.status==='confirmed');
+  const upcoming  = bookings.filter(b=>b.status!=='cancelled'&&new Date(b.serviceDate)>=new Date());
+  const ini = prov.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
+
+  document.getElementById('dashboardContent').innerHTML = `
+    <!-- Header -->
+    <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
+      <div class="container">
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+          <div style="width:56px;height:56px;background:var(--o500);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:white;">${ini}</div>
+          <div>
+            <h1 style="font-size:30px;color:white;">${prov.companyName}</h1>
+            <div style="color:var(--s300);font-size:14px;margin-top:2px;">Provider Dashboard &middot; <span class="badge badge-green">Active Listing</span></div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;">
+            <a class="btn btn-outline btn-sm" onclick="navigate('/provider/${prov.id}')">View Public Profile &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top:40px;padding-bottom:80px;">
+
+      <!-- Stats -->
+      <div class="dash-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px;">
+        <div class="stat-card"><div class="stat-value">${bookings.length}</div><div class="stat-label">Total Bookings</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:#F0A030;">${pending.length}</div><div class="stat-label">Pending Review</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:#22C55E;">${confirmed.length}</div><div class="stat-label">Confirmed</div></div>
+        <div class="stat-card"><div class="stat-value">${upcoming.length}</div><div class="stat-label">Upcoming</div></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('tab-appt',this)">&#128197; Appointments</button>
+        <button class="tab-btn" onclick="switchTab('tab-profile',this)">&#9881;&#65039; Edit Profile</button>
+        <button class="tab-btn" onclick="switchTab('tab-avail',this)">&#128336; Availability</button>
+      </div>
+
+      <!-- Appointments -->
+      <div id="tab-appt" class="tab-content active">
+        ${bookings.length===0 ? `
+          <div style="text-align:center;padding:60px;color:var(--s400);">
+            <div style="font-size:40px;margin-bottom:12px;">&#128203;</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;margin-bottom:8px;">No bookings yet</div>
+            <div style="font-size:14px;">When clients book through your profile, appointments will appear here.</div>
+          </div>
+        ` : `
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Contact</th>
+                  <th>Date &amp; Time</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${bookings.sort((a,b)=>new Date(a.serviceDate)-new Date(b.serviceDate)).map(b=>`
+                  <tr>
+                    <td>
+                      <div style="font-weight:500;">${b.customerName}</div>
+                      <div style="font-size:12px;color:var(--s400);">Submitted ${b.createdAt}</div>
+                    </td>
+                    <td>
+                      <div style="font-size:13px;">${b.customerEmail}</div>
+                      <div style="font-size:13px;color:var(--s400);">${b.customerPhone}</div>
+                    </td>
+                    <td>
+                      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;">${formatDate(b.serviceDate)}</div>
+                      <div style="font-size:13px;color:var(--s400);">${b.serviceTime}</div>
+                    </td>
+                    <td style="max-width:200px;">
+                      <div style="font-size:13px;color:var(--s300);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${b.jobDescription}">${b.jobDescription}</div>
+                    </td>
+                    <td>${statusBadge(b.status)}</td>
+                    <td>
+                      <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                        ${b.status==='pending' ? `
+                          <button class="btn btn-sm" style="background:#1A4D2E;color:#6FE09A;border:1px solid #2A6D3E;" onclick="updateStatus('${b.id}','confirmed')">Confirm</button>
+                          <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="updateStatus('${b.id}','cancelled')">Decline</button>
+                        ` : b.status==='confirmed' ? `
+                          <button class="btn btn-sm btn-navy" onclick="updateStatus('${b.id}','completed')">Mark Done</button>
+                          <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="updateStatus('${b.id}','cancelled')">Cancel</button>
+                        ` : '&mdash;'}
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          </div>
+        `}
+      </div>
+
+      <!-- Profile Editor -->
+      <div id="tab-profile" class="tab-content">
+        <div style="max-width:700px;">
+          <div id="profileSaveAlert"></div>
+          <form onsubmit="handleProfileUpdate(event,'${prov.id}')">
+            <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
+              <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Company Details</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Company Name</label>
+                  <input class="form-control" type="text" name="companyName" value="${prov.companyName}" required />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Trade Type</label>
+                  <select class="form-control" name="tradeType">
+                    ${['Electrical','Plumbing','HVAC','Roofing','Welding & Fabrication','Concrete & Masonry','Millwright','Pipefitting','Sheet Metal','Refrigeration','Boilermaker','Carpentry','Painting & Coating','General Contracting'].map(t=>`<option ${t===prov.tradeType?'selected':''}>${t}</option>`).join('')}
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">License Number</label>
+                  <input class="form-control" type="text" name="licenseNumber" value="${prov.licenseNumber}" />
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Phone</label>
+                  <input class="form-control" type="tel" name="phone" value="${prov.phone}" />
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Website</label>
+                <input class="form-control" type="url" name="website" value="${prov.website}" placeholder="https://yourcompany.ca" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Company Description</label>
+                <textarea class="form-control" name="description" required style="min-height:120px;">${prov.description}</textarea>
+              </div>
+            </div>
+            <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
+              <h3 style="font-size:20px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Service Areas</h3>
+              <div class="checkbox-grid">
+                ${['Toronto','Ottawa','Hamilton','Mississauga','London','Windsor','Brampton','Kitchener','Barrie','Sudbury','Thunder Bay','Oakville','Burlington','St. Catharines','Sarnia','Chatham'].map(city=>`
+                  <label class="checkbox-item">
+                    <input type="checkbox" name="serviceAreas" value="${city}" ${prov.serviceAreas.includes(city)?'checked':''}> ${city}
+                  </label>
+                `).join('')}
+              </div>
+            </div>
+            <button type="submit" class="btn btn-orange">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Availability -->
+      <div id="tab-avail" class="tab-content">
+        <div style="max-width:600px;">
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
+            <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Working Hours</h3>
+            ${['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(day=>{
+              const wknd = day==='Saturday'||day==='Sunday';
+              return `
+                <div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--n600);flex-wrap:wrap;">
+                  <div style="width:100px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;">${day}</div>
+                  <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                    <input type="checkbox" ${wknd?'':'checked'} id="av_${day}" style="accent-color:var(--o500);width:16px;height:16px;" onchange="toggleDay('${day}')">
+                    <span style="font-size:14px;color:var(--s300);">Available</span>
+                  </label>
+                  <div id="hrs_${day}" style="display:${wknd?'none':'flex'};gap:8px;align-items:center;">
+                    <select class="form-control" style="width:120px;padding:6px 10px;"><option>7:00 AM</option><option selected>8:00 AM</option><option>9:00 AM</option></select>
+                    <span style="color:var(--s400);">to</span>
+                    <select class="form-control" style="width:120px;padding:6px 10px;"><option>4:00 PM</option><option selected>5:00 PM</option><option>6:00 PM</option></select>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+          <button class="btn btn-orange" onclick="showToast('Availability saved!','success')">Save Availability</button>
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+function switchTab(id, btn) {
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleDay(day) {
+  const cb = document.getElementById('av_'+day);
+  const hr = document.getElementById('hrs_'+day);
+  if (hr) hr.style.display = cb.checked ? 'flex' : 'none';
+}
+
+function updateStatus(bid, status) {
+  const idx = App.bookings.findIndex(b=>b.id===bid);
+  if (idx===-1) return;
+  App.bookings[idx].status = status;
+  saveBookings();
+  renderDashboard();
+  const msgs = { confirmed:'Booking confirmed.', cancelled:'Booking cancelled.', completed:'Marked as completed.' };
+  showToast(msgs[status]||'Updated.', status==='confirmed'||status==='completed'?'success':'');
+}
+
+function handleProfileUpdate(e, pid) {
+  e.preventDefault();
+  const form  = e.target;
+  const data  = Object.fromEntries(new FormData(form));
+  const areas = [...form.querySelectorAll('input[name="serviceAreas"]:checked')].map(c=>c.value);
+  const idx   = App.providers.findIndex(p=>p.id===pid);
+  if (idx===-1) return;
+
+  App.providers[idx] = {
+    ...App.providers[idx],
+    companyName:data.companyName, tradeType:data.tradeType,
+    licenseNumber:data.licenseNumber, phone:data.phone,
+    website:data.website, description:data.description, serviceAreas:areas
+  };
+  saveProviders();
+  App.currentUser.provider = App.providers[idx];
+  sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
+
+  document.getElementById('profileSaveAlert').innerHTML=`<div class="alert alert-success">&#10003; Profile updated successfully.</div>`;
+  setTimeout(()=>{ const el=document.getElementById('profileSaveAlert'); if(el) el.innerHTML=''; },4000);
+  showToast('Profile saved!','success');
+}
+
+/* ============================================================
+   UTILITIES
+============================================================ */
+function statusBadge(s) {
+  const m = {
+    pending:   '<span class="badge badge-yellow">Pending</span>',
+    confirmed: '<span class="badge badge-green">Confirmed</span>',
+    completed: '<span class="badge badge-navy">Completed</span>',
+    cancelled: '<span class="badge badge-red">Cancelled</span>'
+  };
+  return m[s]||s;
+}
+
+function formatDate(d) {
+  if (!d) return '';
+  return new Date(d+'T12:00:00').toLocaleDateString('en-CA',{weekday:'short',month:'short',day:'numeric',year:'numeric'});
+}
+
+let toastTimer;
+function showToast(msg, type='') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'show '+(type||'');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>{ t.className=''; }, 3500);
+}
+
+/* ============================================================
+   RFQ
+============================================================ */
+function handleRFQ(e) {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  document.getElementById('rfqSuccess').style.display = 'block';
+  e.target.style.display = 'none';
+
+  // Match providers
+  const matches = App.providers.filter(p =>
+    p.tradeType === data.tradeType ||
+    p.serviceAreas.includes(data.city)
+  ).sort((a,b) => b.rating - a.rating).slice(0,4);
+
+  const list = document.getElementById('rfqMatchList');
+  list.innerHTML = matches.length === 0
+    ? `<p style="color:var(--s400);">No exact matches found — <a onclick="navigate('/directory')" style="color:var(--o400);cursor:pointer;">browse the full directory</a>.</p>`
+    : matches.map(p => {
+        const ini = p.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
+        return `<div class="rfq-match-card" onclick="navigate('/provider/${p.id}')">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:50px;height:50px;background:var(--o500);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;color:white;flex-shrink:0;">${ini}</div>
+            <div style="flex:1;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:white;">${p.companyName}</div>
+              <div style="font-size:13px;color:var(--s400);margin-top:2px;">
+                <span class="badge badge-orange" style="font-size:10px;">${p.tradeType}</span>
+                &nbsp;&#9733; ${p.rating} &middot; &#128205; ${p.serviceAreas.join(', ')}
+              </div>
+            </div>
+            <button class="btn btn-orange btn-sm">View &amp; Book</button>
+          </div>
+        </div>`;
+      }).join('');
+
+  document.getElementById('rfqResults').style.display = 'block';
+  showToast('Job posted! Matched contractors shown below.', 'success');
+}
+
+/* ============================================================
+   ENHANCED DASHBOARD
+============================================================ */
+function renderDashboard() {
+  if (!App.currentUser) return;
+  const prov = App.providers.find(p=>p.id===App.currentUser.providerId);
+  if (!prov) return;
+
+  const bookings   = App.bookings.filter(b=>b.providerId===prov.id);
+  const pending    = bookings.filter(b=>b.status==='pending');
+  const confirmed  = bookings.filter(b=>b.status==='confirmed');
+  const completed  = bookings.filter(b=>b.status==='completed');
+  const upcoming   = bookings.filter(b=>b.status!=='cancelled'&&new Date(b.serviceDate)>=new Date());
+  const myReviews  = App.reviews.filter(r=>r.providerId===prov.id);
+  const myNotifs   = App.notifications.filter(n=>n.providerId===prov.id);
+  const unread     = myNotifs.filter(n=>!n.read).length;
+  const ini        = prov.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
+  const responseRate = bookings.length ? Math.round(((confirmed.length+completed.length)/bookings.length)*100) : 0;
+  const profileViews = parseInt(localStorage.getItem('to_pv_'+prov.id)||Math.floor(Math.random()*300+80));
+  localStorage.setItem('to_pv_'+prov.id, profileViews);
+
+  document.getElementById('dashboardContent').innerHTML = `
+    <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
+      <div class="container">
+        <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+          <div style="width:56px;height:56px;background:var(--o500);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:white;">${ini}</div>
+          <div>
+            <h1 style="font-size:30px;color:white;">${prov.companyName}</h1>
+            <div style="color:var(--s300);font-size:14px;margin-top:2px;">Provider Dashboard &middot; <span class="badge badge-green">Active Listing</span></div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;">
+            <a class="btn btn-outline btn-sm" onclick="navigate('/provider/${prov.id}')">View Public Profile &rarr;</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top:40px;padding-bottom:80px;">
+      <div class="dash-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px;">
+        <div class="stat-card"><div class="stat-value">${bookings.length}</div><div class="stat-label">Total Bookings</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:#F0A030;">${pending.length}</div><div class="stat-label">Awaiting Review</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:#22C55E;">${confirmed.length}</div><div class="stat-label">Confirmed</div></div>
+        <div class="stat-card"><div class="stat-value">${profileViews}</div><div class="stat-label">Profile Views</div></div>
+      </div>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('tab-appt',this)">&#128197; Appointments</button>
+        <button class="tab-btn" onclick="switchTab('tab-analytics',this)">&#128200; Analytics</button>
+        <button class="tab-btn" onclick="switchTab('tab-notifs',this)">
+          &#128276; Notifications${unread>0?` <span style="background:var(--o500);color:white;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;margin-left:4px;">${unread}</span>`:''}
+        </button>
+        <button class="tab-btn" onclick="switchTab('tab-reviews',this)">&#9733; Reviews</button>
+        <button class="tab-btn" onclick="switchTab('tab-profile',this)">&#9881;&#65039; Profile</button>
+        <button class="tab-btn" onclick="switchTab('tab-avail',this)">&#128336; Availability</button>
+      </div>
+
+      <!-- Appointments -->
+      <div id="tab-appt" class="tab-content active">
+        ${bookings.length===0 ? `<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">&#128203;</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;margin-bottom:8px;">No bookings yet</div><div style="font-size:14px;">When clients book through your profile, appointments appear here.</div></div>`
+        : `<div class="table-container"><table class="data-table"><thead><tr><th>Client</th><th>Contact</th><th>Date &amp; Time</th><th>Description</th><th>Status</th><th>Actions</th></tr></thead><tbody>
+          ${bookings.sort((a,b)=>new Date(a.serviceDate)-new Date(b.serviceDate)).map(b=>`
+            <tr>
+              <td><div style="font-weight:500;">${b.customerName}</div><div style="font-size:12px;color:var(--s400);">Submitted ${b.createdAt}</div></td>
+              <td><div style="font-size:13px;">${b.customerEmail}</div><div style="font-size:13px;color:var(--s400);">${b.customerPhone}</div></td>
+              <td><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;">${formatDate(b.serviceDate)}</div><div style="font-size:13px;color:var(--s400);">${b.serviceTime}</div></td>
+              <td style="max-width:200px;"><div style="font-size:13px;color:var(--s300);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${b.jobDescription}">${b.jobDescription}</div></td>
+              <td>${statusBadge(b.status)}</td>
+              <td><div style="display:flex;gap:6px;flex-wrap:wrap;">
+                ${b.status==='pending'?`
+                  <button class="btn btn-sm" style="background:#1A4D2E;color:#6FE09A;border:1px solid #2A6D3E;" onclick="updateStatus('${b.id}','confirmed')">Confirm</button>
+                  <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="updateStatus('${b.id}','cancelled')">Decline</button>
+                `:b.status==='confirmed'?`
+                  <button class="btn btn-sm btn-navy" onclick="updateStatus('${b.id}','completed')">Mark Done</button>
+                  <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="updateStatus('${b.id}','cancelled')">Cancel</button>
+                `:'&mdash;'}
+              </div></td>
+            </tr>
+          `).join('')}
+        </tbody></table></div>`}
+      </div>
+
+      <!-- Analytics -->
+      <div id="tab-analytics" class="tab-content">
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:32px;" class="dash-stats">
+          <div class="stat-card" style="border-top-color:#22C55E;">
+            <div class="stat-value" style="color:#22C55E;">${responseRate}%</div>
+            <div class="stat-label">Response Rate</div>
+            <div style="font-size:12px;color:var(--s400);margin-top:6px;">${confirmed.length+completed.length} confirmed of ${bookings.length} requests</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${myReviews.length>0?(myReviews.reduce((s,r)=>s+r.rating,0)/myReviews.length).toFixed(1):prov.rating}</div>
+            <div class="stat-label">Avg. Rating</div>
+            <div style="font-size:12px;color:var(--s400);margin-top:6px;">From ${myReviews.length||prov.reviewCount} reviews</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">${completed.length}</div>
+            <div class="stat-label">Jobs Completed</div>
+            <div style="font-size:12px;color:var(--s400);margin-top:6px;">${upcoming.length} upcoming scheduled</div>
+          </div>
+        </div>
+        <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;">
+          <h3 style="font-size:20px;margin-bottom:20px;">Booking Breakdown</h3>
+          <div class="analytics-bar-wrap"><div class="analytics-bar-label"><span>Confirmed</span><span>${confirmed.length}</span></div><div class="analytics-track"><div class="analytics-fill" style="width:${bookings.length?Math.round(confirmed.length/bookings.length*100):0}%"></div></div></div>
+          <div class="analytics-bar-wrap"><div class="analytics-bar-label"><span>Completed</span><span>${completed.length}</span></div><div class="analytics-track"><div class="analytics-fill" style="width:${bookings.length?Math.round(completed.length/bookings.length*100):0}%"></div></div></div>
+          <div class="analytics-bar-wrap"><div class="analytics-bar-label"><span>Pending</span><span>${pending.length}</span></div><div class="analytics-track"><div class="analytics-fill" style="width:${bookings.length?Math.round(pending.length/bookings.length*100):0}%;background:linear-gradient(90deg,#4D3D0A,#F0C060);"></div></div></div>
+          <div class="analytics-bar-wrap"><div class="analytics-bar-label"><span>Cancelled</span><span>${bookings.filter(b=>b.status==='cancelled').length}</span></div><div class="analytics-track"><div class="analytics-fill" style="width:${bookings.length?Math.round(bookings.filter(b=>b.status==='cancelled').length/bookings.length*100):0}%;background:linear-gradient(90deg,#4D1A1A,#F08080);"></div></div></div>
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div id="tab-notifs" class="tab-content">
+        ${myNotifs.length===0?`<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">&#128276;</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;">No notifications yet</div></div>`:`
+          <div style="display:flex;justify-content:flex-end;margin-bottom:16px;">
+            <button class="btn btn-navy btn-sm" onclick="markAllRead('${prov.id}')">Mark All Read</button>
+          </div>
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;overflow:hidden;">
+            ${myNotifs.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(n=>`
+              <div style="padding:16px 20px;border-bottom:1px solid var(--n600);display:flex;align-items:center;gap:14px;${n.read?'':'background:rgba(224,98,26,0.06);'}">
+                <div style="width:8px;height:8px;border-radius:50%;background:${n.read?'var(--n400)':'var(--o500)'};flex-shrink:0;"></div>
+                <div style="flex:1;">
+                  <div style="font-size:14px;color:${n.read?'var(--s300)':'var(--text)'};">${n.message}</div>
+                  <div style="font-size:12px;color:var(--s400);margin-top:2px;">${n.createdAt}</div>
+                </div>
+                ${n.bookingId?`<button class="btn btn-navy btn-sm" onclick="switchTab('tab-appt',document.querySelector('.tab-btn'))">View</button>`:''}
+              </div>
+            `).join('')}
+          </div>
+        `}
+      </div>
+
+      <!-- Reviews -->
+      <div id="tab-reviews" class="tab-content">
+        ${myReviews.length===0?`<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">&#9733;</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;margin-bottom:8px;">No reviews yet</div><div style="font-size:14px;">Reviews from clients who book through your profile will appear here.</div></div>`
+        :`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px;">
+          ${myReviews.map(r=>`
+            <div class="review-card">
+              <div class="review-stars">${'&#9733;'.repeat(r.rating)}</div>
+              <div class="review-text">"${r.comment}"</div>
+              <div class="review-author"><strong>${r.authorName}</strong>${r.authorCompany?' &middot; '+r.authorCompany:''} &middot; <span style="color:var(--s400);">${r.date}</span></div>
+            </div>
+          `).join('')}
+        </div>`}
+      </div>
+
+      <!-- Profile Editor -->
+      <div id="tab-profile" class="tab-content">
+        <div style="max-width:700px;">
+          <div id="profileSaveAlert"></div>
+          <form onsubmit="handleProfileUpdate(event,'${prov.id}')">
+            <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
+              <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Company Details</h3>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Company Name</label><input class="form-control" type="text" name="companyName" value="${prov.companyName}" required /></div>
+                <div class="form-group"><label class="form-label">Trade Type</label><select class="form-control" name="tradeType">${['Electrical','Plumbing','HVAC','Roofing','Welding & Fabrication','Concrete & Masonry','Millwright','Pipefitting','Sheet Metal','Refrigeration','Boilermaker','Carpentry','Painting & Coating','General Contracting'].map(t=>`<option ${t===prov.tradeType?'selected':''}>${t}</option>`).join('')}</select></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">License Number</label><input class="form-control" type="text" name="licenseNumber" value="${prov.licenseNumber}" /></div>
+                <div class="form-group"><label class="form-label">Phone</label><input class="form-control" type="tel" name="phone" value="${prov.phone}" /></div>
+              </div>
+              <div class="form-group"><label class="form-label">Website</label><input class="form-control" type="url" name="website" value="${prov.website}" placeholder="https://yourcompany.ca" /></div>
+              <div class="form-group"><label class="form-label">Company Description</label><textarea class="form-control" name="description" required style="min-height:120px;">${prov.description}</textarea></div>
+            </div>
+            <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
+              <h3 style="font-size:20px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Service Areas</h3>
+              <div class="checkbox-grid">
+                ${['Toronto','Ottawa','Hamilton','Mississauga','London','Windsor','Brampton','Kitchener','Barrie','Sudbury','Thunder Bay','Oakville','Burlington','St. Catharines','Sarnia','Chatham'].map(city=>`
+                  <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="${city}" ${prov.serviceAreas.includes(city)?'checked':''}> ${city}</label>
+                `).join('')}
+              </div>
+            </div>
+            <button type="submit" class="btn btn-orange">Save Changes</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Availability -->
+      <div id="tab-avail" class="tab-content">
+        <div style="max-width:600px;">
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
+            <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Working Hours</h3>
+            ${['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'].map(day=>{
+              const wknd=day==='Saturday'||day==='Sunday';
+              return `<div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--n600);flex-wrap:wrap;">
+                <div style="width:100px;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;">${day}</div>
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                  <input type="checkbox" ${wknd?'':'checked'} id="av_${day}" style="accent-color:var(--o500);width:16px;height:16px;" onchange="toggleDay('${day}')">
+                  <span style="font-size:14px;color:var(--s300);">Available</span>
+                </label>
+                <div id="hrs_${day}" style="display:${wknd?'none':'flex'};gap:8px;align-items:center;">
+                  <select class="form-control" style="width:120px;padding:6px 10px;"><option>7:00 AM</option><option selected>8:00 AM</option><option>9:00 AM</option></select>
+                  <span style="color:var(--s400);">to</span>
+                  <select class="form-control" style="width:120px;padding:6px 10px;"><option>4:00 PM</option><option selected>5:00 PM</option><option>6:00 PM</option></select>
+                </div>
+              </div>`;
+            }).join('')}
+          </div>
+          <button class="btn btn-orange" onclick="showToast('Availability saved!','success')">Save Availability</button>
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+function markAllRead(pid) {
+  App.notifications.filter(n=>n.providerId===pid).forEach(n=>n.read=true);
+  saveNotifications();
+  renderDashboard();
+  showToast('All notifications marked as read.');
+}
+
+/* ============================================================
+   HOW IT WORKS / FAQ / PRICING HELPERS
+============================================================ */
+function switchHIW(tab) {
+  document.getElementById('hiwClient').style.display     = tab==='client'?'':'none';
+  document.getElementById('hiwContractor').style.display = tab==='contractor'?'':'none';
+  document.getElementById('hiwTabClient').className     = 'btn btn-sm '+(tab==='client'?'btn-orange':'btn-navy');
+  document.getElementById('hiwTabContractor').className = 'btn btn-sm '+(tab==='contractor'?'btn-orange':'btn-navy');
+}
+
+function toggleFAQ(qEl) {
+  const ans   = qEl.nextElementSibling;
+  const arrow = qEl.querySelector('.faq-arrow');
+  const isOpen = ans.style.maxHeight;
+  document.querySelectorAll('.faq-a').forEach(a=>{ a.style.maxHeight=''; a.style.padding='0'; });
+  document.querySelectorAll('.faq-arrow').forEach(a=>a.style.transform='');
+  if (!isOpen) {
+    ans.style.maxHeight = ans.scrollHeight + 'px';
+    ans.style.padding   = '0 0 18px';
+    arrow.style.transform = 'rotate(90deg)';
+  }
+}
+
+/* ============================================================
+   NOTIFICATION HELPER (called when booking created)
+============================================================ */
+function pushNotification(providerId, message, bookingId) {
+  App.notifications.push({
+    id:'n'+Date.now(), providerId, message, bookingId,
+    read:false, createdAt: new Date().toISOString().split('T')[0]
+  });
+  saveNotifications();
+  updateNav();
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+window.addEventListener('popstate', router);
+document.addEventListener('DOMContentLoaded', () => { loadStorage(); router(); });
+</script>
+</body>
+</html>
