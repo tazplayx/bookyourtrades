@@ -24,6 +24,97 @@
   <meta name="twitter:description" content="Find and book licensed electricians, plumbers, HVAC specialists, roofers, welders, and more across Ontario." />
   <meta name="twitter:image" content="https://bookyourtrades.com/logo.png" />
 
+  <!-- Structured Data: WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "BookYourTrades",
+    "url": "https://bookyourtrades.com",
+    "description": "Ontario's commercial trades directory. Find and book licensed electricians, plumbers, HVAC specialists, roofers, welders and more across Ontario.",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://bookyourtrades.com/#/directory?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
+  <!-- Structured Data: LocalBusiness Directory -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "BookYourTrades",
+    "url": "https://bookyourtrades.com",
+    "logo": "https://bookyourtrades.com/logo.png",
+    "description": "Ontario's trusted commercial trades directory connecting licensed contractors with businesses province-wide.",
+    "areaServed": {
+      "@type": "State",
+      "name": "Ontario",
+      "addressCountry": "CA"
+    },
+    "address": {
+      "@type": "PostalAddress",
+      "addressRegion": "ON",
+      "addressCountry": "CA"
+    },
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "hello@bookyourtrades.com",
+      "contactType": "customer service"
+    },
+    "sameAs": [],
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Ontario Trade Services",
+      "itemListElement": [
+        {"@type":"Offer","itemOffered":{"@type":"Service","name":"Licensed Electrician Ontario"}},
+        {"@type":"Offer","itemOffered":{"@type":"Service","name":"Commercial Plumber Ontario"}},
+        {"@type":"Offer","itemOffered":{"@type":"Service","name":"HVAC Contractor Ontario"}},
+        {"@type":"Offer","itemOffered":{"@type":"Service","name":"Roofing Contractor Ontario"}},
+        {"@type":"Offer","itemOffered":{"@type":"Service","name":"Welding Fabrication Ontario"}},
+        {"@type":"Offer","itemOffered":{"@type":"Service","name":"Millwright Services Ontario"}},
+        {"@type":"Offer","itemOffered":{"@type":"Service","name":"Pipefitting Contractor Ontario"}},
+        {"@type":"Offer","itemOffered":{"@type":"Service","name":"Sheet Metal Contractor Ontario"}},
+        {"@type":"Offer","itemOffered":{"@type":"Service","name":"General Contractor Ontario"}}
+      ]
+    }
+  }
+  </script>
+  <!-- Structured Data: FAQPage -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I find a licensed plumber near me in Ontario?",
+        "acceptedAnswer": {"@type":"Answer","text":"Use BookYourTrades to search Ontario's commercial trades directory. Filter by Plumbing and your city — Toronto, Ottawa, Hamilton, Mississauga and more — to find Master Plumbers verified against Ontario licensing databases."}
+      },
+      {
+        "@type": "Question",
+        "name": "How do I find a licensed electrician in Toronto?",
+        "acceptedAnswer": {"@type":"Answer","text":"BookYourTrades lists ECRA/ESA-licensed electrical contractors across Toronto and the GTA. Browse the directory, filter by Electrical and Toronto, and book an appointment directly on the contractor's profile."}
+      },
+      {
+        "@type": "Question",
+        "name": "How do I hire an HVAC contractor in Ontario?",
+        "acceptedAnswer": {"@type":"Answer","text":"Search BookYourTrades for TSSA-certified HVAC specialists in your Ontario city. Compare ratings, certifications, and service areas, then book a site assessment directly through the platform."}
+      },
+      {
+        "@type": "Question",
+        "name": "Is it free to post a job on BookYourTrades?",
+        "acceptedAnswer": {"@type":"Answer","text":"Yes — posting a job or submitting a booking request is completely free for clients. There are no fees or commissions charged to the businesses hiring trade contractors."}
+      },
+      {
+        "@type": "Question",
+        "name": "How do trade contractors list their business?",
+        "acceptedAnswer": {"@type":"Answer","text":"Trade contractors can create a free listing on BookYourTrades by registering at bookyourtrades.com/register. The Starter tier is free forever and includes a public profile, directory listing, and up to 10 booking requests per month."}
+      }
+    ]
+  }
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
   <style>
@@ -980,6 +1071,11 @@ textarea.form-control { resize: vertical; min-height: 100px; }
             <label class="form-label">Company Description *</label>
             <textarea class="form-control" name="description" required placeholder="Describe your services, specializations, and what sets your business apart..."></textarea>
           </div>
+          <div class="form-group">
+            <label class="form-label">Company Logo</label>
+            <input class="form-control" type="file" id="regLogoInput" accept="image/*" style="padding:8px;" />
+            <div style="font-size:12px;color:var(--s400);margin-top:6px;">PNG or JPG recommended. Max 2MB. Displayed on your public listing.</div>
+          </div>
         </div>
 
         <!-- Section 02 -->
@@ -1444,6 +1540,13 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 
 
 <!-- ============================================================
+     PAGE: ADMIN
+============================================================ -->
+<div id="page-admin" class="page">
+  <div id="adminContent"></div>
+</div>
+
+<!-- ============================================================
      FOOTER
 ============================================================ -->
 <footer style="background:var(--n800);border-top:3px solid var(--n600);margin-top:0;">
@@ -1499,8 +1602,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   <div class="pay-box">
     <div class="pay-lock-icon">🔒</div>
     <div style="text-align:center;margin-bottom:24px;">
-      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:26px;color:white;margin-bottom:6px;">Confirm Your Booking</div>
-      <div style="font-size:14px;color:var(--s300);line-height:1.6;">A one-time <strong style="color:var(--o400);">$2.99 lead connection fee</strong> is collected to confirm your appointment request and connect you with this contractor.</div>
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:26px;color:white;margin-bottom:6px;">Unlock This Lead</div>
+      <div style="font-size:14px;color:var(--s300);line-height:1.6;">Pay a one-time <strong style="color:var(--o400);">$2.99 lead connection fee</strong> to confirm this booking and get full access to the client's contact information.</div>
     </div>
     <div style="background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:16px;margin-bottom:20px;" id="payBookingSummary"></div>
     <form id="payForm" onsubmit="handlePaymentSubmit(event)">
@@ -1653,6 +1756,106 @@ const SEED_PROVIDERS = [
     rating:4.4, reviewCount:38,
     certifications:['ACI Certified','ICPI Installer','OSHA 10','CSC Member'],
     featured:false, claimed:false, requestCount:5, password:'password123'
+  },
+  {
+    id:'p9', companyName:'Capital Millwright Services', tradeType:'Millwright',
+    licenseNumber:'Red Seal #MW-33841', yearsInBusiness:'11-20 years',
+    description:"Ottawa-based industrial millwright contractor specializing in precision equipment alignment, conveyor installation, pump and motor rebuilds, and planned maintenance shutdowns for manufacturing and food processing facilities. CMRP-certified reliability professionals serving Eastern Ontario and the National Capital Region.",
+    contactName:'Brian Tessier', email:'capital.mill@example.ca', phone:'(613) 822-5500',
+    website:'https://capitalmillwright.ca',
+    serviceAreas:['Ottawa','Barrie','Kingston'],
+    rating:4.5, reviewCount:29, certifications:['Red Seal Millwright','CMRP','OSHA 10','RISO Certified'],
+    featured:false, claimed:true, requestCount:11, logoData:null, password:'password123'
+  },
+  {
+    id:'p10', companyName:'Lakeside Refrigeration & HVAC', tradeType:'Refrigeration',
+    licenseNumber:'TSSA Refrigeration #RF-10042', yearsInBusiness:'6-10 years',
+    description:"Barrie-area commercial refrigeration contractor specializing in walk-in cooler and freezer installation, industrial chiller service, and CO2 transcritical systems. Serving grocery chains, cold storage facilities, and food distribution centres across Central Ontario. 24/7 emergency service available.",
+    contactName:'Jason Kowalski', email:'lakeside.refrig@example.ca', phone:'(705) 737-8800',
+    website:'',
+    serviceAreas:['Barrie','Sudbury','Toronto','Kitchener'],
+    rating:4.7, reviewCount:44, certifications:['TSSA Refrigeration','EPA 608','NATE Certified','F-Gas Certified'],
+    featured:false, claimed:false, requestCount:7, logoData:null, password:'password123'
+  },
+  {
+    id:'p11', companyName:'Premier Boilermaker Works', tradeType:'Boilermaker',
+    licenseNumber:'IBB Local 128', yearsInBusiness:'20+ years',
+    description:"Hamilton-based boilermaker contractor with over 25 years serving Ontario's steel, petrochemical, and power generation industries. Specializing in pressure vessel fabrication, refractory installation, heat exchanger bundle pulls, and boiler drum repair. IBB Local 128 unionized workforce with impeccable safety record.",
+    contactName:'Al Marchetti', email:'premier.boiler@example.ca', phone:'(905) 544-7100',
+    website:'https://premierboilermaker.ca',
+    serviceAreas:['Hamilton','Toronto','Sarnia','Windsor'],
+    rating:4.8, reviewCount:57, certifications:['IBB Local 128','ASME Section I','NBIC Certified','OSHA 30'],
+    featured:true, claimed:true, requestCount:19, logoData:null, password:'password123'
+  },
+  {
+    id:'p12', companyName:'GTA Carpentry & Millwork', tradeType:'Carpentry',
+    licenseNumber:'ON-CP-77201', yearsInBusiness:'6-10 years',
+    description:"Brampton-based commercial carpentry contractor delivering high-end millwork, commercial framing, acoustic ceiling systems, and tenant improvement fit-outs. Experienced in LEED interiors, healthcare renovations, and Class A office build-outs across the Greater Toronto Area. Fast turnaround on tight ICI schedules.",
+    contactName:'Carlos Mendez', email:'gta.carpentry@example.ca', phone:'(905) 458-3300',
+    website:'',
+    serviceAreas:['Brampton','Toronto','Mississauga','Oakville'],
+    rating:4.6, reviewCount:38, certifications:['Red Seal Carpenter','OSHA 10','LEED AP','UBC Local 27'],
+    featured:false, claimed:false, requestCount:13, logoData:null, password:'password123'
+  },
+  {
+    id:'p13', companyName:'Triton Painting & Industrial Coatings', tradeType:'Painting & Coating',
+    licenseNumber:'ON-PC-55012', yearsInBusiness:'11-20 years',
+    description:"London-based industrial painting and protective coatings contractor. Specializing in epoxy floor systems, intumescent fireproofing, tank linings, and SSPC-compliant steel coatings. Certified industrial painters serving manufacturing plants, bridges, water treatment facilities, and commercial buildings across Southwestern Ontario.",
+    contactName:'Doug Hennessey', email:'triton.paint@example.ca', phone:'(519) 455-6600',
+    website:'https://tritoncoatings.ca',
+    serviceAreas:['London','Windsor','Sarnia','Kitchener'],
+    rating:4.4, reviewCount:31, certifications:['SSPC Certified','NACE Level 2','OSHA 10','Red Seal Painter'],
+    featured:false, claimed:true, requestCount:9, logoData:null, password:'password123'
+  },
+  {
+    id:'p14', companyName:'Queensway General Contracting', tradeType:'General Contracting',
+    licenseNumber:'ON-GC-88801', yearsInBusiness:'20+ years',
+    description:"Ottawa's leading ICI general contractor with over 25 years managing commercial, institutional, and multi-unit residential construction. Full-service project management from design-build to substantial completion. Specializing in healthcare, education, and government facility construction across Eastern Ontario and the Ottawa Valley.",
+    contactName:'Patricia Vaillancourt', email:'queensway.gc@example.ca', phone:'(613) 728-4400',
+    website:'https://queenswaygc.ca',
+    serviceAreas:['Ottawa','Kingston','Barrie','Sudbury'],
+    rating:4.9, reviewCount:82, certifications:['Gold Seal Certified','LEED AP BD+C','OSHA 30','OAA Member'],
+    featured:true, claimed:true, requestCount:28, logoData:null, password:'password123'
+  },
+  {
+    id:'p15', companyName:'Steelworks Structural Welding', tradeType:'Welding & Fabrication',
+    licenseNumber:'CWB W47.1 #SW-2241', yearsInBusiness:'11-20 years',
+    description:"Hamilton-area structural welding and steel erection contractor. CWB W47.1 certified for bridges, building frames, and heavy industrial structures. In-house CNC fabrication and full structural engineering coordination. Serving construction managers and developers throughout the Golden Horseshoe and GTA.",
+    contactName:'Mike Drummond', email:'steelworks.weld@example.ca', phone:'(905) 318-7700',
+    website:'',
+    serviceAreas:['Hamilton','Toronto','Brampton','Burlington','St. Catharines'],
+    rating:4.6, reviewCount:41, certifications:['CWB W47.1','Red Seal Welder','OSHA 10','CSA W59'],
+    featured:false, claimed:false, requestCount:16, logoData:null, password:'password123'
+  },
+  {
+    id:'p16', companyName:'NorthStar Electrical & Data', tradeType:'Electrical',
+    licenseNumber:'ECRA/ESA #8820441', yearsInBusiness:'6-10 years',
+    description:"Sudbury-based electrical contractor specializing in mining site electrical systems, fiber and structured cabling, PLC control panels, and solar/battery storage integration. Serving Northern Ontario's resource extraction, municipal, and industrial sectors. ESA-licensed with 24/7 site support.",
+    contactName:'Lynn Bouchard', email:'northstar.elec@example.ca', phone:'(705) 522-3300',
+    website:'https://northstarelectrical.ca',
+    serviceAreas:['Sudbury','Barrie','Thunder Bay','Sault Ste. Marie'],
+    rating:4.5, reviewCount:26, certifications:['ESA Licensed','ECRA Certified','IBEW Local 530','Red Seal Electrician'],
+    featured:false, claimed:false, requestCount:6, logoData:null, password:'password123'
+  },
+  {
+    id:'p17', companyName:'Windsor Mechanical Pipefitting', tradeType:'Pipefitting',
+    licenseNumber:'UA Local 527', yearsInBusiness:'20+ years',
+    description:"Windsor-based mechanical pipefitting contractor with deep expertise in automotive plant process piping, compressed air systems, hydraulic lines, and chilled water distribution. UA Local 527 unionized workforce. Serving Windsor's automotive and manufacturing industries for over two decades with zero lost-time incidents.",
+    contactName:'Frank DiMaria', email:'windsor.mech@example.ca', phone:'(519) 966-4400',
+    website:'',
+    serviceAreas:['Windsor','London','Sarnia','Chatham'],
+    rating:4.7, reviewCount:63, certifications:['UA Local 527','Red Seal Pipefitter','TSSA Pressure Piping','OSHA 10'],
+    featured:false, claimed:true, requestCount:21, logoData:null, password:'password123'
+  },
+  {
+    id:'p18', companyName:'Prestige Sheet Metal & Ventilation', tradeType:'Sheet Metal',
+    licenseNumber:'SMWIA Local 397', yearsInBusiness:'11-20 years',
+    description:"London-based commercial sheet metal and ventilation contractor. Custom duct fabrication, laboratory exhaust systems, grease exhaust hoods, and architectural cladding for healthcare, industrial, and ICI construction. In-house plasma cutting and CNC forming. Serving Southwestern Ontario with prompt, quality-first service.",
+    contactName:'Rachel Horner', email:'prestige.sheet@example.ca', phone:'(519) 455-2200',
+    website:'https://prestigesheetmetal.ca',
+    serviceAreas:['London','Kitchener','Hamilton','Windsor'],
+    rating:4.3, reviewCount:18, certifications:['SMWIA Local 397','Red Seal Sheet Metal','OSHA 10'],
+    featured:false, claimed:false, requestCount:4, logoData:null, password:'password123'
   },
   {
     id:'p7', companyName:'Northern Pipefitting Co.', tradeType:'Pipefitting',
@@ -1841,6 +2044,9 @@ function router() {
     if (s) s.style.display = 'none';
   } else if (page === 'pricing') {
     document.getElementById('page-pricing').classList.add('active');
+  } else if (page === 'admin') {
+    document.getElementById('page-admin').classList.add('active');
+    renderAdmin();
   } else {
     document.getElementById('page-home').classList.add('active');
     renderHome();
@@ -1919,13 +2125,21 @@ function navigateToCategory(cat) {
   }, 80);
 }
 
+function providerLogoHTML(p, size=52, radius=5) {
+  if (p.logoData) {
+    return `<img src="${p.logoData}" alt="${p.companyName}" style="width:${size}px;height:${size}px;object-fit:contain;border-radius:${radius}px;background:var(--n600);padding:4px;flex-shrink:0;" />`;
+  }
+  const ini = p.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
+  return `<div style="width:${size}px;height:${size}px;background:${p.claimed?'var(--o500)':'var(--n500)'};border-radius:${radius}px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:${Math.round(size*0.35)}px;color:white;flex-shrink:0;">${ini}</div>`;
+}
+
 function providerCardHTML(p) {
   const ini = p.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
   const reqCount = getRequestCount(p.id);
   return `
     <div class="provider-card" onclick="navigate('/provider/${p.id}')">
       <div style="display:flex;align-items:flex-start;gap:16px;margin-bottom:14px;">
-        <div style="width:52px;height:52px;background:${p.claimed?'var(--o500)':'var(--n500)'};border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;color:white;flex-shrink:0;">${ini}</div>
+        ${providerLogoHTML(p,52,5)}
         <div style="flex:1;min-width:0;">
           <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:19px;color:white;margin-bottom:4px;">${p.companyName}</div>
           <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
@@ -2024,7 +2238,7 @@ function filterDirectory() {
     return `
       <div class="provider-card" onclick="navigate('/provider/${p.id}')">
         <div style="display:flex;align-items:flex-start;gap:20px;">
-          <div style="width:60px;height:60px;background:${p.claimed?'var(--o500)':'var(--n500)'};border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:white;flex-shrink:0;">${ini}</div>
+          ${providerLogoHTML(p,60,6)}
           <div style="flex:1;min-width:0;">
             <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap;">
               <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:21px;color:white;">${p.companyName}</div>
@@ -2111,7 +2325,7 @@ function renderProvider(id) {
     <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:48px 0 40px;">
       <div class="container">
         <div class="provider-profile-flex" style="display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap;">
-          <div style="width:80px;height:80px;background:var(--o500);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:28px;color:white;flex-shrink:0;">${ini}</div>
+          ${providerLogoHTML(p,80,6)}
           <div style="flex:1;min-width:200px;">
             <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:8px;">
               <h1 style="font-size:clamp(26px,4vw,42px);color:white;">${p.companyName}</h1>
@@ -2263,9 +2477,9 @@ function renderProvider(id) {
           <div style="background:var(--n700);border:2px solid ${p.claimed ? 'var(--o500)' : 'var(--n400)'};border-radius:8px;padding:28px;">
             <h2 style="font-size:26px;margin-bottom:4px;color:white;">Book an Appointment</h2>
             <p style="color:var(--s400);font-size:14px;margin-bottom:6px;">${p.claimed ? p.companyName+' will confirm within 1 business day.' : 'Submit a request — the business owner will be notified.'}</p>
-            <div style="display:flex;align-items:center;gap:6px;margin-bottom:18px;font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;">🔒 $2.99 lead connection fee at checkout</div>
-            <div id="bookingSuccess" style="display:none;" class="alert alert-success">&#10003; Booking confirmed! You'll hear back within 1 business day.</div>
-            <form id="bookingForm" onsubmit="handleBookingGate(event,'${p.id}')">
+            <div style="display:flex;align-items:center;gap:6px;margin-bottom:18px;font-size:12px;color:#6FE09A;font-family:'Barlow Condensed',sans-serif;font-weight:700;">✓ Free to book — no fees for clients</div>
+            <div id="bookingSuccess" style="display:none;" class="alert alert-success">&#10003; Request submitted! The contractor will confirm within 1 business day.</div>
+            <form id="bookingForm" onsubmit="handleBookingSubmit(event,'${p.id}')">
               <div class="form-group"><label class="form-label">Your Name / Company *</label><input class="form-control" type="text" name="customerName" required placeholder="Full name or company" /></div>
               <div class="form-group"><label class="form-label">Email *</label><input class="form-control" type="email" name="customerEmail" required placeholder="you@company.ca" /></div>
               <div class="form-group"><label class="form-label">Phone *</label><input class="form-control" type="tel" name="customerPhone" required placeholder="(416) 555-0000" /></div>
@@ -2278,7 +2492,7 @@ function renderProvider(id) {
                 <input type="hidden" name="serviceTime" id="selectedTime" />
               </div>
               <div class="form-group"><label class="form-label">Job Description *</label><textarea class="form-control" name="jobDescription" required placeholder="Describe the work, scope, location, and requirements..."></textarea></div>
-              <button type="submit" class="btn btn-orange" style="width:100%;justify-content:center;">Continue to Payment $2.99 →</button>
+              <button type="submit" class="btn btn-orange" style="width:100%;justify-content:center;">Submit Booking Request →</button>
             </form>
           </div>
         </div>
@@ -2330,28 +2544,32 @@ function selectTime(el, time) {
   document.getElementById('selectedTime').value = time;
 }
 
-/* pending booking held here until payment clears */
-let _pendingBooking = null;
+let _pendingPayBookingId = null;
 
-function handleBookingGate(e, providerId) {
+/* Free for clients — just saves the booking as pending */
+function handleBookingSubmit(e, providerId) {
   e.preventDefault();
   const time = document.getElementById('selectedTime').value;
   if (!time) { showToast('Please select a preferred time.','error'); return; }
   const data = Object.fromEntries(new FormData(e.target));
-  _pendingBooking = {
+  const booking = {
     id:'b'+Date.now(), providerId,
     customerName: data.customerName, customerEmail: data.customerEmail,
     customerPhone: data.customerPhone, serviceDate: data.serviceDate,
     serviceTime: time, jobDescription: data.jobDescription,
-    status:'pending', createdAt: new Date().toISOString().split('T')[0]
+    status:'pending', paid:false, createdAt: new Date().toISOString().split('T')[0]
   };
-  openPayModal(_pendingBooking);
+  App.bookings.push(booking);
+  saveBookings();
+  const idx = App.providers.findIndex(p=>p.id===providerId);
+  if (idx>-1) { App.providers[idx].requestCount=(App.providers[idx].requestCount||0)+1; saveProviders(); }
+  pushNotification(providerId, `New booking request from ${data.customerName} — ${data.serviceDate}`, booking.id);
+  document.getElementById('bookingSuccess').style.display='block';
+  document.getElementById('bookingForm').style.display='none';
+  showToast('Booking request submitted!','success');
 }
 
-function handleBooking(e, providerId) {
-  /* legacy — kept for dashboard compat */
-  e.preventDefault();
-}
+function handleBooking(e, providerId) { e.preventDefault(); }
 
 function openPayModal(booking) {
   const p = App.providers.find(x=>x.id===booking.providerId);
@@ -2379,23 +2597,21 @@ function handlePaymentSubmit(e) {
   e.preventDefault();
   const btn = document.getElementById('paySubmitBtn');
   btn.textContent = 'Processing…'; btn.disabled = true;
-  /* Simulate payment processing */
   setTimeout(() => {
     btn.textContent = 'Pay $2.99 & Confirm →'; btn.disabled = false;
-    if (!_pendingBooking) return;
-    App.bookings.push(_pendingBooking);
-    saveBookings();
-    pushNotification(_pendingBooking.providerId, `New booking from ${_pendingBooking.customerName} — ${_pendingBooking.serviceDate}`, _pendingBooking.id);
-    /* increment provider request count in storage */
-    const idx = App.providers.findIndex(p=>p.id===_pendingBooking.providerId);
-    if (idx>-1) { App.providers[idx].requestCount = (App.providers[idx].requestCount||0)+1; saveProviders(); }
-    closePayModal();
-    const suc = document.getElementById('bookingSuccess');
-    const frm = document.getElementById('bookingForm');
-    if (suc) suc.style.display='block';
-    if (frm) frm.style.display='none';
-    showToast('Payment confirmed! Booking submitted.','success');
-    _pendingBooking = null;
+    if (_pendingPayBookingId) {
+      /* Provider paying to confirm a lead */
+      const idx = App.bookings.findIndex(b=>b.id===_pendingPayBookingId);
+      if (idx>-1) {
+        App.bookings[idx].status = 'confirmed';
+        App.bookings[idx].paid = true;
+        saveBookings();
+      }
+      closePayModal();
+      showToast('Payment accepted — booking confirmed!','success');
+      renderDashboard();
+      _pendingPayBookingId = null;
+    }
   }, 1600);
 }
 
@@ -2493,26 +2709,28 @@ function handleRegister(e) {
     document.getElementById('registerAlert').innerHTML=`<div class="alert alert-error">Please select at least one service area.</div>`; return;
   }
 
-  const pid = 'p'+Date.now();
-  const prov = {
-    id:pid, companyName:data.companyName, tradeType:data.tradeType,
-    licenseNumber:data.licenseNumber||'Pending Verification', yearsInBusiness:data.yearsInBusiness,
-    description:data.description, contactName:data.contactName,
-    email:data.email, phone:data.phone, website:data.website||'',
-    serviceAreas:areas, rating:0, reviewCount:0, certifications:[], featured:false,
-    password:data.password
+  const file = document.getElementById('regLogoInput')?.files[0];
+  const finalize = (logoData) => {
+    const pid = 'p'+Date.now();
+    const prov = {
+      id:pid, companyName:data.companyName, tradeType:data.tradeType,
+      licenseNumber:data.licenseNumber||'Pending Verification', yearsInBusiness:data.yearsInBusiness,
+      description:data.description, contactName:data.contactName,
+      email:data.email, phone:data.phone, website:data.website||'',
+      serviceAreas:areas, rating:0, reviewCount:0, certifications:[],
+      featured:false, claimed:true, requestCount:0,
+      logoData: logoData||null, password:data.password
+    };
+    const user = { id:'u'+pid, email:data.email, password:data.password, providerId:pid };
+    App.providers.push(prov); App.users.push(user);
+    saveProviders(); saveUsers();
+    App.currentUser = {...user, provider:prov};
+    sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
+    updateNav(); navigate('/dashboard');
+    showToast(`Welcome to BookYourTrades, ${data.companyName}!`,'success');
   };
-  const user = { id:'u'+pid, email:data.email, password:data.password, providerId:pid };
-
-  App.providers.push(prov);
-  App.users.push(user);
-  saveProviders(); saveUsers();
-
-  App.currentUser = {...user, provider:prov};
-  sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
-  updateNav();
-  navigate('/dashboard');
-  showToast(`Welcome to BookYourTrades, ${data.companyName}!`,'success');
+  if (file) { const r=new FileReader(); r.onload=ev=>finalize(ev.target.result); r.readAsDataURL(file); }
+  else finalize(null);
 }
 
 /* ============================================================
@@ -2534,7 +2752,7 @@ function renderDashboard() {
     <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
       <div class="container">
         <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
-          <div style="width:56px;height:56px;background:var(--o500);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:white;">${ini}</div>
+          ${providerLogoHTML(prov,56,6)}
           <div>
             <h1 style="font-size:30px;color:white;">${prov.companyName}</h1>
             <div style="color:var(--s300);font-size:14px;margin-top:2px;">Provider Dashboard &middot; <span class="badge badge-green">Active Listing</span></div>
@@ -2659,6 +2877,15 @@ function renderDashboard() {
                 <label class="form-label">Company Description</label>
                 <textarea class="form-control" name="description" required style="min-height:120px;">${prov.description}</textarea>
               </div>
+              <div class="form-group">
+                <label class="form-label">Company Logo</label>
+                <div style="display:flex;align-items:center;gap:16px;margin-bottom:8px;">
+                  ${providerLogoHTML(prov,56,6)}
+                  <div style="font-size:13px;color:var(--s400);">${prov.logoData ? 'Current logo shown. Upload a new one to replace it.' : 'No logo uploaded yet.'}</div>
+                </div>
+                <input class="form-control" type="file" id="profileLogoInput" accept="image/*" style="padding:8px;" />
+                <div style="font-size:12px;color:var(--s400);margin-top:6px;">PNG or JPG recommended. Displayed on your public listing and directory.</div>
+              </div>
             </div>
             <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
               <h3 style="font-size:20px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Service Areas</h3>
@@ -2720,13 +2947,38 @@ function toggleDay(day) {
 }
 
 function updateStatus(bid, status) {
+  if (status === 'confirmed') {
+    /* Provider must pay $2.99 lead fee to confirm */
+    openProviderPayModal(bid);
+    return;
+  }
   const idx = App.bookings.findIndex(b=>b.id===bid);
   if (idx===-1) return;
   App.bookings[idx].status = status;
   saveBookings();
   renderDashboard();
-  const msgs = { confirmed:'Booking confirmed.', cancelled:'Booking cancelled.', completed:'Marked as completed.' };
-  showToast(msgs[status]||'Updated.', status==='confirmed'||status==='completed'?'success':'');
+  const msgs = { cancelled:'Booking declined.', completed:'Marked as completed.' };
+  showToast(msgs[status]||'Updated.', status==='completed'?'success':'');
+}
+
+function openProviderPayModal(bid) {
+  _pendingPayBookingId = bid;
+  const b = App.bookings.find(x=>x.id===bid);
+  const p = App.providers.find(x=>x.id===b?.providerId);
+  document.getElementById('payBookingSummary').innerHTML = `
+    <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--s400);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Lead Details</div>
+    <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text);">
+      <div style="display:flex;justify-content:space-between;"><span style="color:var(--s400);">Client</span><span style="font-weight:500;">${b?.customerName||''}</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:var(--s400);">Date</span><span>${formatDate(b?.serviceDate)}</span></div>
+      <div style="display:flex;justify-content:space-between;"><span style="color:var(--s400);">Time</span><span>${b?.serviceTime||''}</span></div>
+      <div style="border-top:1px solid var(--n400);margin-top:6px;padding-top:8px;display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;">
+        <span>Lead Connection Fee</span><span style="color:var(--o400);">$2.99</span>
+      </div>
+    </div>
+    <div style="margin-top:10px;font-size:12px;color:var(--s400);">Pay once to unlock client contact details and confirm this appointment.</div>
+  `;
+  document.getElementById('payForm').reset();
+  document.getElementById('payModal').classList.add('open');
 }
 
 function handleProfileUpdate(e, pid) {
@@ -2737,19 +2989,25 @@ function handleProfileUpdate(e, pid) {
   const idx   = App.providers.findIndex(p=>p.id===pid);
   if (idx===-1) return;
 
-  App.providers[idx] = {
-    ...App.providers[idx],
-    companyName:data.companyName, tradeType:data.tradeType,
-    licenseNumber:data.licenseNumber, phone:data.phone,
-    website:data.website, description:data.description, serviceAreas:areas
+  const file = document.getElementById('profileLogoInput')?.files[0];
+  const finalize = (logoData) => {
+    App.providers[idx] = {
+      ...App.providers[idx],
+      companyName:data.companyName, tradeType:data.tradeType,
+      licenseNumber:data.licenseNumber, phone:data.phone,
+      website:data.website, description:data.description, serviceAreas:areas,
+      ...(logoData ? {logoData} : {})
+    };
+    saveProviders();
+    App.currentUser.provider = App.providers[idx];
+    sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
+    document.getElementById('profileSaveAlert').innerHTML=`<div class="alert alert-success">&#10003; Profile updated successfully.</div>`;
+    setTimeout(()=>{ const el=document.getElementById('profileSaveAlert'); if(el) el.innerHTML=''; },4000);
+    showToast('Profile saved!','success');
+    renderDashboard();
   };
-  saveProviders();
-  App.currentUser.provider = App.providers[idx];
-  sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
-
-  document.getElementById('profileSaveAlert').innerHTML=`<div class="alert alert-success">&#10003; Profile updated successfully.</div>`;
-  setTimeout(()=>{ const el=document.getElementById('profileSaveAlert'); if(el) el.innerHTML=''; },4000);
-  showToast('Profile saved!','success');
+  if (file) { const r=new FileReader(); r.onload=ev=>finalize(ev.target.result); r.readAsDataURL(file); }
+  else finalize(null);
 }
 
 /* ============================================================
@@ -2818,6 +3076,422 @@ function handleRFQ(e) {
 }
 
 /* ============================================================
+   ADMIN DASHBOARD
+============================================================ */
+const ADMIN_PASS = 'admin2026';
+let adminAuthed = false;
+
+function renderAdmin() {
+  const el = document.getElementById('adminContent');
+  if (!adminAuthed) {
+    el.innerHTML = `
+      <div style="min-height:calc(100vh - 71px);display:flex;align-items:center;justify-content:center;padding:40px 24px;">
+        <div style="width:100%;max-width:400px;">
+          <div style="text-align:center;margin-bottom:32px;">
+            <div style="font-size:40px;margin-bottom:10px;">🛡️</div>
+            <h1 style="font-size:32px;color:white;">Admin Access</h1>
+            <p style="color:var(--s400);font-size:14px;margin-top:6px;">BookYourTrades Control Panel</p>
+          </div>
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:32px;">
+            <div id="adminLoginAlert"></div>
+            <div class="form-group">
+              <label class="form-label">Admin Password</label>
+              <input class="form-control" type="password" id="adminPassInput" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')checkAdminPass()" />
+            </div>
+            <button class="btn btn-orange" style="width:100%;justify-content:center;" onclick="checkAdminPass()">Access Dashboard →</button>
+          </div>
+        </div>
+      </div>`;
+    return;
+  }
+  renderAdminPanel();
+}
+
+function checkAdminPass() {
+  const val = document.getElementById('adminPassInput')?.value;
+  if (val === ADMIN_PASS) {
+    adminAuthed = true;
+    renderAdminPanel();
+  } else {
+    document.getElementById('adminLoginAlert').innerHTML = `<div class="alert alert-error">Incorrect password.</div>`;
+  }
+}
+
+function renderAdminPanel() {
+  const el = document.getElementById('adminContent');
+  const totalProviders  = App.providers.length;
+  const claimed         = App.providers.filter(p=>p.claimed).length;
+  const unclaimed       = totalProviders - claimed;
+  const totalBookings   = App.bookings.length;
+  const paidBookings    = App.bookings.filter(b=>b.paid).length;
+  const revenue         = (paidBookings * 2.99).toFixed(2);
+  const featured        = App.providers.filter(p=>p.featured).length;
+
+  el.innerHTML = `
+    <div style="background:var(--n800);border-bottom:3px solid var(--o500);padding:24px 0;">
+      <div class="container">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+          <div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.2em;color:var(--o400);text-transform:uppercase;margin-bottom:4px;">BookYourTrades</div>
+            <h1 style="font-size:28px;color:white;">Admin Control Panel</h1>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;">
+            <a class="btn btn-outline btn-sm" onclick="navigate('/')">← Back to Site</a>
+            <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminAuthed=false;renderAdmin()">Log Out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top:32px;padding-bottom:80px;">
+
+      <!-- Stats Row -->
+      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:36px;" class="dash-stats">
+        <div class="stat-card"><div class="stat-value" style="font-size:32px;">${totalProviders}</div><div class="stat-label">Total Listings</div></div>
+        <div class="stat-card" style="border-top-color:#22C55E;"><div class="stat-value" style="font-size:32px;color:#22C55E;">${claimed}</div><div class="stat-label">Claimed</div></div>
+        <div class="stat-card" style="border-top-color:#F0C060;"><div class="stat-value" style="font-size:32px;color:#F0C060;">${unclaimed}</div><div class="stat-label">Unclaimed</div></div>
+        <div class="stat-card"><div class="stat-value" style="font-size:32px;">${totalBookings}</div><div class="stat-label">Total Bookings</div></div>
+        <div class="stat-card" style="border-top-color:#22C55E;"><div class="stat-value" style="font-size:32px;color:#22C55E;">$${revenue}</div><div class="stat-label">Revenue</div></div>
+        <div class="stat-card"><div class="stat-value" style="font-size:32px;">${featured}</div><div class="stat-label">Featured</div></div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="tab-bar" style="margin-bottom:28px;">
+        <button class="tab-btn active" onclick="switchTab('admin-listings',this)">📋 All Listings</button>
+        <button class="tab-btn" onclick="switchTab('admin-bookings',this)">📅 All Bookings</button>
+        <button class="tab-btn" onclick="switchTab('admin-add',this)">➕ Add Listing</button>
+        <button class="tab-btn" onclick="switchTab('admin-settings',this)">⚙️ Site Settings</button>
+      </div>
+
+      <!-- LISTINGS TAB -->
+      <div id="admin-listings" class="tab-content active">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px;">
+          <input class="form-control" type="text" id="adminSearch" placeholder="Search listings…" oninput="filterAdminListings()" style="max-width:340px;" />
+          <div style="font-size:13px;color:var(--s400);" id="adminListCount">${totalProviders} listings</div>
+        </div>
+        <div class="table-container">
+          <table class="data-table" id="adminListTable">
+            <thead>
+              <tr>
+                <th>Company</th>
+                <th>Trade</th>
+                <th>Location</th>
+                <th>Rating</th>
+                <th>Requests</th>
+                <th>Status</th>
+                <th>Featured</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminListBody">
+              ${renderAdminListRows(App.providers)}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- BOOKINGS TAB -->
+      <div id="admin-bookings" class="tab-content">
+        <div class="table-container">
+          <table class="data-table">
+            <thead><tr><th>Client</th><th>Contractor</th><th>Date</th><th>Status</th><th>Lead Fee</th><th>Submitted</th></tr></thead>
+            <tbody>
+              ${App.bookings.length===0
+                ? `<tr><td colspan="6" style="text-align:center;color:var(--s400);padding:40px;">No bookings yet.</td></tr>`
+                : App.bookings.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(b=>{
+                    const prov = App.providers.find(p=>p.id===b.providerId);
+                    return `<tr>
+                      <td><div style="font-weight:500;">${b.customerName}</div><div style="font-size:12px;color:var(--s400);">${b.customerEmail}</div></td>
+                      <td><a onclick="navigate('/provider/${b.providerId}')" style="color:var(--o400);cursor:pointer;">${prov?.companyName||b.providerId}</a></td>
+                      <td><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;">${formatDate(b.serviceDate)}</div><div style="font-size:12px;color:var(--s400);">${b.serviceTime}</div></td>
+                      <td>${statusBadge(b.status)}</td>
+                      <td>${b.paid?'<span class="badge badge-green">$2.99 Paid</span>':'<span class="badge badge-yellow">Unpaid</span>'}</td>
+                      <td style="font-size:13px;color:var(--s400);">${b.createdAt}</td>
+                    </tr>`;
+                  }).join('')
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ADD LISTING TAB -->
+      <div id="admin-add" class="tab-content">
+        <div style="max-width:700px;">
+          <div id="adminAddAlert"></div>
+          <form onsubmit="handleAdminAdd(event)">
+            <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
+              <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Company Details</h3>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Company Name *</label><input class="form-control" name="companyName" required placeholder="Company Inc." /></div>
+                <div class="form-group"><label class="form-label">Trade Type *</label>
+                  <select class="form-control" name="tradeType" required>
+                    <option value="">Select…</option>
+                    ${['Electrical','Plumbing','HVAC','Roofing','Welding & Fabrication','Concrete & Masonry','Millwright','Pipefitting','Sheet Metal','Refrigeration','Boilermaker','Carpentry','Painting & Coating','General Contracting'].map(t=>`<option>${t}</option>`).join('')}
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Phone</label><input class="form-control" name="phone" placeholder="(416) 555-0000" /></div>
+                <div class="form-group"><label class="form-label">Years in Business</label>
+                  <select class="form-control" name="yearsInBusiness"><option>1-2 years</option><option>3-5 years</option><option>6-10 years</option><option>11-20 years</option><option>20+ years</option></select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Email</label><input class="form-control" name="email" type="email" placeholder="contact@company.ca" /></div>
+                <div class="form-group"><label class="form-label">Website</label><input class="form-control" name="website" placeholder="https://company.ca" /></div>
+              </div>
+              <div class="form-group"><label class="form-label">License Number</label><input class="form-control" name="licenseNumber" placeholder="e.g. ESA 7013312" /></div>
+              <div class="form-group"><label class="form-label">Description *</label><textarea class="form-control" name="description" required style="min-height:100px;" placeholder="Company description…"></textarea></div>
+              <div class="form-group"><label class="form-label">Service Areas (comma separated)</label><input class="form-control" name="serviceAreas" placeholder="Toronto, Ottawa, Hamilton" /></div>
+              <div class="form-group"><label class="form-label">Certifications (comma separated)</label><input class="form-control" name="certifications" placeholder="ESA Licensed, OSHA 10" /></div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Rating (0-5)</label><input class="form-control" name="rating" type="number" min="0" max="5" step="0.1" value="0" /></div>
+                <div class="form-group"><label class="form-label">Review Count</label><input class="form-control" name="reviewCount" type="number" min="0" value="0" /></div>
+              </div>
+              <div style="display:flex;gap:20px;flex-wrap:wrap;">
+                <label class="checkbox-item"><input type="checkbox" name="claimed" checked> Mark as Claimed</label>
+                <label class="checkbox-item"><input type="checkbox" name="featured"> Featured Listing</label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-orange">Add Listing →</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- SETTINGS TAB -->
+      <div id="admin-settings" class="tab-content">
+        <div style="max-width:680px;">
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
+            <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Lead Fee Settings</h3>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Lead Connection Fee ($)</label>
+                <input class="form-control" type="number" id="adminLeadFee" min="0.99" step="0.01" value="${parseFloat(localStorage.getItem('byt_lead_fee')||'2.99').toFixed(2)}" />
+              </div>
+              <div class="form-group" style="display:flex;align-items:flex-end;">
+                <button class="btn btn-orange" onclick="saveLeadFee()">Save Fee</button>
+              </div>
+            </div>
+          </div>
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
+            <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Directory Management</h3>
+            <div style="display:flex;flex-direction:column;gap:12px;">
+              <button class="btn btn-navy" onclick="if(confirm('Reset all data to defaults?')){localStorage.clear();loadStorage();renderAdminPanel();showToast('Data reset.','success');}">🔄 Reset All Data to Defaults</button>
+              <button class="btn btn-navy" onclick="exportData()">⬇️ Export All Data (JSON)</button>
+            </div>
+          </div>
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;">
+            <h3 style="font-size:20px;margin-bottom:12px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Admin Credentials</h3>
+            <div style="font-size:14px;color:var(--s300);margin-bottom:16px;">Change the admin password below. You will need to use the new password on next login.</div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">New Password</label><input class="form-control" type="password" id="adminNewPass" placeholder="New password" /></div>
+              <div class="form-group" style="display:flex;align-items:flex-end;"><button class="btn btn-orange" onclick="changeAdminPass()">Update</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  `;
+}
+
+function renderAdminListRows(providers) {
+  return providers.map(p=>`
+    <tr id="adminRow_${p.id}">
+      <td>
+        <div style="display:flex;align-items:center;gap:10px;">
+          ${providerLogoHTML(p,36,4)}
+          <div>
+            <div style="font-weight:500;font-size:14px;">${p.companyName}</div>
+            <div style="font-size:11px;color:var(--s400);">${p.email||'—'}</div>
+          </div>
+        </div>
+      </td>
+      <td><span class="badge badge-orange" style="font-size:10px;">${p.tradeType}</span></td>
+      <td style="font-size:13px;color:var(--s400);">${(p.serviceAreas||[]).slice(0,2).join(', ')}</td>
+      <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;color:var(--o400);">${p.rating||0} <span style="font-size:11px;color:var(--s400);">(${p.reviewCount||0})</span></td>
+      <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;">${getRequestCount(p.id)}</td>
+      <td>${p.claimed?'<span class="badge badge-green">Claimed</span>':'<span class="badge badge-yellow">Unclaimed</span>'}</td>
+      <td>${p.featured?'<span class="badge badge-orange">Featured</span>':'<span style="color:var(--s400);font-size:13px;">—</span>'}</td>
+      <td>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <button class="btn btn-sm btn-navy" onclick="openAdminEdit('${p.id}')">✏️ Edit</button>
+          <button class="btn btn-sm" style="background:${p.featured?'#4D3D0A':'var(--n600)'};color:${p.featured?'#F0C060':'var(--s200)'};border:1px solid ${p.featured?'#6D5A0A':'var(--n400)'};" onclick="adminToggleFeatured('${p.id}')">${p.featured?'Unfeature':'Feature'}</button>
+          <button class="btn btn-sm" style="background:${p.claimed?'var(--n600)':'#1A4D2E'};color:${p.claimed?'var(--s400)':'#6FE09A'};border:1px solid ${p.claimed?'var(--n400)':'#2A6D3E'};" onclick="adminToggleClaimed('${p.id}')">${p.claimed?'Unclaim':'Claim'}</button>
+          <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDelete('${p.id}')">🗑️</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterAdminListings() {
+  const q = document.getElementById('adminSearch')?.value.toLowerCase()||'';
+  const filtered = App.providers.filter(p=>
+    p.companyName.toLowerCase().includes(q)||
+    p.tradeType.toLowerCase().includes(q)||
+    (p.serviceAreas||[]).join(' ').toLowerCase().includes(q)
+  );
+  const body = document.getElementById('adminListBody');
+  const cnt  = document.getElementById('adminListCount');
+  if (body) body.innerHTML = renderAdminListRows(filtered);
+  if (cnt)  cnt.textContent = filtered.length+' listings';
+}
+
+function adminToggleFeatured(pid) {
+  const idx = App.providers.findIndex(p=>p.id===pid);
+  if (idx>-1) { App.providers[idx].featured=!App.providers[idx].featured; saveProviders(); renderAdminPanel(); showToast(App.providers[idx].featured?'Marked as featured.':'Removed from featured.','success'); }
+}
+
+function adminToggleClaimed(pid) {
+  const idx = App.providers.findIndex(p=>p.id===pid);
+  if (idx>-1) { App.providers[idx].claimed=!App.providers[idx].claimed; saveProviders(); renderAdminPanel(); showToast('Listing updated.','success'); }
+}
+
+function adminDelete(pid) {
+  if (!confirm('Delete this listing permanently?')) return;
+  App.providers = App.providers.filter(p=>p.id!==pid);
+  App.users     = App.users.filter(u=>u.providerId!==pid);
+  App.bookings  = App.bookings.filter(b=>b.providerId!==pid);
+  saveProviders(); saveUsers(); saveBookings();
+  renderAdminPanel();
+  showToast('Listing deleted.','success');
+}
+
+function openAdminEdit(pid) {
+  const p = App.providers.find(x=>x.id===pid);
+  if (!p) return;
+  const existing = document.getElementById('adminEditModal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = 'adminEditModal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9500;background:rgba(6,14,26,0.9);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto;';
+  modal.innerHTML = `
+    <div style="background:var(--n700);border:1px solid var(--n400);border-top:4px solid var(--o500);border-radius:8px;padding:32px;max-width:680px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.6);max-height:90vh;overflow-y:auto;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+        <h2 style="font-size:24px;color:white;">Edit Listing</h2>
+        <button onclick="document.getElementById('adminEditModal').remove()" style="background:none;border:none;color:var(--s300);font-size:24px;cursor:pointer;">&times;</button>
+      </div>
+      <div id="adminEditAlert"></div>
+      <form onsubmit="handleAdminEdit(event,'${p.id}')">
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Company Name *</label><input class="form-control" name="companyName" value="${p.companyName}" required /></div>
+          <div class="form-group"><label class="form-label">Trade Type</label>
+            <select class="form-control" name="tradeType">
+              ${['Electrical','Plumbing','HVAC','Roofing','Welding & Fabrication','Concrete & Masonry','Millwright','Pipefitting','Sheet Metal','Refrigeration','Boilermaker','Carpentry','Painting & Coating','General Contracting'].map(t=>`<option ${t===p.tradeType?'selected':''}>${t}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Phone</label><input class="form-control" name="phone" value="${p.phone||''}" /></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-control" name="email" type="email" value="${p.email||''}" /></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Website</label><input class="form-control" name="website" value="${p.website||''}" /></div>
+          <div class="form-group"><label class="form-label">License #</label><input class="form-control" name="licenseNumber" value="${p.licenseNumber||''}" /></div>
+        </div>
+        <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" name="description" style="min-height:100px;">${p.description||''}</textarea></div>
+        <div class="form-group"><label class="form-label">Service Areas (comma separated)</label><input class="form-control" name="serviceAreas" value="${(p.serviceAreas||[]).join(', ')}" /></div>
+        <div class="form-group"><label class="form-label">Certifications (comma separated)</label><input class="form-control" name="certifications" value="${(p.certifications||[]).join(', ')}" /></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Rating</label><input class="form-control" name="rating" type="number" min="0" max="5" step="0.1" value="${p.rating||0}" /></div>
+          <div class="form-group"><label class="form-label">Review Count</label><input class="form-control" name="reviewCount" type="number" min="0" value="${p.reviewCount||0}" /></div>
+        </div>
+        <div style="display:flex;gap:24px;margin-bottom:20px;flex-wrap:wrap;">
+          <label class="checkbox-item"><input type="checkbox" name="claimed" ${p.claimed?'checked':''}> Claimed</label>
+          <label class="checkbox-item"><input type="checkbox" name="featured" ${p.featured?'checked':''}> Featured</label>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button type="button" class="btn btn-navy" style="flex:1;justify-content:center;" onclick="document.getElementById('adminEditModal').remove()">Cancel</button>
+          <button type="submit" class="btn btn-orange" style="flex:2;justify-content:center;">Save Changes →</button>
+        </div>
+      </form>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+function handleAdminEdit(e, pid) {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  const idx  = App.providers.findIndex(p=>p.id===pid);
+  if (idx===-1) return;
+  App.providers[idx] = {
+    ...App.providers[idx],
+    companyName: data.companyName,
+    tradeType:   data.tradeType,
+    phone:       data.phone,
+    email:       data.email,
+    website:     data.website,
+    licenseNumber: data.licenseNumber,
+    description: data.description,
+    serviceAreas: data.serviceAreas.split(',').map(s=>s.trim()).filter(Boolean),
+    certifications: data.certifications.split(',').map(s=>s.trim()).filter(Boolean),
+    rating:      parseFloat(data.rating)||0,
+    reviewCount: parseInt(data.reviewCount)||0,
+    claimed:     !!data.claimed,
+    featured:    !!data.featured,
+  };
+  saveProviders();
+  document.getElementById('adminEditModal')?.remove();
+  renderAdminPanel();
+  showToast('Listing updated!','success');
+}
+
+function handleAdminAdd(e) {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  if (!data.companyName||!data.tradeType||!data.description) {
+    document.getElementById('adminAddAlert').innerHTML=`<div class="alert alert-error">Please fill all required fields.</div>`; return;
+  }
+  const pid = 'p'+Date.now();
+  App.providers.push({
+    id: pid,
+    companyName: data.companyName,
+    tradeType:   data.tradeType,
+    phone:       data.phone||'',
+    email:       data.email||'',
+    website:     data.website||'',
+    licenseNumber: data.licenseNumber||'Pending Verification',
+    yearsInBusiness: data.yearsInBusiness,
+    description: data.description,
+    serviceAreas: data.serviceAreas.split(',').map(s=>s.trim()).filter(Boolean),
+    certifications: data.certifications.split(',').map(s=>s.trim()).filter(Boolean),
+    rating:      parseFloat(data.rating)||0,
+    reviewCount: parseInt(data.reviewCount)||0,
+    claimed:     !!data.claimed,
+    featured:    !!data.featured,
+    requestCount:0, logoData:null, password:''
+  });
+  saveProviders();
+  e.target.reset();
+  document.getElementById('adminAddAlert').innerHTML=`<div class="alert alert-success">✓ Listing added successfully.</div>`;
+  setTimeout(()=>{const el=document.getElementById('adminAddAlert');if(el)el.innerHTML='';},3000);
+  showToast('Listing added!','success');
+}
+
+function saveLeadFee() {
+  const val = parseFloat(document.getElementById('adminLeadFee')?.value||'2.99');
+  localStorage.setItem('byt_lead_fee', val.toFixed(2));
+  showToast(`Lead fee updated to $${val.toFixed(2)}`,'success');
+}
+
+function changeAdminPass() {
+  const np = document.getElementById('adminNewPass')?.value;
+  if (!np||np.length<6) { showToast('Password must be at least 6 characters.','error'); return; }
+  localStorage.setItem('byt_admin_pass', np);
+  showToast('Admin password updated.','success');
+}
+
+function exportData() {
+  const blob = new Blob([JSON.stringify({providers:App.providers,bookings:App.bookings,reviews:App.reviews},null,2)],{type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='bookyourtrades_export_'+new Date().toISOString().split('T')[0]+'.json'; a.click();
+}
+
+/* ============================================================
    ENHANCED DASHBOARD
 ============================================================ */
 function renderDashboard() {
@@ -2842,7 +3516,7 @@ function renderDashboard() {
     <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
       <div class="container">
         <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
-          <div style="width:56px;height:56px;background:var(--o500);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:20px;color:white;">${ini}</div>
+          ${providerLogoHTML(prov,56,6)}
           <div>
             <h1 style="font-size:30px;color:white;">${prov.companyName}</h1>
             <div style="color:var(--s300);font-size:14px;margin-top:2px;">Provider Dashboard &middot; <span class="badge badge-green">Active Listing</span></div>
@@ -2886,7 +3560,7 @@ function renderDashboard() {
               <td>${statusBadge(b.status)}</td>
               <td><div style="display:flex;gap:6px;flex-wrap:wrap;">
                 ${b.status==='pending'?`
-                  <button class="btn btn-sm" style="background:#1A4D2E;color:#6FE09A;border:1px solid #2A6D3E;" onclick="updateStatus('${b.id}','confirmed')">Confirm</button>
+                  <button class="btn btn-sm btn-orange" onclick="updateStatus('${b.id}','confirmed')">🔓 Unlock Lead — $2.99</button>
                   <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="updateStatus('${b.id}','cancelled')">Decline</button>
                 `:b.status==='confirmed'?`
                   <button class="btn btn-sm btn-navy" onclick="updateStatus('${b.id}','completed')">Mark Done</button>
