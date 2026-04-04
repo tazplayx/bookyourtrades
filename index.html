@@ -2224,15 +2224,33 @@ const App = { currentUser: null, providers: [], users: [], bookings: [], reviews
 /* ============================================================
    STORAGE
 ============================================================ */
+const SEED_VERSION = '2026-04-04-v3'; // bump this whenever new seed providers are added
+
 function loadStorage() {
   const sp = localStorage.getItem('to_providers');
   const su = localStorage.getItem('to_users');
   const sb = localStorage.getItem('to_bookings');
   const sr = localStorage.getItem('to_reviews');
   const sn = localStorage.getItem('to_notifs');
+  const sv = localStorage.getItem('to_seed_version');
 
-  App.providers = sp ? JSON.parse(sp) : [...SEED_PROVIDERS];
-  if (!sp) saveProviders();
+  /* Merge any new seed providers that don't yet exist in localStorage */
+  if (sp) {
+    let saved = JSON.parse(sp);
+    if (sv !== SEED_VERSION) {
+      /* Add any seed providers whose IDs aren't already saved */
+      const savedIds = new Set(saved.map(p => p.id));
+      const newOnes  = SEED_PROVIDERS.filter(p => !savedIds.has(p.id));
+      if (newOnes.length) { saved = [...saved, ...newOnes]; }
+      localStorage.setItem('to_seed_version', SEED_VERSION);
+    }
+    App.providers = saved;
+    saveProviders();
+  } else {
+    App.providers = [...SEED_PROVIDERS];
+    localStorage.setItem('to_seed_version', SEED_VERSION);
+    saveProviders();
+  }
 
   App.users = su ? JSON.parse(su) : SEED_PROVIDERS.map(p => ({
     id:'u'+p.id, email:p.email, password:p.password, providerId:p.id
