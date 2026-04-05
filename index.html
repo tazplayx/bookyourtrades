@@ -2400,7 +2400,7 @@ function renderHome() {
   `).join('');
 
   const fg = document.getElementById('featuredGrid');
-  if (fg) fg.innerHTML = App.providers.filter(p => p.featured).slice(0,3).map(p => providerCardHTML(p)).join('');
+  if (fg) fg.innerHTML = App.providers.filter(p => p.featured && p.status !== 'pending_approval').slice(0,3).map(p => providerCardHTML(p)).join('');
 }
 
 function navigateToCategory(cat) {
@@ -2492,6 +2492,7 @@ function filterDirectory() {
   const sort  = document.getElementById('sortDir')?.value||'rating';
 
   let res = App.providers.filter(p => {
+    if (p.status === 'pending_approval') return false;
     const ms = !q || p.companyName.toLowerCase().includes(q) || p.tradeType.toLowerCase().includes(q) || p.description.toLowerCase().includes(q);
     const mc = !city || p.serviceAreas.includes(city);
     const mt = trades.length===0 || trades.includes(p.tradeType);
@@ -3005,16 +3006,15 @@ function handleRegister(e) {
       description:data.description, contactName:data.contactName,
       email:data.email, phone:data.phone, website:data.website||'',
       serviceAreas:areas, rating:0, reviewCount:0, certifications:[],
-      featured:false, claimed:true, requestCount:0,
-      logoData: logoData||null, password:data.password
+      featured:false, claimed:false, requestCount:0,
+      logoData: logoData||null, password:data.password,
+      status: 'pending_approval', registeredAt: new Date().toISOString()
     };
     const user = { id:'u'+pid, email:data.email, password:data.password, providerId:pid };
     App.providers.push(prov); App.users.push(user);
     saveProviders(); saveUsers();
-    App.currentUser = {...user, provider:prov};
-    sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
-    updateNav(); navigate('/dashboard');
-    showToast(`Welcome to BookYourTrades, ${data.companyName}!`,'success');
+    navigate('/');
+    showToast(`Thank you! Your application is under review. We'll contact you at ${data.email} once approved.`,'success');
   };
   if (file) { const r=new FileReader(); r.onload=ev=>finalize(ev.target.result); r.readAsDataURL(file); }
   else finalize(null);
@@ -3334,8 +3334,8 @@ function handleRFQ(e) {
 
   // Match providers
   const matches = App.providers.filter(p =>
-    p.tradeType === data.tradeType ||
-    p.serviceAreas.includes(data.city)
+    p.status !== 'pending_approval' &&
+    (p.tradeType === data.tradeType || p.serviceAreas.includes(data.city))
   ).sort((a,b) => b.rating - a.rating).slice(0,4);
 
   const list = document.getElementById('rfqMatchList');
@@ -3365,6 +3365,7 @@ function handleRFQ(e) {
 /* ============================================================
    ADMIN DASHBOARD
 ============================================================ */
+const ADMIN_EMAIL = 'cdeneire@proton.me';
 const ADMIN_PASS = 'admin2026';
 let adminAuthed = false;
 
@@ -3382,6 +3383,10 @@ function renderAdmin() {
           <div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:32px;">
             <div id="adminLoginAlert"></div>
             <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input class="form-control" type="email" id="adminEmailInput" placeholder="admin@email.com" onkeydown="if(event.key==='Enter')checkAdminPass()" />
+            </div>
+            <div class="form-group">
               <label class="form-label">Admin Password</label>
               <input class="form-control" type="password" id="adminPassInput" placeholder="Enter admin password" onkeydown="if(event.key==='Enter')checkAdminPass()" />
             </div>
@@ -3395,12 +3400,13 @@ function renderAdmin() {
 }
 
 function checkAdminPass() {
-  const val = document.getElementById('adminPassInput')?.value;
-  if (val === ADMIN_PASS) {
+  const email = (document.getElementById('adminEmailInput')?.value||'').toLowerCase().trim();
+  const pass  = document.getElementById('adminPassInput')?.value;
+  if (email === ADMIN_EMAIL && pass === ADMIN_PASS) {
     adminAuthed = true;
     renderAdminPanel();
   } else {
-    document.getElementById('adminLoginAlert').innerHTML = `<div class="alert alert-error">Incorrect password.</div>`;
+    document.getElementById('adminLoginAlert').innerHTML = `<div class="alert alert-error">Incorrect email or password.</div>`;
   }
 }
 
@@ -3445,6 +3451,7 @@ function renderAdminPanel() {
       <!-- Tabs -->
       <div class="tab-bar" style="margin-bottom:28px;">
         <button class="tab-btn active" onclick="switchTab('admin-listings',this)">📋 All Listings</button>
+        <button class="tab-btn" onclick="switchTab('admin-registrations',this)">⏳ Registrations${App.providers.filter(p=>p.status==='pending_approval').length>0?` <span style="background:#F0A030;color:#000;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;">${App.providers.filter(p=>p.status==='pending_approval').length}</span>`:''}</button>
         <button class="tab-btn" onclick="switchTab('admin-bookings',this)">📅 All Bookings</button>
         <button class="tab-btn" onclick="switchTab('admin-add',this)">➕ Add Listing</button>
         <button class="tab-btn" onclick="switchTab('admin-settings',this)">⚙️ Site Settings</button>
@@ -3475,6 +3482,44 @@ function renderAdminPanel() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <!-- REGISTRATIONS TAB -->
+      <div id="admin-registrations" class="tab-content">
+        ${(()=>{
+          const pending = App.providers.filter(p=>p.status==='pending_approval');
+          if (pending.length===0) return `<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">✅</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;">No pending registrations</div></div>`;
+          return `
+          <div style="margin-bottom:16px;font-size:14px;color:var(--s400);">${pending.length} application${pending.length!==1?'s':''} awaiting review</div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            ${pending.map(p=>`
+              <div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:24px;">
+                <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                  <div style="display:flex;align-items:center;gap:16px;">
+                    ${providerLogoHTML(p,48,6)}
+                    <div>
+                      <div style="font-size:18px;font-weight:700;color:white;">${p.companyName}</div>
+                      <div style="font-size:13px;color:var(--o400);margin-top:2px;">${p.tradeType}</div>
+                      <div style="font-size:12px;color:var(--s400);margin-top:2px;">Applied: ${p.registeredAt ? new Date(p.registeredAt).toLocaleDateString('en-CA',{year:'numeric',month:'short',day:'numeric'}) : 'Unknown'}</div>
+                    </div>
+                  </div>
+                  <div style="display:flex;gap:8px;">
+                    <button class="btn btn-sm" style="background:#14532D;color:#86EFAC;border:1px solid #166534;" onclick="approveRegistration('${p.id}')">✓ Approve</button>
+                    <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="rejectRegistration('${p.id}')">✗ Reject</button>
+                  </div>
+                </div>
+                <div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:13px;">
+                  <div><span style="color:var(--s400);">Contact:</span> <span style="color:var(--s200);">${p.contactName||'—'}</span></div>
+                  <div><span style="color:var(--s400);">Email:</span> <span style="color:var(--s200);">${p.email}</span></div>
+                  <div><span style="color:var(--s400);">Phone:</span> <span style="color:var(--s200);">${p.phone||'—'}</span></div>
+                  <div><span style="color:var(--s400);">License:</span> <span style="color:var(--s200);">${p.licenseNumber||'—'}</span></div>
+                  <div><span style="color:var(--s400);">Experience:</span> <span style="color:var(--s200);">${p.yearsInBusiness||'—'}</span></div>
+                  <div><span style="color:var(--s400);">Areas:</span> <span style="color:var(--s200);">${Array.isArray(p.serviceAreas)?p.serviceAreas.join(', '):p.serviceAreas||'—'}</span></div>
+                </div>
+                ${p.description?`<div style="margin-top:12px;font-size:13px;color:var(--s300);border-top:1px solid var(--n500);padding-top:12px;">${p.description}</div>`:''}
+              </div>`).join('')}
+          </div>`;
+        })()}
       </div>
 
       <!-- BOOKINGS TAB -->
@@ -3581,6 +3626,27 @@ function renderAdminPanel() {
 
     </div>
   `;
+}
+
+function approveRegistration(pid) {
+  const idx = App.providers.findIndex(p=>p.id===pid);
+  if (idx<0) return;
+  App.providers[idx].status = 'active';
+  App.providers[idx].claimed = true;
+  saveProviders();
+  renderAdminPanel();
+  showToast(`${App.providers[idx].companyName} approved and now live in the directory.`,'success');
+}
+
+function rejectRegistration(pid) {
+  const prov = App.providers.find(p=>p.id===pid);
+  if (!prov) return;
+  if (!confirm(`Reject and remove application from ${prov.companyName}?`)) return;
+  App.providers = App.providers.filter(p=>p.id!==pid);
+  App.users = App.users.filter(u=>u.providerId!==pid);
+  saveProviders(); saveUsers();
+  renderAdminPanel();
+  showToast(`Application from ${prov.companyName} rejected and removed.`,'error');
 }
 
 function renderAdminListRows(providers) {
