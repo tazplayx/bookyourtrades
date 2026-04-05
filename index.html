@@ -861,7 +861,15 @@ textarea.form-control { resize: vertical; min-height: 100px; }
         <input type="text" id="heroSearch" placeholder="Search trades, companies, services..." />
         <select id="heroCity">
           <option value="">All Ontario Cities</option>
-          ${['Toronto','Ottawa','Hamilton','Mississauga','London','Windsor','Brampton','Kitchener','Barrie','Sudbury','Thunder Bay','Oakville','Burlington','St. Catharines','Sarnia','Chatham','Guelph','Cambridge','Waterloo','Kingston','Peterborough','Oshawa','Ajax','Markham','Vaughan','Richmond Hill','Sault Ste. Marie','North Bay','Brantford','Niagara Falls','Belleville','Orillia'].map(c=>`<option>${c}</option>`).join('')}
+          <option>Toronto</option><option>Ottawa</option><option>Hamilton</option><option>Mississauga</option>
+          <option>London</option><option>Windsor</option><option>Brampton</option><option>Kitchener</option>
+          <option>Barrie</option><option>Sudbury</option><option>Thunder Bay</option><option>Oakville</option>
+          <option>Burlington</option><option>St. Catharines</option><option>Sarnia</option><option>Chatham</option>
+          <option>Guelph</option><option>Cambridge</option><option>Waterloo</option><option>Kingston</option>
+          <option>Peterborough</option><option>Oshawa</option><option>Ajax</option><option>Markham</option>
+          <option>Vaughan</option><option>Richmond Hill</option><option>Sault Ste. Marie</option>
+          <option>North Bay</option><option>Brantford</option><option>Niagara Falls</option>
+          <option>Belleville</option><option>Orillia</option>
         </select>
         <button onclick="doHeroSearch()">Search</button>
       </div>
@@ -968,7 +976,15 @@ textarea.form-control { resize: vertical; min-height: 100px; }
         <input type="text" id="dirSearch" placeholder="Search by name, trade, or keyword..." />
         <select id="dirCity">
           <option value="">All Cities</option>
-          ${['Toronto','Ottawa','Hamilton','Mississauga','London','Windsor','Brampton','Kitchener','Barrie','Sudbury','Thunder Bay','Oakville','Burlington','St. Catharines','Sarnia','Chatham','Guelph','Cambridge','Waterloo','Kingston','Peterborough','Oshawa','Ajax','Markham','Vaughan','Richmond Hill','Sault Ste. Marie','North Bay','Brantford','Niagara Falls','Belleville','Orillia'].map(c=>`<option>${c}</option>`).join('')}
+          <option>Toronto</option><option>Ottawa</option><option>Hamilton</option><option>Mississauga</option>
+          <option>London</option><option>Windsor</option><option>Brampton</option><option>Kitchener</option>
+          <option>Barrie</option><option>Sudbury</option><option>Thunder Bay</option><option>Oakville</option>
+          <option>Burlington</option><option>St. Catharines</option><option>Sarnia</option><option>Chatham</option>
+          <option>Guelph</option><option>Cambridge</option><option>Waterloo</option><option>Kingston</option>
+          <option>Peterborough</option><option>Oshawa</option><option>Ajax</option><option>Markham</option>
+          <option>Vaughan</option><option>Richmond Hill</option><option>Sault Ste. Marie</option>
+          <option>North Bay</option><option>Brantford</option><option>Niagara Falls</option>
+          <option>Belleville</option><option>Orillia</option>
         </select>
         <button onclick="filterDirectory()">Search</button>
       </div>
@@ -1044,7 +1060,17 @@ textarea.form-control { resize: vertical; min-height: 100px; }
               <label class="form-label">Trade Type *</label>
               <select class="form-control" name="tradeType" required>
                 <option value="">Select Trade...</option>
-                ${TRADE_TYPES.map(t=>`<option>${t}</option>`).join('')}
+                <option>Boilermaker</option><option>Carpentry</option><option>Cleaning &amp; Janitorial</option>
+                <option>Concrete &amp; Masonry</option><option>Demolition</option><option>Drywall &amp; Plastering</option>
+                <option>Electrical</option><option>Elevator &amp; Lift</option><option>Environmental Services</option>
+                <option>Fencing</option><option>Fire Protection</option><option>Flooring</option>
+                <option>General Contracting</option><option>Glazing &amp; Glass</option><option>HVAC</option>
+                <option>Insulation</option><option>Landscaping</option><option>Locksmith &amp; Access Control</option>
+                <option>Millwright</option><option>Moving &amp; Equipment Rigging</option><option>Painting &amp; Coating</option>
+                <option>Pest Control</option><option>Pipefitting</option><option>Plumbing</option>
+                <option>Paving &amp; Asphalt</option><option>Refrigeration</option><option>Roofing</option>
+                <option>Security Systems</option><option>Sheet Metal</option><option>Snow Removal</option>
+                <option>Welding &amp; Fabrication</option>
               </select>
             </div>
           </div>
@@ -1364,14 +1390,32 @@ textarea.form-control { resize: vertical; min-height: 100px; }
                 <label class="form-label">Trade Required *</label>
                 <select class="form-control" name="tradeType" required>
                   <option value="">Select Trade...</option>
-                  ${TRADE_TYPES.map(t=>`<option>${t}</option>`).join('')}
+                  <option>Boilermaker</option><option>Carpentry</option><option>Cleaning &amp; Janitorial</option>
+                  <option>Concrete &amp; Masonry</option><option>Demolition</option><option>Drywall &amp; Plastering</option>
+                  <option>Electrical</option><option>Elevator &amp; Lift</option><option>Environmental Services</option>
+                  <option>Fencing</option><option>Fire Protection</option><option>Flooring</option>
+                  <option>General Contracting</option><option>Glazing &amp; Glass</option><option>HVAC</option>
+                  <option>Insulation</option><option>Landscaping</option><option>Locksmith &amp; Access Control</option>
+                  <option>Millwright</option><option>Moving &amp; Equipment Rigging</option><option>Painting &amp; Coating</option>
+                  <option>Pest Control</option><option>Pipefitting</option><option>Plumbing</option>
+                  <option>Paving &amp; Asphalt</option><option>Refrigeration</option><option>Roofing</option>
+                  <option>Security Systems</option><option>Sheet Metal</option><option>Snow Removal</option>
+                  <option>Welding &amp; Fabrication</option>
                 </select>
               </div>
               <div class="form-group">
                 <label class="form-label">City / Region *</label>
                 <select class="form-control" name="city" required>
                   <option value="">Select City...</option>
-                  ${['Toronto','Ottawa','Hamilton','Mississauga','London','Windsor','Brampton','Kitchener','Barrie','Sudbury','Thunder Bay','Oakville','Burlington','St. Catharines','Sarnia','Chatham','Guelph','Cambridge','Waterloo','Kingston','Peterborough','Oshawa','Ajax','Markham','Vaughan','Richmond Hill','Sault Ste. Marie','North Bay','Brantford','Niagara Falls','Belleville','Orillia'].map(c=>`<option>${c}</option>`).join('')}
+                  <option>Toronto</option><option>Ottawa</option><option>Hamilton</option><option>Mississauga</option>
+                  <option>London</option><option>Windsor</option><option>Brampton</option><option>Kitchener</option>
+                  <option>Barrie</option><option>Sudbury</option><option>Thunder Bay</option><option>Oakville</option>
+                  <option>Burlington</option><option>St. Catharines</option><option>Sarnia</option><option>Chatham</option>
+                  <option>Guelph</option><option>Cambridge</option><option>Waterloo</option><option>Kingston</option>
+                  <option>Peterborough</option><option>Oshawa</option><option>Ajax</option><option>Markham</option>
+                  <option>Vaughan</option><option>Richmond Hill</option><option>Sault Ste. Marie</option>
+                  <option>North Bay</option><option>Brantford</option><option>Niagara Falls</option>
+                  <option>Belleville</option><option>Orillia</option>
                 </select>
               </div>
             </div>
@@ -3781,7 +3825,7 @@ function renderAdminPanel() {
       <!-- Tabs -->
       <div class="tab-bar" style="margin-bottom:28px;">
         <button class="tab-btn active" onclick="switchTab('admin-listings',this)">📋 All Listings</button>
-        <button class="tab-btn" onclick="switchTab('admin-registrations',this)">⏳ Registrations${App.providers.filter(p=>p.status==='pending_approval').length>0?` <span style="background:#F0A030;color:#000;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;">${App.providers.filter(p=>p.status==='pending_approval').length}</span>`:''}</button>
+        <button class="tab-btn" onclick="switchTab('admin-registrations',this)">⏳ Registrations ${getPendingBadge()}</button>
         <button class="tab-btn" onclick="switchTab('admin-bookings',this)">📅 All Bookings</button>
         <button class="tab-btn" onclick="switchTab('admin-add',this)">➕ Add Listing</button>
         <button class="tab-btn" onclick="switchTab('admin-settings',this)">⚙️ Site Settings</button>
@@ -3816,40 +3860,7 @@ function renderAdminPanel() {
 
       <!-- REGISTRATIONS TAB -->
       <div id="admin-registrations" class="tab-content">
-        ${(()=>{
-          const pending = App.providers.filter(p=>p.status==='pending_approval');
-          if (pending.length===0) return `<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">✅</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;">No pending registrations</div></div>`;
-          return `
-          <div style="margin-bottom:16px;font-size:14px;color:var(--s400);">${pending.length} application${pending.length!==1?'s':''} awaiting review</div>
-          <div style="display:flex;flex-direction:column;gap:16px;">
-            ${pending.map(p=>`
-              <div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:24px;">
-                <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-                  <div style="display:flex;align-items:center;gap:16px;">
-                    ${providerLogoHTML(p,48,6)}
-                    <div>
-                      <div style="font-size:18px;font-weight:700;color:white;">${p.companyName}</div>
-                      <div style="font-size:13px;color:var(--o400);margin-top:2px;">${p.tradeType}</div>
-                      <div style="font-size:12px;color:var(--s400);margin-top:2px;">Applied: ${p.registeredAt ? new Date(p.registeredAt).toLocaleDateString('en-CA',{year:'numeric',month:'short',day:'numeric'}) : 'Unknown'}</div>
-                    </div>
-                  </div>
-                  <div style="display:flex;gap:8px;">
-                    <button class="btn btn-sm" style="background:#14532D;color:#86EFAC;border:1px solid #166534;" onclick="approveRegistration('${p.id}')">✓ Approve</button>
-                    <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="rejectRegistration('${p.id}')">✗ Reject</button>
-                  </div>
-                </div>
-                <div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:13px;">
-                  <div><span style="color:var(--s400);">Contact:</span> <span style="color:var(--s200);">${p.contactName||'—'}</span></div>
-                  <div><span style="color:var(--s400);">Email:</span> <span style="color:var(--s200);">${p.email}</span></div>
-                  <div><span style="color:var(--s400);">Phone:</span> <span style="color:var(--s200);">${p.phone||'—'}</span></div>
-                  <div><span style="color:var(--s400);">License:</span> <span style="color:var(--s200);">${p.licenseNumber||'—'}</span></div>
-                  <div><span style="color:var(--s400);">Experience:</span> <span style="color:var(--s200);">${p.yearsInBusiness||'—'}</span></div>
-                  <div><span style="color:var(--s400);">Areas:</span> <span style="color:var(--s200);">${Array.isArray(p.serviceAreas)?p.serviceAreas.join(', '):p.serviceAreas||'—'}</span></div>
-                </div>
-                ${p.description?`<div style="margin-top:12px;font-size:13px;color:var(--s300);border-top:1px solid var(--n500);padding-top:12px;">${p.description}</div>`:''}
-              </div>`).join('')}
-          </div>`;
-        })()}
+        ${renderRegistrationsTab()}
       </div>
 
       <!-- BOOKINGS TAB -->
@@ -3956,6 +3967,45 @@ function renderAdminPanel() {
 
     </div>
   `;
+}
+
+function getPendingBadge() {
+  const n = App.providers.filter(p => p.status === 'pending_approval').length;
+  if (n === 0) return '';
+  return '<span style="background:#F0A030;color:#000;border-radius:10px;padding:1px 7px;font-size:11px;font-weight:700;">' + n + '</span>';
+}
+
+function renderRegistrationsTab() {
+  const pending = App.providers.filter(p => p.status === 'pending_approval');
+  if (pending.length === 0) {
+    return '<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">&#x2705;</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;">No pending registrations</div></div>';
+  }
+  var rows = pending.map(function(p) {
+    var logoHTML = providerLogoHTML(p, 48, 6);
+    var appliedDate = p.registeredAt ? new Date(p.registeredAt).toLocaleDateString('en-CA', {year:'numeric',month:'short',day:'numeric'}) : 'Unknown';
+    var areas = Array.isArray(p.serviceAreas) ? p.serviceAreas.join(', ') : (p.serviceAreas || '—');
+    var descHTML = p.description ? '<div style="margin-top:12px;font-size:13px;color:var(--s300);border-top:1px solid var(--n500);padding-top:12px;">' + p.description + '</div>' : '';
+    return '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:24px;margin-bottom:16px;">'
+      + '<div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;">'
+      + '<div style="display:flex;align-items:center;gap:16px;">' + logoHTML
+      + '<div><div style="font-size:18px;font-weight:700;color:white;">' + (p.companyName||'') + '</div>'
+      + '<div style="font-size:13px;color:var(--o400);margin-top:2px;">' + (p.tradeType||'') + '</div>'
+      + '<div style="font-size:12px;color:var(--s400);margin-top:2px;">Applied: ' + appliedDate + '</div></div></div>'
+      + '<div style="display:flex;gap:8px;">'
+      + '<button class="btn btn-sm" style="background:#14532D;color:#86EFAC;border:1px solid #166534;" onclick="approveRegistration(\'' + p.id + '\')">&#x2713; Approve</button>'
+      + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="rejectRegistration(\'' + p.id + '\')">&#x2717; Reject</button>'
+      + '</div></div>'
+      + '<div style="margin-top:16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;font-size:13px;">'
+      + '<div><span style="color:var(--s400);">Contact:</span> <span style="color:var(--s200);">' + (p.contactName||'—') + '</span></div>'
+      + '<div><span style="color:var(--s400);">Email:</span> <span style="color:var(--s200);">' + (p.email||'—') + '</span></div>'
+      + '<div><span style="color:var(--s400);">Phone:</span> <span style="color:var(--s200);">' + (p.phone||'—') + '</span></div>'
+      + '<div><span style="color:var(--s400);">License:</span> <span style="color:var(--s200);">' + (p.licenseNumber||'—') + '</span></div>'
+      + '<div><span style="color:var(--s400);">Experience:</span> <span style="color:var(--s200);">' + (p.yearsInBusiness||'—') + '</span></div>'
+      + '<div><span style="color:var(--s400);">Areas:</span> <span style="color:var(--s200);">' + areas + '</span></div>'
+      + '</div>' + descHTML + '</div>';
+  });
+  return '<div style="margin-bottom:16px;font-size:14px;color:var(--s400);">' + pending.length + ' application' + (pending.length !== 1 ? 's' : '') + ' awaiting review</div>'
+    + '<div style="display:flex;flex-direction:column;gap:0;">' + rows.join('') + '</div>';
 }
 
 function approveRegistration(pid) {
