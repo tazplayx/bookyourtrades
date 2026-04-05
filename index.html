@@ -117,6 +117,8 @@
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
+  <!-- Stripe.js — required for real payment processing -->
+  <script src="https://js.stripe.com/v3/"></script>
   <style>
 /* ============================================================
    VARIABLES & RESET
@@ -1197,17 +1199,21 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 ============================================================ -->
 <div id="page-login" class="page">
   <div style="min-height:calc(100vh - 71px);display:flex;align-items:center;justify-content:center;padding:40px 24px;">
-    <div style="width:100%;max-width:440px;">
-      <div style="text-align:center;margin-bottom:40px;">
-        <div style="width:56px;height:56px;background:var(--o500);clip-path:polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);margin:0 auto 16px;display:flex;align-items:center;justify-content:center;">
-          <span style="font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;color:white;">T</span>
-        </div>
-        <h1 style="font-size:36px;margin-bottom:8px;">Provider Login</h1>
-        <p style="color:var(--s300);font-size:15px;">Access your BookYourTrades dashboard</p>
+    <div style="width:100%;max-width:480px;">
+      <div style="text-align:center;margin-bottom:32px;">
+        <div style="font-size:40px;margin-bottom:10px;">👷</div>
+        <h1 style="font-size:36px;margin-bottom:8px;">Sign In</h1>
+        <p style="color:var(--s300);font-size:15px;">Access your BookYourTrades account</p>
+      </div>
+      <!-- Login type tabs -->
+      <div class="tab-bar" style="margin-bottom:24px;">
+        <button class="tab-btn active" id="loginTabProvider" onclick="switchLoginTab('provider')">🔧 Trade Professional</button>
+        <button class="tab-btn" id="loginTabClient" onclick="switchLoginTab('client')">🏢 Hiring a Trade?</button>
       </div>
       <div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:36px;">
         <div id="loginAlert"></div>
-        <form onsubmit="handleLogin(event)">
+        <form onsubmit="handleLogin(event)" id="loginForm">
+          <input type="hidden" id="loginType" value="provider" />
           <div class="form-group">
             <label class="form-label">Email Address</label>
             <input class="form-control" type="email" id="loginEmail" required placeholder="you@company.ca" />
@@ -1216,14 +1222,70 @@ textarea.form-control { resize: vertical; min-height: 100px; }
             <label class="form-label">Password</label>
             <input class="form-control" type="password" id="loginPassword" required placeholder="Your password" />
           </div>
-          <button type="submit" class="btn btn-orange" style="width:100%;justify-content:center;margin-top:8px;">Sign In to Dashboard</button>
+          <button type="submit" class="btn btn-orange" style="width:100%;justify-content:center;margin-top:8px;" id="loginSubmitBtn">Sign In →</button>
         </form>
         <div class="divider"></div>
-        <p style="text-align:center;color:var(--s400);font-size:14px;">Don't have an account? <a onclick="navigate('/register')" style="color:var(--o400);">Register your business</a></p>
+        <div id="loginFooterProvider" style="text-align:center;font-size:14px;color:var(--s400);">
+          Trade company? <a onclick="navigate('/register')" style="color:var(--o400);cursor:pointer;">List your business free</a>
+        </div>
+        <div id="loginFooterClient" style="display:none;text-align:center;font-size:14px;color:var(--s400);">
+          New here? <a onclick="showClientRegisterModal()" style="color:var(--o400);cursor:pointer;">Create a free client account</a>
+        </div>
       </div>
     </div>
   </div>
 </div><!-- end page-login -->
+
+<!-- Client Register Modal -->
+<div id="clientRegModal" style="display:none;position:fixed;inset:0;z-index:9100;background:rgba(6,14,26,0.9);backdrop-filter:blur(6px);align-items:center;justify-content:center;padding:20px;">
+  <div style="background:var(--n700);border:1px solid var(--n400);border-top:4px solid var(--o500);border-radius:8px;padding:36px;max-width:460px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.6);">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+      <div>
+        <div style="font-size:30px;font-weight:800;color:white;margin-bottom:4px;">Create Client Account</div>
+        <div style="font-size:13px;color:var(--s400);">Track your bookings and manage project requests</div>
+      </div>
+      <button onclick="closeClientRegModal()" style="background:none;border:none;color:var(--s300);font-size:28px;cursor:pointer;line-height:1;">&times;</button>
+    </div>
+    <div id="clientRegAlert"></div>
+    <form id="clientRegForm" onsubmit="handleClientRegister(event)">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input class="form-control" type="text" name="name" required placeholder="Your name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Company / Organization</label>
+          <input class="form-control" type="text" name="company" placeholder="Optional" />
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address *</label>
+        <input class="form-control" type="email" name="email" required placeholder="you@company.ca" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input class="form-control" type="tel" name="phone" placeholder="(416) 555-0100" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Password *</label>
+          <input class="form-control" type="password" name="password" required placeholder="Min. 8 characters" minlength="8" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password *</label>
+          <input class="form-control" type="password" name="confirmPassword" required placeholder="Repeat password" />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-orange" style="width:100%;justify-content:center;margin-top:4px;">Create Account &rarr;</button>
+    </form>
+    <p style="text-align:center;margin-top:16px;font-size:13px;color:var(--s400);">Already have an account? <a onclick="closeClientRegModal()" style="color:var(--o400);cursor:pointer;">Sign in above</a></p>
+  </div>
+</div>
+
+<!-- Client Dashboard Page -->
+<div id="page-client-dashboard" class="page">
+  <div id="clientDashboardContent"></div>
+</div>
 
 
 <!-- ============================================================
@@ -1655,33 +1717,28 @@ textarea.form-control { resize: vertical; min-height: 100px; }
       <div style="font-size:14px;color:var(--s300);line-height:1.6;">Pay a one-time <strong style="color:var(--o400);">$2.99 lead connection fee</strong> to confirm this booking and get full access to the client's contact information.</div>
     </div>
     <div style="background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:16px;margin-bottom:20px;" id="payBookingSummary"></div>
+    <div id="payAlert" style="margin-bottom:12px;"></div>
     <form id="payForm" onsubmit="handlePaymentSubmit(event)">
-      <div class="form-group">
-        <label class="form-label">Name on Card *</label>
-        <input class="form-control" type="text" id="payName" required placeholder="Full name" />
-      </div>
-      <div class="form-group">
-        <label class="form-label">Card Number *</label>
-        <input class="form-control" type="text" id="payCard" required placeholder="4242 4242 4242 4242" maxlength="19" oninput="fmtCard(this)" />
-      </div>
-      <div class="card-row">
-        <div class="form-group">
-          <label class="form-label">Expiry *</label>
-          <input class="form-control" type="text" id="payExp" required placeholder="MM / YY" maxlength="7" oninput="fmtExp(this)" />
-        </div>
-        <div class="form-group">
-          <label class="form-label">CVV *</label>
-          <input class="form-control" type="text" id="payCVV" required placeholder="123" maxlength="4" />
-        </div>
-      </div>
-      <div style="background:rgba(26,77,46,0.3);border:1px solid #2A6D3E;border-radius:4px;padding:10px 14px;font-size:13px;color:#86EFAC;margin-bottom:20px;">
-        🔒 Secured by SSL. Your card details are never stored.
+      <!-- Stripe mounts its Payment Element here -->
+      <div id="stripe-payment-element" style="margin-bottom:20px;"></div>
+      <div id="payStripeNote" style="background:rgba(26,77,46,0.3);border:1px solid #2A6D3E;border-radius:4px;padding:10px 14px;font-size:13px;color:#86EFAC;margin-bottom:20px;">
+        🔒 Payments secured by Stripe. Your card is never stored on our servers.
       </div>
       <div style="display:flex;gap:10px;">
         <button type="button" class="btn btn-navy" style="flex:1;justify-content:center;" onclick="closePayModal()">Cancel</button>
         <button type="submit" class="btn btn-orange" style="flex:2;justify-content:center;" id="paySubmitBtn">Pay $2.99 &amp; Confirm →</button>
       </div>
     </form>
+    <!-- Fallback shown when Stripe keys not yet configured -->
+    <div id="payFallback" style="display:none;">
+      <div style="background:rgba(240,160,48,0.15);border:1px solid #F0A030;border-radius:6px;padding:16px;font-size:13px;color:#F0C060;margin-bottom:16px;">
+        ⚠️ Stripe is not yet configured. Add your <code>STRIPE_SECRET_KEY</code> in Vercel environment variables and your publishable key in the site code to enable real payments.
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button type="button" class="btn btn-navy" style="flex:1;justify-content:center;" onclick="closePayModal()">Cancel</button>
+        <button type="button" class="btn btn-orange" style="flex:2;justify-content:center;" onclick="simulatePayment()">Simulate Payment (Dev Mode)</button>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -2582,7 +2639,16 @@ const GALLERY_GRADIENTS = [
 /* ============================================================
    APP STATE
 ============================================================ */
-const App = { currentUser: null, providers: [], users: [], bookings: [], reviews: [], notifications: [] };
+const App = { currentUser: null, providers: [], users: [], clients: [], bookings: [], reviews: [], notifications: [], rfqs: [] };
+
+// ── Stripe publishable key ──────────────────────────────────────────────────
+// Replace with your key from https://dashboard.stripe.com/apikeys
+// Set STRIPE_SECRET_KEY in Vercel → Project → Settings → Environment Variables
+const STRIPE_PK = 'pk_live_YOUR_STRIPE_PUBLISHABLE_KEY';
+// ───────────────────────────────────────────────────────────────────────────
+let _stripeInstance = null;
+let _stripeElements = null;
+let _stripePaymentElement = null;
 
 /* ============================================================
    STORAGE
@@ -2607,6 +2673,8 @@ function loadStorage() {
   const sr = localStorage.getItem('to_reviews');
   const sn = localStorage.getItem('to_notifs');
   const sv = localStorage.getItem('to_seed_version');
+  const sc = localStorage.getItem('to_clients');
+  const sq = localStorage.getItem('to_rfqs');
 
   /* Merge any new seed providers that don't yet exist in localStorage */
   if (sp) {
@@ -2646,12 +2714,20 @@ function loadStorage() {
   ];
   if (!sn) saveNotifications();
 
+  App.clients = sc ? JSON.parse(sc) : [];
+  if (!sc) saveClients();
+
+  App.rfqs = sq ? JSON.parse(sq) : [];
+  if (!sq) saveRFQs();
+
   const sess = sessionStorage.getItem('to_session');
   if (sess) App.currentUser = JSON.parse(sess);
 }
 
 function saveReviews()       { localStorage.setItem('to_reviews', JSON.stringify(App.reviews)); }
 function saveNotifications() { localStorage.setItem('to_notifs',  JSON.stringify(App.notifications)); }
+function saveClients()       { localStorage.setItem('to_clients', JSON.stringify(App.clients)); }
+function saveRFQs()          { localStorage.setItem('to_rfqs',    JSON.stringify(App.rfqs)); }
 
 function saveProviders() { localStorage.setItem('to_providers', JSON.stringify(App.providers)); }
 function saveUsers()     { localStorage.setItem('to_users',     JSON.stringify(App.users));     }
@@ -2688,8 +2764,13 @@ function router() {
     document.getElementById('page-login').classList.add('active');
   } else if (page === 'dashboard') {
     if (!App.currentUser) { navigate('/login'); return; }
-    document.getElementById('page-dashboard').classList.add('active');
-    renderDashboard();
+    if (App.currentUser.role === 'client') {
+      document.getElementById('page-client-dashboard').classList.add('active');
+      renderClientDashboard();
+    } else {
+      document.getElementById('page-dashboard').classList.add('active');
+      renderDashboard();
+    }
   } else if (page === 'how-it-works') {
     document.getElementById('page-how-it-works').classList.add('active');
   } else if (page === 'rfq') {
@@ -2717,20 +2798,28 @@ function router() {
 function updateNav() {
   const el = document.getElementById('navAuth');
   if (App.currentUser) {
-    const pid   = App.currentUser.providerId;
-    const unread = App.notifications.filter(n => n.providerId === pid && !n.read).length;
-    el.innerHTML = `
-      <div class="notif-bell" onclick="navigate('/dashboard')" title="Notifications">
-        &#128276;
-        <span class="notif-dot ${unread > 0 ? 'show' : ''}"></span>
-      </div>
-      <a class="nav-link" onclick="navigate('/dashboard')">Dashboard</a>
-      <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
-    `;
+    if (App.currentUser.role === 'client') {
+      el.innerHTML = `
+        <span style="font-size:13px;color:var(--s300);margin-right:4px;">Hi, ${(App.currentUser.name||'').split(' ')[0] || 'Client'}</span>
+        <a class="nav-link" onclick="navigate('/dashboard')">My Bookings</a>
+        <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
+      `;
+    } else {
+      const pid   = App.currentUser.providerId;
+      const unread = App.notifications.filter(n => n.providerId === pid && !n.read).length;
+      el.innerHTML = `
+        <div class="notif-bell" onclick="navigate('/dashboard')" title="Notifications">
+          &#128276;
+          <span class="notif-dot ${unread > 0 ? 'show' : ''}"></span>
+        </div>
+        <a class="nav-link" onclick="navigate('/dashboard')">Dashboard</a>
+        <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
+      `;
+    }
   } else {
     el.innerHTML = `
+      <a class="nav-link" style="font-weight:600;" onclick="navigate('/login')">Login</a>
       <button class="btn btn-orange btn-sm" onclick="navigate('/register')">List Your Business</button>
-      <a class="nav-link" onclick="navigate('/login')">Login</a>
     `;
   }
 }
@@ -3140,10 +3229,11 @@ function renderProvider(id) {
             <p style="color:var(--s400);font-size:14px;margin-bottom:6px;">${p.claimed ? p.companyName+' will confirm within 1 business day.' : 'Submit a request — the business owner will be notified.'}</p>
             <div style="display:flex;align-items:center;gap:6px;margin-bottom:18px;font-size:12px;color:#6FE09A;font-family:'Barlow Condensed',sans-serif;font-weight:700;">✓ Free to book — no fees for clients</div>
             <div id="bookingSuccess" style="display:none;" class="alert alert-success">&#10003; Request submitted! The contractor will confirm within 1 business day.</div>
+            ${!App.currentUser ? `<div style="background:rgba(224,98,26,0.1);border:1px solid rgba(224,98,26,0.3);border-radius:6px;padding:12px 16px;font-size:13px;color:var(--o300);margin-bottom:16px;">&#128274; <a onclick="navigate('/login')" style="color:var(--o400);cursor:pointer;font-weight:600;">Sign in</a> or <a onclick="showClientRegisterModal()" style="color:var(--o400);cursor:pointer;font-weight:600;">create a free account</a> to track this booking in your dashboard.</div>` : ''}
             <form id="bookingForm" onsubmit="handleBookingSubmit(event,'${p.id}')">
-              <div class="form-group"><label class="form-label">Your Name / Company *</label><input class="form-control" type="text" name="customerName" required placeholder="Full name or company" /></div>
-              <div class="form-group"><label class="form-label">Email *</label><input class="form-control" type="email" name="customerEmail" required placeholder="you@company.ca" /></div>
-              <div class="form-group"><label class="form-label">Phone *</label><input class="form-control" type="tel" name="customerPhone" required placeholder="(416) 555-0000" /></div>
+              <div class="form-group"><label class="form-label">Your Name / Company *</label><input class="form-control" type="text" name="customerName" required placeholder="Full name or company" value="${App.currentUser?.role==='client'?App.currentUser.name||'':''}" /></div>
+              <div class="form-group"><label class="form-label">Email *</label><input class="form-control" type="email" name="customerEmail" required placeholder="you@company.ca" value="${App.currentUser?.role==='client'?App.currentUser.email||'':''}" /></div>
+              <div class="form-group"><label class="form-label">Phone *</label><input class="form-control" type="tel" name="customerPhone" required placeholder="(416) 555-0000" value="${App.currentUser?.role==='client'?App.currentUser.phone||'':''}" /></div>
               <div class="form-group"><label class="form-label">Preferred Date *</label><input class="form-control" type="date" name="serviceDate" required min="${getTomorrowDate()}" /></div>
               <div class="form-group">
                 <label class="form-label">Preferred Time *</label>
@@ -3213,18 +3303,25 @@ function handleBookingSubmit(e, providerId) {
   const time = document.getElementById('selectedTime').value;
   if (!time) { showToast('Please select a preferred time.','error'); return; }
   const data = Object.fromEntries(new FormData(e.target));
+
+  // Pre-fill with logged-in client info if available
+  const customerEmail = data.customerEmail || (App.currentUser?.role==='client' ? App.currentUser.email : '');
+  const customerName  = data.customerName  || (App.currentUser?.role==='client' ? App.currentUser.name  : '');
+
   const booking = {
     id:'b'+Date.now(), providerId,
-    customerName: data.customerName, customerEmail: data.customerEmail,
+    customerName, customerEmail,
     customerPhone: data.customerPhone, serviceDate: data.serviceDate,
     serviceTime: time, jobDescription: data.jobDescription,
+    clientId: App.currentUser?.role==='client' ? App.currentUser.id : null,
+    clientEmail: customerEmail,
     status:'pending', paid:false, createdAt: new Date().toISOString().split('T')[0]
   };
   App.bookings.push(booking);
   saveBookings();
   const idx = App.providers.findIndex(p=>p.id===providerId);
   if (idx>-1) { App.providers[idx].requestCount=(App.providers[idx].requestCount||0)+1; saveProviders(); }
-  pushNotification(providerId, `New booking request from ${data.customerName} — ${data.serviceDate}`, booking.id);
+  pushNotification(providerId, 'New booking request from ' + customerName + ' — ' + data.serviceDate, booking.id);
   document.getElementById('bookingSuccess').style.display='block';
   document.getElementById('bookingForm').style.display='none';
   showToast('Booking request submitted!','success');
@@ -3251,39 +3348,115 @@ function openPayModal(booking) {
 
 function closePayModal() {
   document.getElementById('payModal').classList.remove('open');
-  _pendingBooking = null;
+  _pendingPayBookingId = null;
+  if (_stripeElements) { try { _stripeElements.unmount(); } catch(e) {} _stripeElements = null; }
 }
 
-function handlePaymentSubmit(e) {
+function confirmBookingPaid(bookingId) {
+  const idx = App.bookings.findIndex(b => b.id === bookingId);
+  if (idx > -1) {
+    App.bookings[idx].status  = 'confirmed';
+    App.bookings[idx].paid    = true;
+    saveBookings();
+  }
+  closePayModal();
+  showToast('Payment successful — booking confirmed! Client details are now visible.', 'success');
+  renderDashboard();
+}
+
+async function handlePaymentSubmit(e) {
   e.preventDefault();
   const btn = document.getElementById('paySubmitBtn');
-  btn.textContent = 'Processing…'; btn.disabled = true;
-  setTimeout(() => {
-    btn.textContent = 'Pay $2.99 & Confirm →'; btn.disabled = false;
-    if (_pendingPayBookingId) {
-      /* Provider paying to confirm a lead */
-      const idx = App.bookings.findIndex(b=>b.id===_pendingPayBookingId);
-      if (idx>-1) {
-        App.bookings[idx].status = 'confirmed';
-        App.bookings[idx].paid = true;
-        saveBookings();
+  btn.disabled = true; btn.textContent = 'Processing…';
+
+  // If Stripe is configured and elements are mounted, use real payment
+  if (_stripeInstance && _stripeElements) {
+    try {
+      const { error } = await _stripeInstance.confirmPayment({
+        elements: _stripeElements,
+        confirmParams: { return_url: window.location.origin + '/dashboard' },
+        redirect: 'if_required'
+      });
+      if (error) {
+        document.getElementById('payAlert').innerHTML = `<div class="alert alert-error">${error.message}</div>`;
+        btn.disabled = false; btn.textContent = 'Pay $2.99 & Confirm →';
+        return;
       }
-      closePayModal();
-      showToast('Payment accepted — booking confirmed!','success');
-      renderDashboard();
-      _pendingPayBookingId = null;
+      confirmBookingPaid(_pendingPayBookingId);
+    } catch(err) {
+      document.getElementById('payAlert').innerHTML = `<div class="alert alert-error">Payment failed. Please try again.</div>`;
+      btn.disabled = false; btn.textContent = 'Pay $2.99 & Confirm →';
     }
-  }, 1600);
+  } else {
+    // Fallback dev simulation (no Stripe configured)
+    simulatePayment();
+  }
 }
 
-function fmtCard(el) {
-  let v = el.value.replace(/\D/g,'').slice(0,16);
-  el.value = v.match(/.{1,4}/g)?.join(' ')||v;
+function simulatePayment() {
+  const btn = document.getElementById('paySubmitBtn');
+  if (btn) { btn.disabled = true; btn.textContent = 'Processing…'; }
+  setTimeout(() => {
+    confirmBookingPaid(_pendingPayBookingId);
+  }, 1400);
 }
-function fmtExp(el) {
-  let v = el.value.replace(/\D/g,'').slice(0,4);
-  if (v.length>=3) v = v.slice(0,2)+' / '+v.slice(2);
-  el.value = v;
+
+async function openProviderPayModalStripe(bid) {
+  _pendingPayBookingId = bid;
+  const b = App.bookings.find(x => x.id === bid);
+
+  document.getElementById('payBookingSummary').innerHTML =
+    '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:13px;color:var(--s400);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Lead Details</div>'
+    + '<div style="display:flex;flex-direction:column;gap:6px;font-size:14px;">'
+    + '<div style="display:flex;justify-content:space-between;"><span style="color:var(--s400);">Client</span><span style="font-weight:500;">' + (b?.customerName||'') + '</span></div>'
+    + '<div style="display:flex;justify-content:space-between;"><span style="color:var(--s400);">Date</span><span>' + formatDate(b?.serviceDate) + '</span></div>'
+    + '<div style="display:flex;justify-content:space-between;"><span style="color:var(--s400);">Time</span><span>' + (b?.serviceTime||'') + '</span></div>'
+    + '<div style="border-top:1px solid var(--n400);margin-top:6px;padding-top:8px;display:flex;justify-content:space-between;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:16px;">'
+    + '<span>Lead Connection Fee</span><span style="color:var(--o400);">$2.99</span></div></div>'
+    + '<div style="margin-top:10px;font-size:12px;color:var(--s400);">Pay once to unlock client contact details and confirm this appointment.</div>';
+
+  document.getElementById('payAlert').innerHTML = '';
+  document.getElementById('payModal').classList.add('open');
+
+  const stripeConfigured = STRIPE_PK && !STRIPE_PK.includes('YOUR_STRIPE');
+
+  if (stripeConfigured) {
+    document.getElementById('payForm').style.display = '';
+    document.getElementById('payFallback').style.display = 'none';
+    document.getElementById('paySubmitBtn').textContent = 'Pay $2.99 & Confirm →';
+    document.getElementById('paySubmitBtn').disabled = false;
+
+    try {
+      if (!_stripeInstance) _stripeInstance = Stripe(STRIPE_PK);
+
+      const resp = await fetch('/api/create-payment-intent', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: 299, currency: 'cad', description: 'BookYourTrades Lead Fee', bookingId: bid })
+      });
+      const json = await resp.json();
+
+      if (json.error) {
+        document.getElementById('payAlert').innerHTML = `<div class="alert alert-error">${json.error}</div>`;
+        document.getElementById('payForm').style.display = 'none';
+        document.getElementById('payFallback').style.display = '';
+        return;
+      }
+
+      _stripeElements = _stripeInstance.elements({ clientSecret: json.clientSecret, appearance: { theme: 'night', variables: { colorPrimary: '#E0621A', borderRadius: '6px' } } });
+      _stripePaymentElement = _stripeElements.create('payment');
+      document.getElementById('stripe-payment-element').innerHTML = '';
+      _stripePaymentElement.mount('#stripe-payment-element');
+
+    } catch(err) {
+      document.getElementById('payForm').style.display = 'none';
+      document.getElementById('payFallback').style.display = '';
+    }
+  } else {
+    // Stripe not configured — show fallback
+    document.getElementById('payForm').style.display = 'none';
+    document.getElementById('payFallback').style.display = '';
+  }
 }
 
 function openClaimModal(pid) {
@@ -3328,22 +3501,49 @@ function handleClaim(e) {
 /* ============================================================
    AUTH
 ============================================================ */
+function switchLoginTab(type) {
+  document.getElementById('loginType').value = type;
+  const isProvider = type === 'provider';
+  document.getElementById('loginTabProvider').classList.toggle('active', isProvider);
+  document.getElementById('loginTabClient').classList.toggle('active', !isProvider);
+  document.getElementById('loginFooterProvider').style.display = isProvider ? '' : 'none';
+  document.getElementById('loginFooterClient').style.display  = isProvider ? 'none' : '';
+  document.getElementById('loginSubmitBtn').textContent = isProvider ? 'Sign In →' : 'Sign In →';
+}
+
 function handleLogin(e) {
   e.preventDefault();
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pass  = document.getElementById('loginPassword').value;
+  const email    = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass     = document.getElementById('loginPassword').value;
+  const loginType = document.getElementById('loginType').value;
 
-  const user = App.users.find(u=>u.email.toLowerCase()===email);
-  if (!user || user.password!==pass) {
-    document.getElementById('loginAlert').innerHTML=`<div class="alert alert-error">Invalid email or password.</div>`;
+  // Try client login first if on client tab
+  if (loginType === 'client') {
+    const client = App.clients.find(c => c.email.toLowerCase() === email && c.password === pass);
+    if (!client) {
+      document.getElementById('loginAlert').innerHTML = `<div class="alert alert-error">Invalid email or password.</div>`;
+      return;
+    }
+    App.currentUser = { ...client, role: 'client' };
+    sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
+    updateNav();
+    navigate('/dashboard');
+    showToast('Welcome back, ' + (client.name || email) + '!', 'success');
     return;
   }
-  const prov = App.providers.find(p=>p.id===user.providerId);
-  App.currentUser = {...user, provider:prov};
+
+  // Provider login
+  const user = App.users.find(u => u.email.toLowerCase() === email && u.password === pass);
+  if (!user) {
+    document.getElementById('loginAlert').innerHTML = `<div class="alert alert-error">Invalid email or password.</div>`;
+    return;
+  }
+  const prov = App.providers.find(p => p.id === user.providerId);
+  App.currentUser = { ...user, provider: prov, role: 'provider' };
   sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
   updateNav();
   navigate('/dashboard');
-  showToast(`Welcome back, ${prov?.contactName||email}!`,'success');
+  showToast('Welcome back, ' + (prov?.contactName || email) + '!', 'success');
 }
 
 function handleLogout() {
@@ -3352,6 +3552,44 @@ function handleLogout() {
   updateNav();
   navigate('/');
   showToast('Logged out successfully.');
+}
+
+function showClientRegisterModal() {
+  document.getElementById('clientRegModal').style.display = 'flex';
+  document.getElementById('clientRegAlert').innerHTML = '';
+  document.getElementById('clientRegForm').reset();
+}
+function closeClientRegModal() {
+  document.getElementById('clientRegModal').style.display = 'none';
+}
+
+function handleClientRegister(e) {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target));
+  if (data.password !== data.confirmPassword) {
+    document.getElementById('clientRegAlert').innerHTML = `<div class="alert alert-error">Passwords do not match.</div>`; return;
+  }
+  if (App.clients.find(c => c.email.toLowerCase() === data.email.toLowerCase())) {
+    document.getElementById('clientRegAlert').innerHTML = `<div class="alert alert-error">An account with this email already exists.</div>`; return;
+  }
+  const client = {
+    id: 'cl' + Date.now(),
+    name: data.name,
+    company: data.company || '',
+    email: data.email,
+    phone: data.phone || '',
+    password: data.password,
+    role: 'client',
+    createdAt: new Date().toISOString()
+  };
+  App.clients.push(client);
+  saveClients();
+  App.currentUser = { ...client };
+  sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
+  closeClientRegModal();
+  updateNav();
+  navigate('/dashboard');
+  showToast('Account created! Welcome, ' + data.name + '.', 'success');
 }
 
 function handleRegister(e) {
@@ -3396,17 +3634,9 @@ function handleRegister(e) {
 /* ============================================================
    DASHBOARD
 ============================================================ */
-function renderDashboard() {
-  if (!App.currentUser) return;
-  const prov = App.providers.find(p=>p.id===App.currentUser.providerId);
-  if (!prov) return;
-
-  const bookings  = App.bookings.filter(b=>b.providerId===prov.id);
-  const pending   = bookings.filter(b=>b.status==='pending');
-  const confirmed = bookings.filter(b=>b.status==='confirmed');
-  const upcoming  = bookings.filter(b=>b.status!=='cancelled'&&new Date(b.serviceDate)>=new Date());
-  const ini = prov.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
-
+function renderDashboard_OLD_REMOVED() {
+  // removed — see ENHANCED DASHBOARD section below
+  const prov = null;
   document.getElementById('dashboardContent').innerHTML = `
     <!-- Header -->
     <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
@@ -3622,23 +3852,7 @@ function updateStatus(bid, status) {
 }
 
 function openProviderPayModal(bid) {
-  _pendingPayBookingId = bid;
-  const b = App.bookings.find(x=>x.id===bid);
-  const p = App.providers.find(x=>x.id===b?.providerId);
-  document.getElementById('payBookingSummary').innerHTML = `
-    <div style="font-family:'Barlow Condensed',sans-serif;font-size:13px;color:var(--s400);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Lead Details</div>
-    <div style="display:flex;flex-direction:column;gap:6px;font-size:14px;color:var(--text);">
-      <div style="display:flex;justify-content:space-between;"><span style="color:var(--s400);">Client</span><span style="font-weight:500;">${b?.customerName||''}</span></div>
-      <div style="display:flex;justify-content:space-between;"><span style="color:var(--s400);">Date</span><span>${formatDate(b?.serviceDate)}</span></div>
-      <div style="display:flex;justify-content:space-between;"><span style="color:var(--s400);">Time</span><span>${b?.serviceTime||''}</span></div>
-      <div style="border-top:1px solid var(--n400);margin-top:6px;padding-top:8px;display:flex;justify-content:space-between;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;">
-        <span>Lead Connection Fee</span><span style="color:var(--o400);">$2.99</span>
-      </div>
-    </div>
-    <div style="margin-top:10px;font-size:12px;color:var(--s400);">Pay once to unlock client contact details and confirm this appointment.</div>
-  `;
-  document.getElementById('payForm').reset();
-  document.getElementById('payModal').classList.add('open');
+  openProviderPayModalStripe(bid);
 }
 
 function handleProfileUpdate(e, pid) {
@@ -3702,31 +3916,50 @@ function showToast(msg, type='') {
 function handleRFQ(e) {
   e.preventDefault();
   const data = Object.fromEntries(new FormData(e.target));
+
+  // Save RFQ to App.rfqs
+  const rfq = {
+    id: 'rfq' + Date.now(),
+    jobTitle:    data.jobTitle,
+    tradeType:   data.tradeType,
+    city:        data.city,
+    budget:      data.budget,
+    timeline:    data.timeline,
+    description: data.description,
+    contactName: data.contactName,
+    contactEmail: data.contactEmail,
+    contactPhone: data.contactPhone,
+    clientId:    App.currentUser?.id || null,
+    status:      'open',
+    createdAt:   new Date().toISOString()
+  };
+  App.rfqs.push(rfq);
+  saveRFQs();
+
   document.getElementById('rfqSuccess').style.display = 'block';
   e.target.style.display = 'none';
 
   // Match providers
   const matches = App.providers.filter(p =>
     p.status !== 'pending_approval' &&
-    (p.tradeType === data.tradeType || p.serviceAreas.includes(data.city))
-  ).sort((a,b) => b.rating - a.rating).slice(0,4);
+    (p.tradeType === data.tradeType || (p.serviceAreas||[]).includes(data.city))
+  ).sort((a,b) => b.rating - a.rating).slice(0,6);
 
   const list = document.getElementById('rfqMatchList');
   list.innerHTML = matches.length === 0
     ? `<p style="color:var(--s400);">No exact matches found — <a onclick="navigate('/directory')" style="color:var(--o400);cursor:pointer;">browse the full directory</a>.</p>`
     : matches.map(p => {
-        const ini = p.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
         return `<div class="rfq-match-card" onclick="navigate('/provider/${p.id}')">
           <div style="display:flex;align-items:center;gap:16px;">
-            <div style="width:50px;height:50px;background:var(--o500);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:18px;color:white;flex-shrink:0;">${ini}</div>
+            ${providerLogoHTML(p,50,5)}
             <div style="flex:1;">
               <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:white;">${p.companyName}</div>
               <div style="font-size:13px;color:var(--s400);margin-top:2px;">
                 <span class="badge badge-orange" style="font-size:10px;">${p.tradeType}</span>
-                &nbsp;&#9733; ${p.rating} &middot; &#128205; ${p.serviceAreas.join(', ')}
+                &nbsp;&#9733; ${p.rating} &middot; &#128205; ${(p.serviceAreas||[]).slice(0,2).join(', ')}
               </div>
             </div>
-            <button class="btn btn-orange btn-sm">View &amp; Book</button>
+            <button class="btn btn-orange btn-sm" onclick="event.stopPropagation();navigate('/provider/${p.id}')">View &amp; Book</button>
           </div>
         </div>`;
       }).join('');
@@ -3812,12 +4045,16 @@ function renderAdminPanel() {
     <div class="container" style="padding-top:32px;padding-bottom:80px;">
 
       <!-- Stats Row -->
-      <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:36px;" class="dash-stats">
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:16px;" class="dash-stats">
         <div class="stat-card"><div class="stat-value" style="font-size:32px;">${totalProviders}</div><div class="stat-label">Total Listings</div></div>
         <div class="stat-card" style="border-top-color:#22C55E;"><div class="stat-value" style="font-size:32px;color:#22C55E;">${claimed}</div><div class="stat-label">Claimed</div></div>
         <div class="stat-card" style="border-top-color:#F0C060;"><div class="stat-value" style="font-size:32px;color:#F0C060;">${unclaimed}</div><div class="stat-label">Unclaimed</div></div>
-        <div class="stat-card"><div class="stat-value" style="font-size:32px;">${totalBookings}</div><div class="stat-label">Total Bookings</div></div>
         <div class="stat-card" style="border-top-color:#22C55E;"><div class="stat-value" style="font-size:32px;color:#22C55E;">$${revenue}</div><div class="stat-label">Revenue</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:36px;" class="dash-stats">
+        <div class="stat-card"><div class="stat-value" style="font-size:32px;">${totalBookings}</div><div class="stat-label">Total Bookings</div></div>
+        <div class="stat-card"><div class="stat-value" style="font-size:32px;">${App.clients.length}</div><div class="stat-label">Client Accounts</div></div>
+        <div class="stat-card"><div class="stat-value" style="font-size:32px;">${App.rfqs.length}</div><div class="stat-label">Job Requests</div></div>
         <div class="stat-card"><div class="stat-value" style="font-size:32px;">${featured}</div><div class="stat-label">Featured</div></div>
       </div>
 
@@ -3826,6 +4063,8 @@ function renderAdminPanel() {
         <button class="tab-btn active" onclick="switchTab('admin-listings',this)">📋 All Listings</button>
         <button class="tab-btn" onclick="switchTab('admin-registrations',this)">⏳ Registrations ${getPendingBadge()}</button>
         <button class="tab-btn" onclick="switchTab('admin-bookings',this)">📅 All Bookings</button>
+        <button class="tab-btn" onclick="switchTab('admin-rfqs',this)">📋 Job Requests</button>
+        <button class="tab-btn" onclick="switchTab('admin-clients',this)">👥 Clients</button>
         <button class="tab-btn" onclick="switchTab('admin-add',this)">➕ Add Listing</button>
         <button class="tab-btn" onclick="switchTab('admin-settings',this)">⚙️ Site Settings</button>
       </div>
@@ -3885,6 +4124,40 @@ function renderAdminPanel() {
             </tbody>
           </table>
         </div>
+      </div>
+
+      <!-- RFQ TAB -->
+      <div id="admin-rfqs" class="tab-content">
+        ${App.rfqs.length === 0
+          ? `<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">📋</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;">No job requests yet</div></div>`
+          : `<div class="table-container"><table class="data-table"><thead><tr><th>Job Title</th><th>Trade</th><th>City</th><th>Budget</th><th>Contact</th><th>Status</th><th>Date</th></tr></thead><tbody>
+              ${App.rfqs.slice().reverse().map(r=>`<tr>
+                <td style="font-weight:500;">${r.jobTitle}</td>
+                <td><span class="badge badge-orange" style="font-size:10px;">${r.tradeType}</span></td>
+                <td style="font-size:13px;">${r.city}</td>
+                <td style="font-size:13px;">${r.budget||'—'}</td>
+                <td><div style="font-size:13px;">${r.contactName}</div><div style="font-size:11px;color:var(--s400);">${r.contactEmail}</div></td>
+                <td><span class="badge ${r.status==='open'?'badge-green':'badge-yellow'}">${r.status}</span></td>
+                <td style="font-size:12px;color:var(--s400);">${new Date(r.createdAt).toLocaleDateString('en-CA')}</td>
+              </tr>`).join('')}
+            </tbody></table></div>`}
+      </div>
+
+      <!-- CLIENTS TAB -->
+      <div id="admin-clients" class="tab-content">
+        ${App.clients.length === 0
+          ? `<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">👥</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;">No client accounts yet</div></div>`
+          : `<div class="table-container"><table class="data-table"><thead><tr><th>Name</th><th>Company</th><th>Email</th><th>Phone</th><th>Bookings</th><th>RFQs</th><th>Since</th></tr></thead><tbody>
+              ${App.clients.slice().reverse().map(c=>`<tr>
+                <td style="font-weight:500;">${c.name}</td>
+                <td style="font-size:13px;color:var(--s400);">${c.company||'—'}</td>
+                <td style="font-size:13px;">${c.email}</td>
+                <td style="font-size:13px;">${c.phone||'—'}</td>
+                <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;">${App.bookings.filter(b=>b.clientId===c.id||b.clientEmail===c.email).length}</td>
+                <td style="font-family:'Barlow Condensed',sans-serif;font-weight:700;">${App.rfqs.filter(r=>r.clientId===c.id).length}</td>
+                <td style="font-size:12px;color:var(--s400);">${new Date(c.createdAt||Date.now()).toLocaleDateString('en-CA')}</td>
+              </tr>`).join('')}
+            </tbody></table></div>`}
       </div>
 
       <!-- ADD LISTING TAB -->
@@ -4467,6 +4740,138 @@ function pushNotification(providerId, message, bookingId) {
   });
   saveNotifications();
   updateNav();
+}
+
+/* ============================================================
+   CLIENT DASHBOARD
+============================================================ */
+function renderClientDashboard() {
+  const client = App.currentUser;
+  if (!client) return;
+
+  const myBookings = App.bookings.filter(b => b.clientEmail && b.clientEmail.toLowerCase() === (client.email||'').toLowerCase());
+  const myRFQs    = App.rfqs.filter(r => r.clientId === client.id || (r.contactEmail||'').toLowerCase() === (client.email||'').toLowerCase());
+
+  document.getElementById('clientDashboardContent').innerHTML = `
+    <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
+      <div class="container">
+        <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <div style="width:52px;height:52px;background:var(--o500);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:22px;color:white;flex-shrink:0;">
+            ${(client.name||'C').charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <h1 style="font-size:28px;color:white;">${client.name||'Client'}</h1>
+            <div style="color:var(--s400);font-size:14px;">${client.company ? client.company + ' &middot; ' : ''}${client.email}</div>
+          </div>
+          <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-orange btn-sm" onclick="navigate('/directory')">&#128269; Browse Contractors</button>
+            <button class="btn btn-outline btn-sm" onclick="navigate('/rfq')">&#128221; Post a Job</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top:36px;padding-bottom:80px;">
+      <div class="dash-stats" style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:36px;">
+        <div class="stat-card"><div class="stat-value">${myBookings.length}</div><div class="stat-label">Appointments Booked</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:#F0A030;">${myBookings.filter(b=>b.status==='pending').length}</div><div class="stat-label">Awaiting Response</div></div>
+        <div class="stat-card"><div class="stat-value" style="color:#22C55E;">${myRFQs.length}</div><div class="stat-label">Job Requests Posted</div></div>
+      </div>
+
+      <div class="tab-bar" style="margin-bottom:28px;">
+        <button class="tab-btn active" onclick="switchTab('cli-bookings',this)">&#128197; My Appointments</button>
+        <button class="tab-btn" onclick="switchTab('cli-rfqs',this)">&#128221; My Job Requests</button>
+        <button class="tab-btn" onclick="switchTab('cli-account',this)">&#9881;&#65039; Account</button>
+      </div>
+
+      <!-- My Appointments -->
+      <div id="cli-bookings" class="tab-content active">
+        ${myBookings.length === 0
+          ? `<div style="text-align:center;padding:60px;color:var(--s400);">
+               <div style="font-size:40px;margin-bottom:12px;">&#128197;</div>
+               <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;margin-bottom:10px;">No appointments yet</div>
+               <div style="font-size:14px;margin-bottom:24px;">Browse contractors and book your first appointment.</div>
+               <button class="btn btn-orange" onclick="navigate('/directory')">Browse Contractors</button>
+             </div>`
+          : `<div class="table-container">
+               <table class="data-table">
+                 <thead><tr><th>Contractor</th><th>Trade</th><th>Date &amp; Time</th><th>Description</th><th>Status</th></tr></thead>
+                 <tbody>
+                   ${myBookings.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(b => {
+                     const prov = App.providers.find(p=>p.id===b.providerId);
+                     return `<tr>
+                       <td><a onclick="navigate('/provider/${b.providerId}')" style="color:var(--o400);cursor:pointer;font-weight:500;">${prov?.companyName||b.providerId}</a></td>
+                       <td><span class="badge badge-orange" style="font-size:10px;">${prov?.tradeType||'—'}</span></td>
+                       <td><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;">${formatDate(b.serviceDate)}</div><div style="font-size:12px;color:var(--s400);">${b.serviceTime}</div></td>
+                       <td style="max-width:200px;font-size:13px;color:var(--s300);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${b.jobDescription}">${b.jobDescription}</td>
+                       <td>${statusBadge(b.status)}</td>
+                     </tr>`;
+                   }).join('')}
+                 </tbody>
+               </table>
+             </div>`}
+      </div>
+
+      <!-- My RFQs -->
+      <div id="cli-rfqs" class="tab-content">
+        ${myRFQs.length === 0
+          ? `<div style="text-align:center;padding:60px;color:var(--s400);">
+               <div style="font-size:40px;margin-bottom:12px;">&#128221;</div>
+               <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;margin-bottom:10px;">No job requests yet</div>
+               <div style="font-size:14px;margin-bottom:24px;">Post your project details and get matched with contractors.</div>
+               <button class="btn btn-orange" onclick="navigate('/rfq')">Post a Job Request</button>
+             </div>`
+          : `<div style="display:flex;flex-direction:column;gap:16px;">
+               ${myRFQs.sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt)).map(r => `
+                 <div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:24px;">
+                   <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+                     <div>
+                       <div style="font-size:17px;font-weight:700;color:white;">${r.jobTitle}</div>
+                       <div style="font-size:13px;color:var(--s400);margin-top:2px;">${r.city} &middot; ${r.tradeType}</div>
+                     </div>
+                     <div style="display:flex;gap:8px;align-items:center;">
+                       <span class="badge ${r.status==='open'?'badge-green':'badge-yellow'}">${r.status}</span>
+                       <span style="font-size:12px;color:var(--s400);">${new Date(r.createdAt).toLocaleDateString('en-CA')}</span>
+                     </div>
+                   </div>
+                   <div style="font-size:13px;color:var(--s300);">${r.description||''}</div>
+                   ${r.budget?`<div style="margin-top:8px;font-size:12px;color:var(--s400);">Budget: ${r.budget} &middot; Timeline: ${r.timeline||'—'}</div>`:''}
+                 </div>
+               `).join('')}
+             </div>`}
+      </div>
+
+      <!-- Account -->
+      <div id="cli-account" class="tab-content">
+        <div style="max-width:520px;">
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;">
+            <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Account Details</h3>
+            <div style="display:flex;flex-direction:column;gap:12px;font-size:14px;">
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--s400);">Name</span><span style="color:var(--s200);">${client.name||'—'}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--s400);">Company</span><span style="color:var(--s200);">${client.company||'—'}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--s400);">Email</span><span style="color:var(--s200);">${client.email}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--s400);">Phone</span><span style="color:var(--s200);">${client.phone||'—'}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;">
+                <span style="color:var(--s400);">Member Since</span><span style="color:var(--s200);">${new Date(client.createdAt||Date.now()).toLocaleDateString('en-CA',{year:'numeric',month:'long'})}</span>
+              </div>
+            </div>
+            <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--n500);">
+              <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="handleLogout()">Sign Out</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  `;
 }
 
 /* ============================================================
