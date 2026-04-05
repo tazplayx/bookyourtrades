@@ -861,19 +861,17 @@ textarea.form-control { resize: vertical; min-height: 100px; }
         <input type="text" id="heroSearch" placeholder="Search trades, companies, services..." />
         <select id="heroCity">
           <option value="">All Ontario Cities</option>
-          <option>Toronto</option><option>Ottawa</option><option>Hamilton</option>
-          <option>Mississauga</option><option>London</option><option>Windsor</option>
-          <option>Brampton</option><option>Kitchener</option><option>Barrie</option><option>Sudbury</option>
+          ${['Toronto','Ottawa','Hamilton','Mississauga','London','Windsor','Brampton','Kitchener','Barrie','Sudbury','Thunder Bay','Oakville','Burlington','St. Catharines','Sarnia','Chatham','Guelph','Cambridge','Waterloo','Kingston','Peterborough','Oshawa','Ajax','Markham','Vaughan','Richmond Hill','Sault Ste. Marie','North Bay','Brantford','Niagara Falls','Belleville','Orillia'].map(c=>`<option>${c}</option>`).join('')}
         </select>
         <button onclick="doHeroSearch()">Search</button>
       </div>
       <div style="margin-top:24px;display:flex;gap:32px;flex-wrap:wrap;">
         <div style="font-size:14px;color:var(--s300);">
-          <span style="color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;">42+</span>
+          <span style="color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;">80+</span>
           <span style="margin-left:6px;">Listed Contractors</span>
         </div>
         <div style="font-size:14px;color:var(--s300);">
-          <span style="color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;">14</span>
+          <span style="color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;">31</span>
           <span style="margin-left:6px;">Trade Categories</span>
         </div>
         <div style="font-size:14px;color:var(--s300);">
@@ -970,9 +968,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
         <input type="text" id="dirSearch" placeholder="Search by name, trade, or keyword..." />
         <select id="dirCity">
           <option value="">All Cities</option>
-          <option>Toronto</option><option>Ottawa</option><option>Hamilton</option>
-          <option>Mississauga</option><option>London</option><option>Windsor</option>
-          <option>Brampton</option><option>Kitchener</option><option>Barrie</option><option>Sudbury</option>
+          ${['Toronto','Ottawa','Hamilton','Mississauga','London','Windsor','Brampton','Kitchener','Barrie','Sudbury','Thunder Bay','Oakville','Burlington','St. Catharines','Sarnia','Chatham','Guelph','Cambridge','Waterloo','Kingston','Peterborough','Oshawa','Ajax','Markham','Vaughan','Richmond Hill','Sault Ste. Marie','North Bay','Brantford','Niagara Falls','Belleville','Orillia'].map(c=>`<option>${c}</option>`).join('')}
         </select>
         <button onclick="filterDirectory()">Search</button>
       </div>
@@ -1020,8 +1016,13 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
     <div class="container">
       <div class="section-label">Join BookYourTrades</div>
-      <h1 style="font-size:40px;">List Your Trade Business</h1>
-      <p style="color:var(--s300);margin-top:8px;font-size:16px;">Create your free listing and start receiving booking requests from commercial clients across Ontario.</p>
+      <h1 style="font-size:40px;">List Your Trade Business — Free</h1>
+      <p style="color:var(--s300);margin-top:8px;font-size:16px;">Any trade welcome. No certifications required to list. Get discovered by commercial clients across Ontario and start receiving booking requests today.</p>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;margin-top:16px;">
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s300);"><span style="color:#22C55E;font-size:18px;">✓</span> No license required to register</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s300);"><span style="color:#22C55E;font-size:18px;">✓</span> 31 trade categories available</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s300);"><span style="color:#22C55E;font-size:18px;">✓</span> Free to list — pay only when you confirm leads</div>
+      </div>
     </div>
   </div>
   <div class="container" style="padding-top:48px;padding-bottom:80px;">
@@ -1043,33 +1044,28 @@ textarea.form-control { resize: vertical; min-height: 100px; }
               <label class="form-label">Trade Type *</label>
               <select class="form-control" name="tradeType" required>
                 <option value="">Select Trade...</option>
-                <option>Electrical</option><option>Plumbing</option><option>HVAC</option>
-                <option>Roofing</option><option>Welding &amp; Fabrication</option>
-                <option>Concrete &amp; Masonry</option><option>Millwright</option>
-                <option>Pipefitting</option><option>Sheet Metal</option>
-                <option>Refrigeration</option><option>Boilermaker</option>
-                <option>Carpentry</option><option>Painting &amp; Coating</option>
-                <option>General Contracting</option>
+                ${TRADE_TYPES.map(t=>`<option>${t}</option>`).join('')}
               </select>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Ontario Trade License #</label>
-              <input class="form-control" type="text" name="licenseNumber" placeholder="e.g. ECRA/ESA 7013312" />
+              <label class="form-label">License / Registration # <span style="color:var(--s400);font-weight:400;font-size:12px;">(Optional)</span></label>
+              <input class="form-control" type="text" name="licenseNumber" placeholder="e.g. ESA 7013312, TSSA #RF-10042, or leave blank" />
+              <div style="font-size:12px;color:var(--s400);margin-top:4px;">Not required — add if you have one. Any trade type welcome.</div>
             </div>
             <div class="form-group">
               <label class="form-label">Years in Business *</label>
               <select class="form-control" name="yearsInBusiness" required>
                 <option value="">Select...</option>
-                <option>1-2 years</option><option>3-5 years</option>
+                <option>Less than 1 year</option><option>1-2 years</option><option>3-5 years</option>
                 <option>6-10 years</option><option>11-20 years</option><option>20+ years</option>
               </select>
             </div>
           </div>
           <div class="form-group">
             <label class="form-label">Company Description *</label>
-            <textarea class="form-control" name="description" required placeholder="Describe your services, specializations, and what sets your business apart..."></textarea>
+            <textarea class="form-control" name="description" required placeholder="Describe your services, what areas you cover, and what makes your business stand out..."></textarea>
           </div>
           <div class="form-group">
             <label class="form-label">Company Logo</label>
@@ -1122,6 +1118,22 @@ textarea.form-control { resize: vertical; min-height: 100px; }
             <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="St. Catharines"> St. Catharines</label>
             <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Sarnia"> Sarnia</label>
             <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Chatham"> Chatham</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Guelph"> Guelph</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Cambridge"> Cambridge</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Waterloo"> Waterloo</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Kingston"> Kingston</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Peterborough"> Peterborough</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Oshawa"> Oshawa</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Ajax"> Ajax</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Markham"> Markham</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Vaughan"> Vaughan</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Richmond Hill"> Richmond Hill</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Sault Ste. Marie"> Sault Ste. Marie</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="North Bay"> North Bay</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Brantford"> Brantford</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Niagara Falls"> Niagara Falls</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Belleville"> Belleville</label>
+            <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="Orillia"> Orillia</label>
           </div>
         </div>
 
@@ -1352,21 +1364,14 @@ textarea.form-control { resize: vertical; min-height: 100px; }
                 <label class="form-label">Trade Required *</label>
                 <select class="form-control" name="tradeType" required>
                   <option value="">Select Trade...</option>
-                  <option>Electrical</option><option>Plumbing</option><option>HVAC</option>
-                  <option>Roofing</option><option>Welding &amp; Fabrication</option>
-                  <option>Concrete &amp; Masonry</option><option>Millwright</option>
-                  <option>Pipefitting</option><option>Sheet Metal</option>
-                  <option>Refrigeration</option><option>Carpentry</option>
-                  <option>Painting &amp; Coating</option><option>General Contracting</option>
+                  ${TRADE_TYPES.map(t=>`<option>${t}</option>`).join('')}
                 </select>
               </div>
               <div class="form-group">
                 <label class="form-label">City / Region *</label>
                 <select class="form-control" name="city" required>
                   <option value="">Select City...</option>
-                  <option>Toronto</option><option>Ottawa</option><option>Hamilton</option>
-                  <option>Mississauga</option><option>London</option><option>Windsor</option>
-                  <option>Brampton</option><option>Kitchener</option><option>Barrie</option><option>Sudbury</option>
+                  ${['Toronto','Ottawa','Hamilton','Mississauga','London','Windsor','Brampton','Kitchener','Barrie','Sudbury','Thunder Bay','Oakville','Burlington','St. Catharines','Sarnia','Chatham','Guelph','Cambridge','Waterloo','Kingston','Peterborough','Oshawa','Ajax','Markham','Vaughan','Richmond Hill','Sault Ste. Marie','North Bay','Brantford','Niagara Falls','Belleville','Orillia'].map(c=>`<option>${c}</option>`).join('')}
                 </select>
               </div>
             </div>
@@ -1676,18 +1681,37 @@ textarea.form-control { resize: vertical; min-height: 100px; }
    SEED DATA
 ============================================================ */
 const TRADE_CATEGORIES = [
-  { name:'Electrical',            icon:'⚡',  count:87  },
-  { name:'Plumbing',              icon:'🔧',  count:64  },
-  { name:'HVAC',                  icon:'❄️',  count:58  },
-  { name:'Roofing',               icon:'🏗️', count:42  },
-  { name:'Welding & Fabrication', icon:'🔥',  count:35  },
-  { name:'Concrete & Masonry',    icon:'🧱',  count:29  },
-  { name:'Millwright',            icon:'⚙️',  count:22  },
-  { name:'Pipefitting',           icon:'🔩',  count:31  },
-  { name:'Sheet Metal',           icon:'🔨',  count:18  },
-  { name:'Refrigeration',         icon:'🌡️', count:16  },
-  { name:'Carpentry',             icon:'🪚',  count:44  },
-  { name:'Painting & Coating',    icon:'🖌️', count:38  },
+  { name:'Electrical',               icon:'⚡',  count:87  },
+  { name:'Plumbing',                 icon:'🔧',  count:64  },
+  { name:'HVAC',                     icon:'❄️',  count:58  },
+  { name:'Roofing',                  icon:'🏗️', count:42  },
+  { name:'General Contracting',      icon:'🏢',  count:76  },
+  { name:'Concrete & Masonry',       icon:'🧱',  count:29  },
+  { name:'Landscaping',              icon:'🌿',  count:53  },
+  { name:'Cleaning & Janitorial',    icon:'🧹',  count:61  },
+  { name:'Security Systems',         icon:'🔒',  count:44  },
+  { name:'Fire Protection',          icon:'🚒',  count:38  },
+  { name:'Carpentry',                icon:'🪚',  count:44  },
+  { name:'Drywall & Plastering',     icon:'🏠',  count:35  },
+  { name:'Flooring',                 icon:'▦',   count:29  },
+  { name:'Painting & Coating',       icon:'🖌️', count:38  },
+  { name:'Paving & Asphalt',         icon:'🛣️', count:33  },
+  { name:'Snow Removal',             icon:'❄️',  count:27  },
+  { name:'Demolition',               icon:'🔨',  count:19  },
+  { name:'Insulation',               icon:'🧰',  count:22  },
+  { name:'Glazing & Glass',          icon:'🪟',  count:18  },
+  { name:'Fencing',                  icon:'🚧',  count:24  },
+  { name:'Welding & Fabrication',    icon:'🔥',  count:35  },
+  { name:'Pipefitting',              icon:'🔩',  count:31  },
+  { name:'Sheet Metal',              icon:'⬜',  count:18  },
+  { name:'Refrigeration',            icon:'🌡️', count:16  },
+  { name:'Millwright',               icon:'⚙️',  count:22  },
+  { name:'Elevator & Lift',          icon:'🛗',  count:14  },
+  { name:'Environmental Services',   icon:'🌱',  count:17  },
+  { name:'Moving & Equipment Rigging',icon:'🏋️',count:15  },
+  { name:'Locksmith & Access Control',icon:'🗝️',count:21  },
+  { name:'Pest Control',             icon:'🐀',  count:18  },
+  { name:'Boilermaker',              icon:'🔬',  count:11  },
 ];
 
 const SEED_PROVIDERS = [
@@ -2146,7 +2170,302 @@ const SEED_PROVIDERS = [
     rating:4.5, reviewCount:0, certifications:['UA Local 628','TSSA Pressure Piping','Red Seal Pipefitter','OSHA 10'],
     featured:false, claimed:false, requestCount:6, logoData:null, password:'',
     source:'industry-research'
-  }
+  },
+
+  /* ── LANDSCAPING ── */
+  { id:'q1', companyName:'GTA Grounds & Landscaping Co.', tradeType:'Landscaping',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Full-service commercial landscaping for property managers, REITs, and corporate campuses across the GTA. Seasonal maintenance programs, irrigation design, interlock and hardscape, and snow management. Trusted by over 200 commercial properties.',
+    contactName:'Kyle Marchetti', email:'gta.grounds@example.ca', phone:'(416) 588-4300',
+    website:'https://gtagrounds.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Oakville','Burlington'],
+    rating:4.6, reviewCount:74, certifications:[], featured:true, claimed:false, requestCount:19, logoData:null, password:'', source:'industry-research' },
+  { id:'q2', companyName:'Capital Landscape Group', tradeType:'Landscaping',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'Ottawa-based commercial landscaping and grounds maintenance company. Serving federal, municipal, and institutional clients with landscape design, turf management, tree care, and ice management. Award-winning urban landscape projects across Eastern Ontario.',
+    contactName:'Rachel Ouellet', email:'capital.land@example.ca', phone:'(613) 736-2200',
+    website:'',
+    serviceAreas:['Ottawa','Kingston','Barrie'],
+    rating:4.5, reviewCount:41, certifications:[], featured:false, claimed:false, requestCount:12, logoData:null, password:'', source:'industry-research' },
+  { id:'q3', companyName:'Niagara Commercial Grounds', tradeType:'Landscaping',
+    licenseNumber:'', yearsInBusiness:'3-5 years',
+    description:'Niagara and Golden Horseshoe commercial grounds maintenance company. Lawn care, seasonal planting, parking lot sweeping, and winter services. Servicing retail plazas, industrial parks, and commercial condominiums throughout the region.',
+    contactName:'Dom Ferrara', email:'niagara.grounds@example.ca', phone:'(905) 646-5100',
+    website:'',
+    serviceAreas:['St. Catharines','Hamilton','Burlington','Oakville'],
+    rating:4.3, reviewCount:28, certifications:[], featured:false, claimed:false, requestCount:8, logoData:null, password:'', source:'industry-research' },
+
+  /* ── CLEANING & JANITORIAL ── */
+  { id:'q4', companyName:'CleanFirst Commercial Services', tradeType:'Cleaning & Janitorial',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Toronto-based commercial cleaning and facility services company. Office cleaning, post-construction cleanup, hospital-grade sanitization, and industrial floor scrubbing. Bonded and insured. Flexible day or evening scheduling for any commercial facility.',
+    contactName:'Angela Kim', email:'cleanfirst@example.ca', phone:'(416) 901-6600',
+    website:'https://cleanfirstontario.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Oakville'],
+    rating:4.7, reviewCount:93, certifications:[], featured:false, claimed:false, requestCount:31, logoData:null, password:'', source:'industry-research' },
+  { id:'q5', companyName:'Pristine Facility Services', tradeType:'Cleaning & Janitorial',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'Mississauga-based commercial facility services provider specializing in warehouse, manufacturing, and office environments. Day porter service, window cleaning, carpet extraction, and power washing. ISO 9001-aligned quality management and green cleaning products.',
+    contactName:'Steve Palladino', email:'pristine.facility@example.ca', phone:'(905) 712-4400',
+    website:'',
+    serviceAreas:['Mississauga','Toronto','Brampton','Burlington'],
+    rating:4.5, reviewCount:52, certifications:[], featured:false, claimed:false, requestCount:14, logoData:null, password:'', source:'industry-research' },
+  { id:'q6', companyName:'Ottawa Commercial Cleaners Ltd.', tradeType:'Cleaning & Janitorial',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Eastern Ontario commercial and institutional janitorial company. Schools, government offices, healthcare facilities, and retail. ISSA member. Fully insured with background-checked staff and 24/7 emergency response cleaning for flood, fire, and biohazard incidents.',
+    contactName:'Marie-Claire Dubois', email:'ott.cleaners@example.ca', phone:'(613) 745-3300',
+    website:'',
+    serviceAreas:['Ottawa','Kingston','Barrie'],
+    rating:4.4, reviewCount:38, certifications:[], featured:false, claimed:false, requestCount:9, logoData:null, password:'', source:'industry-research' },
+
+  /* ── SECURITY SYSTEMS ── */
+  { id:'q7', companyName:'Shield Security & Access Systems', tradeType:'Security Systems',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'GTA commercial security integrator specializing in CCTV, access control, video analytics, and alarm monitoring. Certified Genetec and Axis integration partner. Serving retail, industrial, and office clients. Remote monitoring, 24/7 support, and quarterly maintenance programs.',
+    contactName:'James Obi', email:'shield.security@example.ca', phone:'(416) 604-7700',
+    website:'https://shieldsecurity.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Oakville'],
+    rating:4.7, reviewCount:61, certifications:[], featured:true, claimed:false, requestCount:22, logoData:null, password:'', source:'industry-research' },
+  { id:'q8', companyName:'Secure-Tech Ontario', tradeType:'Security Systems',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Hamilton-based commercial security systems contractor. Structured cabling, IP camera networks, biometric access control, and intercom systems. Serving property management companies, schools, and healthcare facilities across the Golden Horseshoe.',
+    contactName:'Paul Nkomo', email:'securetech.on@example.ca', phone:'(905) 388-5500',
+    website:'',
+    serviceAreas:['Hamilton','Burlington','St. Catharines','Kitchener'],
+    rating:4.5, reviewCount:29, certifications:[], featured:false, claimed:false, requestCount:11, logoData:null, password:'', source:'industry-research' },
+  { id:'q9', companyName:'Guardian Access & Surveillance', tradeType:'Security Systems',
+    licenseNumber:'', yearsInBusiness:'3-5 years',
+    description:'London-area commercial surveillance and access control specialists. Parking lot CCTV, door interlock systems, fire alarm integration, and visitor management software. Helping Southwestern Ontario businesses protect their assets with proven IP-based security technology.',
+    contactName:'Sandra Poirier', email:'guardian.access@example.ca', phone:'(519) 601-4400',
+    website:'',
+    serviceAreas:['London','Kitchener','Windsor','Sarnia'],
+    rating:4.4, reviewCount:22, certifications:[], featured:false, claimed:false, requestCount:8, logoData:null, password:'', source:'industry-research' },
+
+  /* ── DEMOLITION ── */
+  { id:'q10', companyName:'Apex Demolition Inc.', tradeType:'Demolition',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'Toronto-based interior and structural demolition contractor. Selective demolition, hazmat abatement coordination, concrete sawing and coring, and full disposal and recycling. Serving GC teams on commercial renovations, hospital retrofits, and industrial decommissioning.',
+    contactName:'Russ Walton', email:'apex.demo@example.ca', phone:'(416) 763-5500',
+    website:'https://apexdemolition.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Hamilton'],
+    rating:4.6, reviewCount:47, certifications:[], featured:false, claimed:false, requestCount:17, logoData:null, password:'', source:'industry-research' },
+  { id:'q11', companyName:'Steelman Demolition & Salvage', tradeType:'Demolition',
+    licenseNumber:'', yearsInBusiness:'20+ years',
+    description:'Hamilton industrial and structural demolition contractor with over 25 years experience. Complete building demolition, mill and plant decommissioning, structural steel salvage, and brownfield site preparation. Fully insured with mill-rate safety record.',
+    contactName:'Bill Cawthorne', email:'steelman.demo@example.ca', phone:'(905) 547-2200',
+    website:'',
+    serviceAreas:['Hamilton','Burlington','Kitchener','Toronto'],
+    rating:4.7, reviewCount:35, certifications:[], featured:false, claimed:false, requestCount:13, logoData:null, password:'', source:'industry-research' },
+
+  /* ── INSULATION ── */
+  { id:'q12', companyName:'ThermalGuard Insulation Systems', tradeType:'Insulation',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'GTA commercial spray foam, batt, and rigid board insulation contractor. Roofing insulation, metal building insulation, tank and pipe lagging, and AODA-compliant acoustic insulation. CUFCA member. Serving industrial and ICI construction across the Greater Toronto Area.',
+    contactName:'Chris Barker', email:'thermalguard@example.ca', phone:'(905) 853-6600',
+    website:'https://thermalguardinsulation.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Oakville','Barrie'],
+    rating:4.5, reviewCount:33, certifications:[], featured:false, claimed:false, requestCount:11, logoData:null, password:'', source:'industry-research' },
+  { id:'q13', companyName:'Eastern Spray Foam & Insulation', tradeType:'Insulation',
+    licenseNumber:'', yearsInBusiness:'3-5 years',
+    description:'Ottawa and Eastern Ontario spray foam insulation specialist. Open and closed-cell foam for commercial walls, roofs, and foundations. Air barrier systems, vapour retarders, and thermal bridging solutions for government, institutional, and warehouse construction.',
+    contactName:'Marc Lapointe', email:'eastern.foam@example.ca', phone:'(613) 591-3300',
+    website:'',
+    serviceAreas:['Ottawa','Kingston','Barrie'],
+    rating:4.3, reviewCount:18, certifications:[], featured:false, claimed:false, requestCount:7, logoData:null, password:'', source:'industry-research' },
+
+  /* ── FLOORING ── */
+  { id:'q14', companyName:'Premier Commercial Flooring', tradeType:'Flooring',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'Toronto-based commercial flooring contractor specializing in epoxy, VCT, LVT, polished concrete, and carpet tile for office, healthcare, and retail environments. Large-format tile, moisture-testing, and complete surface preparation. Fast turnaround for occupied tenant improvements.',
+    contactName:'Yolanda Da Silva', email:'premier.floor@example.ca', phone:'(416) 461-8800',
+    website:'https://premierflooringontario.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Oakville'],
+    rating:4.6, reviewCount:57, certifications:[], featured:false, claimed:false, requestCount:19, logoData:null, password:'', source:'industry-research' },
+  { id:'q15', companyName:'Tri-City Floor Systems', tradeType:'Flooring',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Kitchener-Waterloo commercial flooring company. Rubber flooring, quartz broadcast systems, decorative concrete overlays, and vinyl sheet goods. Serving manufacturing, food processing, fitness, and healthcare clients across the Golden Horseshoe and Tri-Cities.',
+    contactName:'Josh Bauman', email:'tricity.floors@example.ca', phone:'(519) 576-4400',
+    website:'',
+    serviceAreas:['Kitchener','Hamilton','London','Barrie'],
+    rating:4.4, reviewCount:24, certifications:[], featured:false, claimed:false, requestCount:9, logoData:null, password:'', source:'industry-research' },
+
+  /* ── GLAZING & GLASS ── */
+  { id:'q16', companyName:'GlassWorks Commercial Glazing', tradeType:'Glazing & Glass',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'Toronto commercial glazing contractor delivering curtain wall systems, storefront framing, structural glass, and automatic doors. IGMA-certified insulating glass. Serving high-rise, retail, and institutional clients across the GTA with in-house fabrication capability.',
+    contactName:'Alex Varga', email:'glassworks.on@example.ca', phone:'(416) 533-9900',
+    website:'https://glassworksontario.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Hamilton'],
+    rating:4.7, reviewCount:44, certifications:[], featured:false, claimed:false, requestCount:16, logoData:null, password:'', source:'industry-research' },
+  { id:'q17', companyName:'Horizon Glazing Inc.', tradeType:'Glazing & Glass',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Hamilton-based commercial glazing and window wall contractor. Aluminum window systems, glass canopies, spandrel panels, and interior glazed partitions. Trusted by general contractors across the Golden Horseshoe for on-budget, weather-tight assemblies.',
+    contactName:'Ben Horvath', email:'horizon.glazing@example.ca', phone:'(905) 527-4400',
+    website:'',
+    serviceAreas:['Hamilton','Burlington','Kitchener','St. Catharines'],
+    rating:4.5, reviewCount:21, certifications:[], featured:false, claimed:false, requestCount:8, logoData:null, password:'', source:'industry-research' },
+
+  /* ── DRYWALL & PLASTERING ── */
+  { id:'q18', companyName:'Drywall Masters Ontario', tradeType:'Drywall & Plastering',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'GTA commercial drywall and metal stud framing contractor. Acoustic assemblies, shaft-wall systems, fire-rated partitions, and Level 5 finish. Serving general contractors on office, healthcare, and education projects across the Greater Toronto Area.',
+    contactName:'Tony Sbrocca', email:'drywall.masters@example.ca', phone:'(905) 673-5500',
+    website:'https://drywallmastersontario.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Oakville'],
+    rating:4.5, reviewCount:39, certifications:[], featured:false, claimed:false, requestCount:14, logoData:null, password:'', source:'industry-research' },
+  { id:'q19', companyName:'Ottawa Stud & Board Inc.', tradeType:'Drywall & Plastering',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Ottawa commercial drywall framing and boarding company. Government, healthcare, and educational retrofits across Eastern Ontario. EIFS cladding, plaster restoration, and suspended T-bar ceiling systems. UBC-affiliated, safety-first, on-schedule delivery.',
+    contactName:'Pierre Lavigne', email:'ottawa.stud@example.ca', phone:'(613) 820-6600',
+    website:'',
+    serviceAreas:['Ottawa','Kingston','Barrie'],
+    rating:4.3, reviewCount:17, certifications:[], featured:false, claimed:false, requestCount:6, logoData:null, password:'', source:'industry-research' },
+
+  /* ── FIRE PROTECTION ── */
+  { id:'q20', companyName:'Guardian Fire Protection Ltd.', tradeType:'Fire Protection',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'Toronto-area fire protection contractor. Wet, dry, and pre-action sprinkler systems, fire alarm panels, emergency lighting, and kitchen suppression. Full design-build for new construction and retrofit. NFPA 13 compliant. Serving ICI, healthcare, and hospitality clients.',
+    contactName:'Ed Brennan', email:'guardian.fire@example.ca', phone:'(416) 233-7700',
+    website:'https://guardianfireprotection.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Hamilton'],
+    rating:4.8, reviewCount:66, certifications:[], featured:true, claimed:false, requestCount:23, logoData:null, password:'', source:'industry-research' },
+  { id:'q21', companyName:'Firesafe Ontario Inc.', tradeType:'Fire Protection',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Ottawa commercial fire suppression and alarm contractor. VESDA smoke detection, clean agent systems, dry chemical suppression, and annual inspections. Serving government, data centre, and pharmaceutical clients across Eastern Ontario. Ministry-certified inspectors.',
+    contactName:'Nadia Fortin', email:'firesafe.on@example.ca', phone:'(613) 688-4400',
+    website:'',
+    serviceAreas:['Ottawa','Kingston','Barrie'],
+    rating:4.6, reviewCount:31, certifications:[], featured:false, claimed:false, requestCount:12, logoData:null, password:'', source:'industry-research' },
+
+  /* ── PAVING & ASPHALT ── */
+  { id:'q22', companyName:'Ontario Paving & Asphalt Inc.', tradeType:'Paving & Asphalt',
+    licenseNumber:'', yearsInBusiness:'20+ years',
+    description:'GTA commercial asphalt paving and sealcoating contractor. Parking lot construction, resurfacing, line painting, speed bump installation, and crack sealing. Serving property managers, industrial parks, and municipalities across Ontario for over 25 years.',
+    contactName:'Sal Ferrante', email:'ontario.paving@example.ca', phone:'(905) 264-8800',
+    website:'https://ontariopaving.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Oakville'],
+    rating:4.5, reviewCount:88, certifications:[], featured:false, claimed:false, requestCount:26, logoData:null, password:'', source:'industry-research' },
+  { id:'q23', companyName:'Northern Asphalt & Paving Ltd.', tradeType:'Paving & Asphalt',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'Barrie-based commercial paving contractor serving Central and Northern Ontario. Paved parking areas, gravel resurfacing, catch basin repairs, and municipal road maintenance. Hot-mix asphalt supply with in-house paving crew. Call for same-season scheduling.',
+    contactName:'Don Firth', email:'northern.asphalt@example.ca', phone:'(705) 722-5500',
+    website:'',
+    serviceAreas:['Barrie','Sudbury','Thunder Bay','Kitchener'],
+    rating:4.4, reviewCount:43, certifications:[], featured:false, claimed:false, requestCount:15, logoData:null, password:'', source:'industry-research' },
+
+  /* ── FENCING ── */
+  { id:'q24', companyName:'SecurePerimeter Fencing Inc.', tradeType:'Fencing',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Toronto commercial and industrial fencing contractor. Chain-link, security mesh, ornamental iron, temporary construction fence, and automated vehicle gates. Serving construction sites, warehouses, schools, and municipalities across the GTA. Fast installation crews available.',
+    contactName:'Ryan McNeil', email:'secure.fence@example.ca', phone:'(416) 748-3300',
+    website:'https://secureperimeter.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Oakville'],
+    rating:4.5, reviewCount:37, certifications:[], featured:false, claimed:false, requestCount:14, logoData:null, password:'', source:'industry-research' },
+  { id:'q25', companyName:'Capital Fencing & Gates', tradeType:'Fencing',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'Ottawa commercial fencing and automated gate specialist. Security perimeter fencing, swing gates, sliding cantilever gates, barrier arms, and access control integration. Serving federal properties, schools, and commercial facilities across Eastern Ontario.',
+    contactName:'Luc Parisien', email:'capital.fence@example.ca', phone:'(613) 737-2200',
+    website:'',
+    serviceAreas:['Ottawa','Kingston','Barrie'],
+    rating:4.4, reviewCount:25, certifications:[], featured:false, claimed:false, requestCount:9, logoData:null, password:'', source:'industry-research' },
+
+  /* ── ELEVATOR & LIFT ── */
+  { id:'q26', companyName:'Elevate Elevator Services', tradeType:'Elevator & Lift',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'TSSA-registered commercial elevator and lift contractor serving Ontario. New elevator installation, modernization, and full maintenance programs for traction, hydraulic, and MRL systems. Stair lifts, platform lifts, and dock levellers. 24/7 entrapment response.',
+    contactName:'Tim Brogan', email:'elevate.lift@example.ca', phone:'(905) 238-8800',
+    website:'https://elevateontario.ca',
+    serviceAreas:['Toronto','Mississauga','Hamilton','Ottawa','Kitchener'],
+    rating:4.7, reviewCount:52, certifications:[], featured:false, claimed:false, requestCount:18, logoData:null, password:'', source:'industry-research' },
+
+  /* ── ENVIRONMENTAL SERVICES ── */
+  { id:'q27', companyName:'EcoRemediation Ontario', tradeType:'Environmental Services',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'Toronto-based environmental remediation and abatement contractor. Asbestos and lead abatement, mould remediation, UST removal, Phase II ESA support, and soil/groundwater remediation. MOE-registered firm serving developers, municipalities, and property managers across Ontario.',
+    contactName:'Dana Whitmore', email:'ecore.on@example.ca', phone:'(416) 492-5500',
+    website:'https://ecoremediation.ca',
+    serviceAreas:['Toronto','Hamilton','Mississauga','Ottawa','London'],
+    rating:4.6, reviewCount:41, certifications:[], featured:false, claimed:false, requestCount:16, logoData:null, password:'', source:'industry-research' },
+  { id:'q28', companyName:'CleanSite Environmental Inc.', tradeType:'Environmental Services',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Hamilton-area hazardous materials and environmental services contractor. Asbestos abatement, PCB removal, biohazard cleanup, and emergency spill response. Serving industrial, commercial, and healthcare clients across Southwestern and Central Ontario.',
+    contactName:'Karl Svendsen', email:'cleansite.env@example.ca', phone:'(905) 522-7700',
+    website:'',
+    serviceAreas:['Hamilton','Burlington','Kitchener','London','Windsor'],
+    rating:4.5, reviewCount:27, certifications:[], featured:false, claimed:false, requestCount:10, logoData:null, password:'', source:'industry-research' },
+
+  /* ── SNOW REMOVAL ── */
+  { id:'q29', companyName:'Snowline Property Services', tradeType:'Snow Removal',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'GTA commercial snow removal and ice management company. Parking lot plowing, salting, sidewalk clearing, and anti-icing pre-treatment. Seasonal and per-occurrence contracts available. Full insurance, 2-hour response windows, and 24/7 dispatch for retail, industrial, and office parks.',
+    contactName:'Craig Dunbar', email:'snowline.prop@example.ca', phone:'(905) 337-7700',
+    website:'https://snowlineservices.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Oakville','Burlington'],
+    rating:4.6, reviewCount:59, certifications:[], featured:false, claimed:false, requestCount:21, logoData:null, password:'', source:'industry-research' },
+  { id:'q30', companyName:'Winter Ready Ontario', tradeType:'Snow Removal',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'Ottawa and Eastern Ontario commercial snow and ice management contractor. Government, institutional, and commercial property contracts. Loader plowing, liquid de-icing, and roof snow removal. Servicing properties across the Ottawa Valley and Eastern Ontario since 2007.',
+    contactName:'Pierre Tanguay', email:'winter.ready@example.ca', phone:'(613) 824-5500',
+    website:'',
+    serviceAreas:['Ottawa','Kingston','Barrie'],
+    rating:4.5, reviewCount:44, certifications:[], featured:false, claimed:false, requestCount:16, logoData:null, password:'', source:'industry-research' },
+
+  /* ── MOVING & EQUIPMENT RIGGING ── */
+  { id:'q31', companyName:'Ontario Industrial Rigging & Movers', tradeType:'Moving & Equipment Rigging',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'Toronto-based industrial machinery moving and precision rigging contractor. CNC machine relocation, press and stamping equipment moves, cleanroom instrument transport, and heavy haul coordination. Serving manufacturing and pharmaceutical clients across Ontario.',
+    contactName:'Ray Volkov', email:'on.rigging@example.ca', phone:'(416) 675-4400',
+    website:'https://ontariorigging.ca',
+    serviceAreas:['Toronto','Mississauga','Hamilton','Kitchener','London'],
+    rating:4.7, reviewCount:36, certifications:[], featured:false, claimed:false, requestCount:13, logoData:null, password:'', source:'industry-research' },
+
+  /* ── LOCKSMITH & ACCESS CONTROL ── */
+  { id:'q32', companyName:'Master Key Commercial Locksmith', tradeType:'Locksmith & Access Control',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'GTA commercial locksmith and access control integrator. Master key systems, high-security cylinders, electronic access, push-bar hardware, and safe installation. ALOA member. Serving property managers, retailers, and healthcare facilities across the Greater Toronto Area.',
+    contactName:'Ian Stafford', email:'masterkey.lock@example.ca', phone:'(416) 844-5500',
+    website:'https://masterkeyontario.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Oakville'],
+    rating:4.6, reviewCount:49, certifications:[], featured:false, claimed:false, requestCount:17, logoData:null, password:'', source:'industry-research' },
+  { id:'q33', companyName:'Hamilton Lock & Hardware Pro', tradeType:'Locksmith & Access Control',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Hamilton and Golden Horseshoe commercial locksmith. Door hardware supply and installation, panic devices, door closers, electronic strikes, and intercom wiring. Trusted by property management companies, schools, and commercial builders. Same-day service available.',
+    contactName:'Victor Santos', email:'hamilton.lock@example.ca', phone:'(905) 527-3300',
+    website:'',
+    serviceAreas:['Hamilton','Burlington','Kitchener','St. Catharines'],
+    rating:4.4, reviewCount:31, certifications:[], featured:false, claimed:false, requestCount:10, logoData:null, password:'', source:'industry-research' },
+
+  /* ── PEST CONTROL ── */
+  { id:'q34', companyName:'Ontario Commercial Pest Management', tradeType:'Pest Control',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Licensed commercial pest control company serving Ontario businesses. Rodent exclusion, bird deterrent systems, cockroach and bed bug treatment, and Integrated Pest Management (IPM) programs. Serving food service, hospitality, warehousing, and healthcare clients province-wide.',
+    contactName:'Ali Hassan', email:'on.pest@example.ca', phone:'(905) 848-7700',
+    website:'https://onpestmanagement.ca',
+    serviceAreas:['Toronto','Mississauga','Brampton','Hamilton','Ottawa'],
+    rating:4.5, reviewCount:42, certifications:[], featured:false, claimed:false, requestCount:14, logoData:null, password:'', source:'industry-research' },
+
+  /* ── ADDITIONAL ELECTRICAL / PLUMBING / HVAC ── */
+  { id:'q35', companyName:'Lakeside Electrical Contractors', tradeType:'Electrical',
+    licenseNumber:'ECRA/ESA 9932104', yearsInBusiness:'6-10 years',
+    description:'Barrie and Central Ontario commercial and industrial electrical contractor. Service and panel upgrades, LED retrofits, solar tie-in, EV charging station installation, and generator hookup. ESA-licensed crew serving cottage country resorts, manufacturing, and municipal facilities.',
+    contactName:'Tina Bowman', email:'lakeside.elec@example.ca', phone:'(705) 725-4400',
+    website:'https://lakesideelectrical.ca',
+    serviceAreas:['Barrie','Sudbury','Kitchener','Toronto'],
+    rating:4.5, reviewCount:29, certifications:[], featured:false, claimed:false, requestCount:8, logoData:null, password:'', source:'industry-research' },
+  { id:'q36', companyName:'Hamilton Plumbing & Mechanical', tradeType:'Plumbing',
+    licenseNumber:'', yearsInBusiness:'11-20 years',
+    description:'Hamilton commercial plumbing contractor. Restaurant rough-in, floor drain installation, backwater valve upgrades, roof drain systems, and hydronic heating tie-ins. Serving property managers, general contractors, and owner-operators across the Golden Horseshoe.',
+    contactName:'Nick Bellissimo', email:'hamilton.plumb@example.ca', phone:'(905) 318-4400',
+    website:'',
+    serviceAreas:['Hamilton','Burlington','Kitchener','St. Catharines'],
+    rating:4.6, reviewCount:37, certifications:[], featured:false, claimed:false, requestCount:12, logoData:null, password:'', source:'industry-research' },
+  { id:'q37', companyName:'Northern HVAC Specialists', tradeType:'HVAC',
+    licenseNumber:'', yearsInBusiness:'6-10 years',
+    description:'Sudbury and Northern Ontario commercial HVAC contractor. Rooftop unit service, split systems, unit heaters, make-up air units, and controls. TSSA gas-licensed technicians. Serving mining facilities, municipal buildings, and retail across Northern Ontario year-round.',
+    contactName:'Claude Tremblay', email:'northern.hvac@example.ca', phone:'(705) 560-3300',
+    website:'',
+    serviceAreas:['Sudbury','Barrie','Thunder Bay','Sault Ste. Marie'],
+    rating:4.4, reviewCount:22, certifications:[], featured:false, claimed:false, requestCount:7, logoData:null, password:'', source:'industry-research' }
 ];
 
 const SEED_BOOKINGS = [
@@ -2224,7 +2543,18 @@ const App = { currentUser: null, providers: [], users: [], bookings: [], reviews
 /* ============================================================
    STORAGE
 ============================================================ */
-const SEED_VERSION = '2026-04-04-v3'; // bump this whenever new seed providers are added
+const SEED_VERSION = '2026-04-05-v1'; // bump this whenever new seed providers are added
+
+const TRADE_TYPES = [
+  'Boilermaker','Carpentry','Cleaning & Janitorial','Concrete & Masonry',
+  'Demolition','Drywall & Plastering','Electrical','Elevator & Lift',
+  'Environmental Services','Fencing','Fire Protection','Flooring',
+  'General Contracting','Glazing & Glass','HVAC','Insulation',
+  'Landscaping','Locksmith & Access Control','Millwright','Moving & Equipment Rigging',
+  'Painting & Coating','Pest Control','Pipefitting','Plumbing',
+  'Paving & Asphalt','Refrigeration','Roofing','Security Systems',
+  'Sheet Metal','Snow Removal','Welding & Fabrication'
+];
 
 function loadStorage() {
   const sp = localStorage.getItem('to_providers');
@@ -3142,7 +3472,7 @@ function renderDashboard() {
                 <div class="form-group">
                   <label class="form-label">Trade Type</label>
                   <select class="form-control" name="tradeType">
-                    ${['Electrical','Plumbing','HVAC','Roofing','Welding & Fabrication','Concrete & Masonry','Millwright','Pipefitting','Sheet Metal','Refrigeration','Boilermaker','Carpentry','Painting & Coating','General Contracting'].map(t=>`<option ${t===prov.tradeType?'selected':''}>${t}</option>`).join('')}
+                    ${TRADE_TYPES.map(t=>`<option ${t===prov.tradeType?'selected':''}>${t}</option>`).join('')}
                   </select>
                 </div>
               </div>
@@ -3559,7 +3889,7 @@ function renderAdminPanel() {
                 <div class="form-group"><label class="form-label">Trade Type *</label>
                   <select class="form-control" name="tradeType" required>
                     <option value="">Select…</option>
-                    ${['Electrical','Plumbing','HVAC','Roofing','Welding & Fabrication','Concrete & Masonry','Millwright','Pipefitting','Sheet Metal','Refrigeration','Boilermaker','Carpentry','Painting & Coating','General Contracting'].map(t=>`<option>${t}</option>`).join('')}
+                    ${TRADE_TYPES.map(t=>`<option>${t}</option>`).join('')}
                   </select>
                 </div>
               </div>
@@ -3733,7 +4063,7 @@ function openAdminEdit(pid) {
           <div class="form-group"><label class="form-label">Company Name *</label><input class="form-control" name="companyName" value="${p.companyName}" required /></div>
           <div class="form-group"><label class="form-label">Trade Type</label>
             <select class="form-control" name="tradeType">
-              ${['Electrical','Plumbing','HVAC','Roofing','Welding & Fabrication','Concrete & Masonry','Millwright','Pipefitting','Sheet Metal','Refrigeration','Boilermaker','Carpentry','Painting & Coating','General Contracting'].map(t=>`<option ${t===p.tradeType?'selected':''}>${t}</option>`).join('')}
+              ${TRADE_TYPES.map(t=>`<option ${t===p.tradeType?'selected':''}>${t}</option>`).join('')}
             </select>
           </div>
         </div>
@@ -3997,7 +4327,7 @@ function renderDashboard() {
               <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Company Details</h3>
               <div class="form-row">
                 <div class="form-group"><label class="form-label">Company Name</label><input class="form-control" type="text" name="companyName" value="${prov.companyName}" required /></div>
-                <div class="form-group"><label class="form-label">Trade Type</label><select class="form-control" name="tradeType">${['Electrical','Plumbing','HVAC','Roofing','Welding & Fabrication','Concrete & Masonry','Millwright','Pipefitting','Sheet Metal','Refrigeration','Boilermaker','Carpentry','Painting & Coating','General Contracting'].map(t=>`<option ${t===prov.tradeType?'selected':''}>${t}</option>`).join('')}</select></div>
+                <div class="form-group"><label class="form-label">Trade Type</label><select class="form-control" name="tradeType">${TRADE_TYPES.map(t=>`<option ${t===prov.tradeType?'selected':''}>${t}</option>`).join('')}</select></div>
               </div>
               <div class="form-row">
                 <div class="form-group"><label class="form-label">License Number</label><input class="form-control" type="text" name="licenseNumber" value="${prov.licenseNumber}" /></div>
