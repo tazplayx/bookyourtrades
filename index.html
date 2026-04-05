@@ -34,7 +34,7 @@
     "description": "Ontario's commercial trades directory. Find and book licensed electricians, plumbers, HVAC specialists, roofers, welders and more across Ontario.",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://bookyourtrades.com/#/directory?q={search_term_string}",
+      "target": "https://bookyourtrades.com/directory?q={search_term_string}",
       "query-input": "required name=search_term_string"
     }
   }
@@ -2661,14 +2661,13 @@ function saveBookings()  { localStorage.setItem('to_bookings',  JSON.stringify(A
    ROUTING
 ============================================================ */
 function navigate(path) {
-  history.pushState({}, '', '#' + path);
+  history.pushState({}, '', path);
   router();
   window.scrollTo(0, 0);
 }
 
 function router() {
-  const hash  = location.hash.replace('#', '') || '/';
-  const parts = hash.split('/').filter(Boolean);
+  const parts = location.pathname.split('/').filter(Boolean);
   const page  = parts[0] || '';
 
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
