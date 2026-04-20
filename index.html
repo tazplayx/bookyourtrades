@@ -3317,6 +3317,18 @@ function router() {
     document.getElementById('page-login').classList.add('active');
   } else if (page === 'dashboard') {
     if (!App.currentUser) { navigate('/login'); return; }
+    /* Handle return from Stripe Checkout */
+    const sp = new URLSearchParams(location.search);
+    if (sp.get('subscribed') === '1') {
+      history.replaceState({}, '', '/dashboard');
+      setTimeout(function() {
+        showToast('🎉 Subscription activated! Welcome to BookYourTrades Pro.', 'success');
+        if (App.currentUser) {
+          const prov = App.providers.find(p=>p.id===App.currentUser.providerId);
+          if (prov) { prov.plan = 'pro'; saveProviders(); }
+        }
+      }, 500);
+    }
     if (App.currentUser.role === 'client') {
       document.getElementById('page-client-dashboard').classList.add('active');
       renderClientDashboard();
@@ -5318,7 +5330,13 @@ function renderDashboard() {
           ${providerLogoHTML(prov,56,6)}
           <div>
             <h1 style="font-size:30px;color:white;">${prov.companyName}</h1>
-            <div style="color:var(--s300);font-size:14px;margin-top:2px;">Provider Dashboard &middot; <span class="badge badge-green">Active Listing</span></div>
+            <div style="color:var(--s300);font-size:14px;margin-top:4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+              Provider Dashboard &middot; <span class="badge badge-green">Active Listing</span>
+              ${prov.plan==='enterprise' ? `<span class="plan-badge plan-featured">&#9733; Enterprise</span>`
+                : prov.plan==='pro'      ? `<span class="plan-badge plan-pro">&#9651; Pro</span>`
+                :                          `<span class="plan-badge plan-free">Free Plan</span>`}
+              ${(prov.plan==='free'||!prov.plan) ? `<a onclick="navigate('/pricing')" style="font-size:12px;color:var(--o400);cursor:pointer;text-decoration:underline;">Upgrade &rarr;</a>` : ''}
+            </div>
           </div>
           <div style="margin-left:auto;display:flex;gap:10px;flex-wrap:wrap;">
             <a class="btn btn-outline btn-sm" onclick="navigate('/provider/${prov.id}')">View Public Profile &rarr;</a>
