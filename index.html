@@ -850,11 +850,17 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   background: var(--lz-surface);
   border: 1px solid var(--lz-border);
   border-radius: 10px;
-  padding: 22px;
+  overflow: hidden;
   display: flex; flex-direction: column;
   transition: box-shadow 0.2s, transform 0.2s;
 }
 .news-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.news-card-thumb {
+  width: 100%; height: 190px;
+  object-fit: cover; object-position: center;
+  display: block; flex-shrink: 0;
+}
+.news-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; flex: 1; }
 .news-card-source {
   display: flex; align-items: center; gap: 8px;
   font-size: 12px; color: var(--lz-muted);
@@ -869,8 +875,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 }
 .news-card-title a { color: inherit; text-decoration: none; }
 .news-card-title a:hover { color: var(--o500); }
-.news-card-desc { font-size: 13px; color: var(--lz-sub); line-height: 1.7; margin-bottom: 14px; }
-.news-card-date { font-size: 12px; color: var(--lz-muted); border-top: 1px solid var(--lz-border); padding-top: 12px; }
+.news-card-desc { font-size: 13px; color: var(--lz-sub); line-height: 1.7; margin-bottom: 14px; flex: 1; }
+.news-card-date { font-size: 12px; color: var(--lz-muted); border-top: 1px solid var(--lz-border); padding-top: 12px; margin-top: auto; }
 .news-filter-btn {
   font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
   font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
@@ -947,10 +953,14 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 }
 .blog-card-img {
   width: 100%; height: 180px;
-  object-fit: cover; display: block;
+  object-fit: cover; object-position: center;
+  display: block; flex-shrink: 0;
+}
+.blog-card-img-fallback {
+  width: 100%; height: 180px;
   background: linear-gradient(135deg, var(--n700) 0%, var(--n600) 100%);
   display: flex; align-items: center; justify-content: center;
-  font-size: 52px;
+  font-size: 52px; flex-shrink: 0;
 }
 .blog-card-body { padding: 22px; flex: 1; display: flex; flex-direction: column; }
 .blog-card-tag {
@@ -3045,10 +3055,13 @@ function loadNews(keyword) {
 
       grid.innerHTML = articles.map(function(a) {
         return '<div class="news-card">'
+          + (a.image ? '<img class="news-card-thumb" src="' + a.image + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '')
+          + '<div class="news-card-body">'
           + '<div class="news-card-source"><span>' + (a.icon || '📰') + '</span><span>' + a.source + '</span></div>'
           + '<div class="news-card-title"><a href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a></div>'
           + (a.description ? '<div class="news-card-desc">' + a.description + '</div>' : '')
           + '<div class="news-card-date">&#128197; ' + (a.displayDate || 'Recent') + '</div>'
+          + '</div>'
           + '</div>';
       }).join('');
     })
@@ -3068,6 +3081,7 @@ const BLOG_POSTS = [
   {
     slug: 'find-licensed-electrician-ontario',
     title: 'How to Find a Licensed Electrician in Ontario',
+    image: 'https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=800&q=70&auto=format&fit=crop',
     tag: 'Electrical',
     icon: '⚡',
     author: 'BookYourTrades Editorial',
@@ -3079,6 +3093,7 @@ const BLOG_POSTS = [
   {
     slug: 'cost-hiring-unlicensed-tradespeople',
     title: 'The Real Cost of Hiring Unlicensed Tradespeople in Ontario',
+    image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=70&auto=format&fit=crop',
     tag: 'Industry Insight',
     icon: '💰',
     author: 'BookYourTrades Editorial',
@@ -3090,6 +3105,7 @@ const BLOG_POSTS = [
   {
     slug: '5-questions-before-hiring-contractor',
     title: '5 Questions to Ask Before Hiring Any Ontario Contractor',
+    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=70&auto=format&fit=crop',
     tag: 'Hiring Guide',
     icon: '📋',
     author: 'BookYourTrades Editorial',
@@ -3101,6 +3117,7 @@ const BLOG_POSTS = [
   {
     slug: 'hvac-maintenance-fall-tuneup',
     title: 'HVAC Maintenance: Why Fall Tune-Ups Save Ontario Businesses Thousands',
+    image: 'https://images.unsplash.com/photo-1585771724684-38269d6639fd?w=800&q=70&auto=format&fit=crop',
     tag: 'HVAC',
     icon: '❄️',
     author: 'BookYourTrades Editorial',
@@ -3112,6 +3129,7 @@ const BLOG_POSTS = [
   {
     slug: 'ontario-trade-licensing-guide',
     title: 'Ontario Trade Licensing: A Complete Guide for Commercial Property Owners',
+    image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=70&auto=format&fit=crop',
     tag: 'Licensing',
     icon: '📜',
     author: 'BookYourTrades Editorial',
@@ -3123,6 +3141,7 @@ const BLOG_POSTS = [
   {
     slug: 'how-to-write-rfq-trade-services',
     title: 'How to Write a Winning RFQ for Trade Services',
+    image: 'https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800&q=70&auto=format&fit=crop',
     tag: 'Hiring Guide',
     icon: '✍️',
     author: 'BookYourTrades Editorial',
@@ -3134,6 +3153,7 @@ const BLOG_POSTS = [
   {
     slug: 'commercial-roofing-what-to-expect',
     title: 'Commercial Roofing in Ontario: What to Expect When It\'s Time to Replace',
+    image: 'https://images.unsplash.com/photo-1584738766473-61c083514bf4?w=800&q=70&auto=format&fit=crop',
     tag: 'Roofing',
     icon: '🏗️',
     author: 'BookYourTrades Editorial',
@@ -3145,6 +3165,7 @@ const BLOG_POSTS = [
   {
     slug: 'plumbing-emergencies-commercial',
     title: 'Commercial Plumbing Emergencies: Prevention and Response for Ontario Businesses',
+    image: 'https://images.unsplash.com/photo-1504328345606-18bbc8c9d7d1?w=800&q=70&auto=format&fit=crop',
     tag: 'Plumbing',
     icon: '🔧',
     author: 'BookYourTrades Editorial',
@@ -3156,6 +3177,7 @@ const BLOG_POSTS = [
   {
     slug: 'verified-trades-directory-vs-google',
     title: 'Why Verified Trade Directories Beat Google for Hiring Contractors',
+    image: 'https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&q=70&auto=format&fit=crop',
     tag: 'Industry Insight',
     icon: '🔍',
     author: 'BookYourTrades Editorial',
@@ -3167,6 +3189,7 @@ const BLOG_POSTS = [
   {
     slug: 'general-contractor-oversight-guide',
     title: 'General Contracting Oversight: What Ontario Business Owners Need to Know',
+    image: 'https://images.unsplash.com/photo-1504307651254-35680f356dfd?w=800&q=70&auto=format&fit=crop',
     tag: 'General Contracting',
     icon: '🏢',
     author: 'BookYourTrades Editorial',
@@ -3178,6 +3201,7 @@ const BLOG_POSTS = [
   {
     slug: 'welding-standards-ontario-businesses',
     title: 'Welding Standards in Ontario: What Commercial Businesses Need to Know',
+    image: 'https://images.unsplash.com/photo-1565373679580-fc0b49d27ade?w=800&q=70&auto=format&fit=crop',
     tag: 'Welding & Fabrication',
     icon: '⚙️',
     author: 'BookYourTrades Editorial',
@@ -3189,6 +3213,7 @@ const BLOG_POSTS = [
   {
     slug: 'commercial-security-systems-hiring',
     title: 'Hiring a Commercial Security System Installer in Ontario: A Complete Guide',
+    image: 'https://images.unsplash.com/photo-1557597774-9d273605dfa9?w=800&q=70&auto=format&fit=crop',
     tag: 'Security Systems',
     icon: '🔒',
     author: 'BookYourTrades Editorial',
@@ -3200,6 +3225,7 @@ const BLOG_POSTS = [
   {
     slug: 'top-10-things-before-hiring-contractor',
     title: 'Top 10 Things to Know Before Hiring Any Contractor in Ontario',
+    image: 'https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?w=800&q=70&auto=format&fit=crop',
     tag: 'Top 10',
     icon: '🏆',
     author: 'BookYourTrades Editorial',
@@ -3211,6 +3237,7 @@ const BLOG_POSTS = [
   {
     slug: 'top-10-contractor-red-flags',
     title: 'Top 10 Red Flags When Getting a Quote From a Contractor',
+    image: 'https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=800&q=70&auto=format&fit=crop',
     tag: 'Top 10',
     icon: '🚩',
     author: 'BookYourTrades Editorial',
@@ -3222,6 +3249,7 @@ const BLOG_POSTS = [
   {
     slug: 'top-10-in-demand-trades-gta',
     title: 'Top 10 Most In-Demand Trades in the GTA Right Now (2026)',
+    image: 'https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?w=800&q=70&auto=format&fit=crop',
     tag: 'Top 10',
     icon: '📊',
     author: 'BookYourTrades Editorial',
@@ -3233,6 +3261,7 @@ const BLOG_POSTS = [
   {
     slug: 'commercial-electrical-cost-guide-ontario',
     title: 'Commercial Electrical Work Cost Guide Ontario 2026',
+    image: 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=70&auto=format&fit=crop',
     tag: 'Cost Guide',
     icon: '💡',
     author: 'BookYourTrades Editorial',
@@ -3244,6 +3273,7 @@ const BLOG_POSTS = [
   {
     slug: 'spring-commercial-property-trade-checklist',
     title: 'Spring Trade Checklist: 8 Things Every Ontario Commercial Property Needs',
+    image: 'https://images.unsplash.com/photo-1462275646964-a0e3386b89fa?w=800&q=70&auto=format&fit=crop',
     tag: 'Seasonal Guide',
     icon: '🌱',
     author: 'BookYourTrades Editorial',
@@ -3255,6 +3285,7 @@ const BLOG_POSTS = [
   {
     slug: 'understanding-wsib-ontario-contractors',
     title: 'Understanding WSIB: What Ontario Businesses Must Know When Hiring Contractors',
+    image: 'https://images.unsplash.com/photo-1581094794329-c8112a89af12?w=800&q=70&auto=format&fit=crop',
     tag: 'Compliance',
     icon: '📋',
     author: 'BookYourTrades Editorial',
@@ -3266,6 +3297,7 @@ const BLOG_POSTS = [
   {
     slug: 'what-is-a-master-plumber-ontario',
     title: 'Master Plumber vs. Journeyman: Understanding Ontario\'s Plumbing Licence Tiers',
+    image: 'https://images.unsplash.com/photo-1621905252472-943afaa20e3f?w=800&q=70&auto=format&fit=crop',
     tag: 'Licensing',
     icon: '🔧',
     author: 'BookYourTrades Editorial',
@@ -3277,6 +3309,7 @@ const BLOG_POSTS = [
   {
     slug: 'commercial-hvac-cost-guide-ontario',
     title: 'Commercial HVAC Replacement Cost Guide: Ontario 2026',
+    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=800&q=70&auto=format&fit=crop',
     tag: 'Cost Guide',
     icon: '❄️',
     author: 'BookYourTrades Editorial',
@@ -3433,7 +3466,9 @@ function renderBlogList() {
   if (!grid) return;
   grid.innerHTML = BLOG_POSTS.map(function(p) {
     return '<div class="blog-card" onclick="navigate(\'/blog/' + p.slug + '\')">'
-      + '<div class="blog-card-img">' + p.icon + '</div>'
+      + (p.image
+          ? '<img class="blog-card-img" src="' + p.image + '" alt="' + p.title + '" loading="lazy" onerror="this.outerHTML=\'<div class=blog-card-img-fallback>' + p.icon + '</div>\'">'
+          : '<div class="blog-card-img-fallback">' + p.icon + '</div>')
       + '<div class="blog-card-body">'
       + '<div class="blog-card-tag">' + p.tag + '</div>'
       + '<div class="blog-card-title">' + p.title + '</div>'
@@ -3515,7 +3550,9 @@ function renderBlogPost(slug) {
     + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">'
     + BLOG_POSTS.filter(function(x) { return x.slug !== slug; }).slice(0,3).map(function(x) {
         return '<div class="blog-card" onclick="navigate(\'/blog/' + x.slug + '\')" style="cursor:pointer;">'
-          + '<div class="blog-card-img" style="height:100px;font-size:36px;">' + x.icon + '</div>'
+          + (x.image
+              ? '<img class="blog-card-img" src="' + x.image + '" alt="" loading="lazy" style="height:120px;" onerror="this.style.display=\'none\'">'
+              : '<div class="blog-card-img-fallback" style="height:120px;font-size:28px;">' + x.icon + '</div>')
           + '<div class="blog-card-body" style="padding:16px;">'
           + '<div class="blog-card-tag">' + x.tag + '</div>'
           + '<div class="blog-card-title" style="font-size:15px;">' + x.title + '</div>'

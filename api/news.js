@@ -26,10 +26,36 @@ function extractTag(xml, tag) {
   return '';
 }
 
-/* Strip HTML tags and truncate */
+/* Extract first image URL from HTML content or enclosure/media tags */
+function extractImage(item) {
+  // 1. Try <enclosure url="..." type="image/..."/>
+  const enc = /<enclosure[^>]+type="image\/[^"]*"[^>]+url="([^"]+)"/.exec(item)
+           || /<enclosure[^>]+url="([^"]+)"[^>]+type="image\/[^"]*"/.exec(item);
+  if (enc) return enc[1];
+
+  // 2. Try <media:content url="..."/>
+  const mc = /<media:content[^>]+url="([^"]+)"/.exec(item);
+  if (mc) return mc[1];
+
+  // 3. Try <media:thumbnail url="..."/>
+  const mt = /<media:thumbnail[^>]+url="([^"]+)"/.exec(item);
+  if (mt) return mt[1];
+
+  // 4. Try first <img src="..."> in description/content
+  const img = /<img[^>]+src=["']([^"']+)["']/.exec(item);
+  if (img && /\.(jpg|jpeg|png|webp|gif)/i.test(img[1])) return img[1];
+
+  return null;
+}
+
+/* Strip HTML tags, decode entities, and truncate */
 function clean(str, maxLen = 220) {
-  const stripped = str.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/\s+/g, ' ').trim();
+  const stripped = str
+    .replace(/<img[^>]*>/gi, '')          // remove img tags first
+    .replace(/<[^>]+>/g, '')              // remove all other HTML
+    .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
+    .replace(/&#\d+;/g, ' ').replace(/\s+/g, ' ').trim();
   return stripped.length > maxLen ? stripped.slice(0, maxLen) + '…' : stripped;
 }
 
@@ -55,6 +81,7 @@ async function fetchFeed(feed) {
       const raw   = extractTag(item, 'pubDate');
       const date  = raw ? new Date(raw) : new Date(0);
       const category = extractTag(item, 'category');
+      const image = extractImage(item);
       if (!title || !link) return null;
       return {
         title,
@@ -63,6 +90,7 @@ async function fetchFeed(feed) {
         source: feed.source,
         icon: feed.icon,
         category,
+        image,
         pubDate: date.toISOString(),
         displayDate: isNaN(date) ? '' : date.toLocaleDateString('en-CA', { year: 'numeric', month: 'long', day: 'numeric' }),
       };
