@@ -115,6 +115,19 @@
     ]
   }
   </script>
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="shortcut icon" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/favicon.svg" />
+
+  <!-- Additional SEO / AEO -->
+  <meta name="author" content="BookYourTrades Inc." />
+  <meta name="geo.region" content="CA-ON" />
+  <meta name="geo.placename" content="Ontario, Canada" />
+  <meta name="language" content="English" />
+  <meta name="revisit-after" content="7 days" />
+  <meta property="og:locale:alternate" content="en_US" />
+
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
   <!-- Stripe.js — required for real payment processing -->
@@ -124,23 +137,32 @@
    VARIABLES & RESET
 ============================================================ */
 :root {
-  --n900: #060E1A;
-  --n800: #0B1929;
-  --n700: #102338;
-  --n600: #162D49;
-  --n500: #1D3A5C;
-  --n400: #2A4F78;
-  --s400: #4E728E;
-  --s300: #7A9AB5;
-  --s200: #B0C8D9;
-  --s100: #DDE9F0;
+  /* === Brightened dark palette — significantly more readable === */
+  --n900: #0D1B2A;    /* body bg        was #060E1A — 40% brighter */
+  --n800: #142333;    /* section/nav bg  was #0B1929 */
+  --n700: #1B3048;    /* card bg         was #102338 — clearly lighter */
+  --n600: #243F5C;    /* alt / hover bg  was #162D49 */
+  --n500: #2E5272;    /* border          was #1D3A5C — now visible */
+  --n400: #406D96;    /* border strong   was #2A4F78 */
+  --s400: #6A92B0;    /* muted text      was #4E728E */
+  --s300: #9CBDD6;    /* secondary text  was #7A9AB5 — 25% brighter */
+  --s200: #C4DAEA;    /* body text       was #B0C8D9 */
+  --s100: #E2EFF8;    /* lightest bg     was #DDE9F0 */
   --o600: #BE5215;
   --o500: #E0621A;
   --o400: #F07030;
   --o300: #F59460;
   --white: #FFFFFF;
-  --text: #EAF0F6;
-  --muted: #7A9AB5;
+  --text: #EDF5FC;    /* primary text    was #EAF0F6 — crisper white */
+  --muted: #6A92B0;
+
+  /* === Light-zone palette (pricing, blog, feature sections) === */
+  --lz-bg:      #F5F7FA;
+  --lz-surface: #FFFFFF;
+  --lz-border:  #E2E8F0;
+  --lz-text:    #1A2332;
+  --lz-sub:     #4A6070;
+  --lz-muted:   #718096;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -820,7 +842,175 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   font-size:12px; color:#6FE09A; font-family:'Barlow Condensed',sans-serif;
   font-weight:600; letter-spacing:0.06em;
 }
-  </style>
+
+/* ============================================================
+   NEWS PAGE
+============================================================ */
+.news-card {
+  background: var(--lz-surface);
+  border: 1px solid var(--lz-border);
+  border-radius: 10px;
+  padding: 22px;
+  display: flex; flex-direction: column;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.news-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.news-card-source {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--lz-muted);
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.news-card-title {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  font-size: 18px; color: var(--lz-text); line-height: 1.3;
+  margin-bottom: 10px; flex: 1;
+}
+.news-card-title a { color: inherit; text-decoration: none; }
+.news-card-title a:hover { color: var(--o500); }
+.news-card-desc { font-size: 13px; color: var(--lz-sub); line-height: 1.7; margin-bottom: 14px; }
+.news-card-date { font-size: 12px; color: var(--lz-muted); border-top: 1px solid var(--lz-border); padding-top: 12px; }
+.news-filter-btn {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 6px 14px; border-radius: 4px; border: 1.5px solid var(--n500);
+  background: transparent; color: var(--s300); cursor: pointer;
+  transition: all 0.15s;
+}
+.news-filter-btn:hover { border-color: var(--o400); color: var(--o400); }
+.news-filter-btn.active { background: var(--o500); border-color: var(--o500); color: white; }
+
+/* ============================================================
+   LIGHT ZONE — pricing, blog, feature sections on white bg
+============================================================ */
+.section-white  { background: var(--lz-surface); }
+.section-pale   { background: var(--lz-bg); }
+
+.section-white  .section-title,
+.section-pale   .section-title  { color: var(--lz-text); }
+.section-white  .section-label,
+.section-pale   .section-label  { color: var(--o500); }
+
+/* Light-zone cards */
+.lz-card {
+  background: var(--lz-surface);
+  border: 1px solid var(--lz-border);
+  border-radius: 10px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.lz-card:hover {
+  box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+  transform: translateY(-2px);
+}
+
+/* Pricing cards in light zone */
+.section-white .pricing-card,
+.section-pale  .pricing-card {
+  background: var(--lz-surface);
+  border: 1.5px solid var(--lz-border);
+  box-shadow: 0 2px 16px rgba(0,0,0,0.07);
+}
+.section-white .pricing-card.popular,
+.section-pale  .pricing-card.popular {
+  border-color: var(--o500);
+  box-shadow: 0 4px 32px rgba(224,98,26,0.18);
+}
+.section-white .pricing-price,
+.section-pale  .pricing-price { color: var(--lz-text); }
+.section-white .pricing-feature,
+.section-pale  .pricing-feature { color: var(--lz-sub); border-color: var(--lz-border); }
+.section-white .pricing-period,
+.section-pale  .pricing-period { color: var(--lz-muted); }
+
+/* ============================================================
+   BLOG
+============================================================ */
+.blog-hero {
+  background: var(--n800);
+  border-bottom: 1px solid var(--n500);
+  padding: 40px 0;
+}
+.blog-card {
+  background: var(--lz-surface);
+  border: 1px solid var(--lz-border);
+  border-radius: 10px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+  transition: box-shadow 0.2s, transform 0.2s;
+  cursor: pointer;
+}
+.blog-card:hover {
+  box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+  transform: translateY(-3px);
+}
+.blog-card-img {
+  width: 100%; height: 180px;
+  object-fit: cover; display: block;
+  background: linear-gradient(135deg, var(--n700) 0%, var(--n600) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 52px;
+}
+.blog-card-body { padding: 22px; flex: 1; display: flex; flex-direction: column; }
+.blog-card-tag {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--o500); margin-bottom: 8px;
+}
+.blog-card-title {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  font-size: 19px; color: var(--lz-text); line-height: 1.25;
+  margin-bottom: 10px;
+}
+.blog-card-excerpt {
+  font-size: 13px; color: var(--lz-sub); line-height: 1.7;
+  flex: 1; margin-bottom: 16px;
+}
+.blog-card-meta {
+  font-size: 12px; color: var(--lz-muted);
+  display: flex; gap: 12px; align-items: center;
+  border-top: 1px solid var(--lz-border); padding-top: 12px;
+}
+
+/* Blog post page */
+.blog-post-body {
+  font-size: 16px; color: var(--lz-sub); line-height: 1.9;
+  max-width: 740px; margin: 0 auto;
+}
+.blog-post-body h2 {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 800;
+  font-size: 26px; color: var(--lz-text); margin: 36px 0 14px;
+  letter-spacing: 0.02em;
+}
+.blog-post-body h3 {
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  font-size: 20px; color: var(--lz-text); margin: 28px 0 10px;
+}
+.blog-post-body p { margin-bottom: 20px; }
+.blog-post-body ul { margin: 0 0 20px 24px; }
+.blog-post-body li { margin-bottom: 8px; }
+.blog-post-body strong { color: var(--lz-text); }
+.blog-post-body a { color: var(--o500); text-decoration: underline; }
+.blog-post-body blockquote {
+  border-left: 4px solid var(--o500); padding: 12px 20px;
+  background: #FFF6F1; border-radius: 0 6px 6px 0;
+  margin: 24px 0; font-style: italic; color: var(--lz-text);
+}
+
+/* ============================================================
+   MEMBERSHIP BADGE
+============================================================ */
+.plan-badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 10px; border-radius: 20px;
+  font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
+  font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase;
+}
+.plan-free     { background: var(--n500); color: var(--s200); }
+.plan-pro      { background: linear-gradient(135deg,#E0621A,#F07030); color: white; }
+.plan-featured { background: linear-gradient(135deg,#1A3A6E,#2A5FA8); color: white; }
+
 </head>
 <body>
 
@@ -836,6 +1026,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
       <div class="nav-links" id="navLinks">
         <a class="nav-link" onclick="navigate('/directory')">Directory</a>
         <a class="nav-link" onclick="navigate('/rfq')">Post a Job</a>
+        <a class="nav-link" onclick="navigate('/blog')">Blog</a>
+        <a class="nav-link" onclick="navigate('/news')">Trade News</a>
         <a class="nav-link" onclick="navigate('/how-it-works')">How It Works</a>
         <a class="nav-link" onclick="navigate('/pricing')">Pricing</a>
         <div id="navAuth" style="display:flex;align-items:center;gap:6px;"></div>
@@ -1013,6 +1205,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
           <div id="dirCount" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;color:var(--s300);font-size:15px;letter-spacing:0.05em;"></div>
         </div>
         <div id="dirGrid" style="display:flex;flex-direction:column;gap:16px;"></div>
+        <div id="dirPagination" style="display:none;align-items:center;justify-content:center;gap:8px;margin-top:32px;flex-wrap:wrap;"></div>
       </div>
     </div>
   </div>
@@ -1576,11 +1769,11 @@ textarea.form-control { resize: vertical; min-height: 100px; }
     </div>
   </div>
 
-  <div class="container" style="padding-top:56px;padding-bottom:80px;">
+  <div class="container section-white" style="padding-top:56px;padding-bottom:80px;">
     <div class="pricing-grid">
 
       <!-- Starter -->
-      <div class="pricing-card">
+      <div class="pricing-card lz-card">
         <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.15em;text-transform:uppercase;color:var(--s300);margin-bottom:12px;">Starter</div>
         <div><span class="pricing-price">Free</span></div>
         <div style="font-size:14px;color:var(--s400);margin:12px 0 24px;">Always free — no credit card</div>
@@ -1599,7 +1792,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
       </div>
 
       <!-- Professional -->
-      <div class="pricing-card popular" style="position:relative;">
+      <div class="pricing-card popular lz-card" style="position:relative;">
         <div class="pricing-popular-tag">Most Popular</div>
         <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.15em;text-transform:uppercase;color:var(--o400);margin-bottom:12px;">Professional</div>
         <div><span class="pricing-price">$49</span><span class="pricing-period">/month</span></div>
@@ -1615,11 +1808,11 @@ textarea.form-control { resize: vertical; min-height: 100px; }
           <div class="pricing-feature"><span class="pricing-x">&#10005;</span> Multi-location support</div>
           <div class="pricing-feature"><span class="pricing-x">&#10005;</span> Dedicated account manager</div>
         </div>
-        <button class="btn btn-orange" style="width:100%;justify-content:center;" onclick="navigate('/register')">Start 14-Day Free Trial</button>
+        <button class="btn btn-orange" style="width:100%;justify-content:center;" onclick="startSubscription('pro')">Start 14-Day Free Trial &#8594;</button>
       </div>
 
       <!-- Enterprise -->
-      <div class="pricing-card">
+      <div class="pricing-card lz-card">
         <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.15em;text-transform:uppercase;color:var(--s300);margin-bottom:12px;">Enterprise</div>
         <div><span class="pricing-price">$149</span><span class="pricing-period">/month</span></div>
         <div style="font-size:14px;color:var(--s400);margin:12px 0 24px;">For large contractors &amp; multi-branch firms</div>
@@ -1633,18 +1826,32 @@ textarea.form-control { resize: vertical; min-height: 100px; }
           <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Quarterly performance reports</div>
           <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Priority phone support</div>
         </div>
-        <button class="btn btn-navy" style="width:100%;justify-content:center;" onclick="showToast('Contact us at hello@bookyourtrades.com','')">Contact Sales</button>
+        <button class="btn btn-navy" style="width:100%;justify-content:center;" onclick="startSubscription('enterprise')">Contact Sales &#8594;</button>
       </div>
     </div>
 
     <!-- Comparison note -->
-    <div style="margin-top:48px;background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+    <div style="margin-top:48px;background:var(--lz-bg);border:1.5px solid var(--lz-border);border-radius:10px;padding:28px;display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
       <div style="font-size:32px;">🍁</div>
       <div style="flex:1;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:white;margin-bottom:4px;">Ontario-Focused. Trade-Specific.</div>
-        <div style="font-size:14px;color:var(--s300);">BookYourTrades is built exclusively for Ontario's commercial trades sector — not a generic national directory. All plans include unlimited client bookings (Starter: capped at 10/mo), full mobile access, and real-time appointment notifications.</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:var(--lz-text);margin-bottom:4px;">Ontario-Focused. Trade-Specific.</div>
+        <div style="font-size:14px;color:var(--lz-sub);">BookYourTrades is built exclusively for Ontario's commercial trades sector — not a generic national directory. All plans include unlimited client bookings (Starter: capped at 10/mo), full mobile access, and real-time appointment notifications.</div>
       </div>
-      <button class="btn btn-orange" onclick="navigate('/register')">Get Started</button>
+      <button class="btn btn-orange" onclick="navigate('/register')">Get Started Free</button>
+    </div>
+
+    <!-- Stripe setup notice (shown when keys not configured) -->
+    <div id="stripeSetupNotice" style="margin-top:32px;background:#FFF6F1;border:2px solid var(--o400);border-radius:8px;padding:24px;display:none;">
+      <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:var(--lz-text);margin-bottom:8px;">&#9889; Go Live — Switch to Production Stripe Keys</div>
+      <div style="font-size:14px;color:var(--lz-sub);line-height:1.7;margin-bottom:12px;">Sandbox (test) mode is already configured. To charge real customers, replace the sandbox keys with your live keys in Vercel.</div>
+      <ol style="font-size:13px;color:var(--lz-sub);line-height:2.2;margin-left:20px;">
+        <li>In <strong>Vercel Dashboard &rarr; Settings &rarr; Environment Variables</strong>, add:<br>
+          <code style="background:#F0EDE8;padding:2px 6px;border-radius:3px;">STRIPE_SECRET_KEY</code> = <em>sk_live_...</em> (from dashboard.stripe.com &rarr; API keys)<br>
+          <code style="background:#F0EDE8;padding:2px 6px;border-radius:3px;">STRIPE_PRO_PRICE_ID</code> = live price ID for your $49/month plan<br>
+          <code style="background:#F0EDE8;padding:2px 6px;border-radius:3px;">STRIPE_ENT_PRICE_ID</code> = live price ID for your $149/month plan</li>
+        <li>In <code style="background:#F0EDE8;padding:2px 6px;border-radius:3px;">index.html</code>, replace the <code>pk_test_...</code> publishable key with your <code>pk_live_...</code> key</li>
+        <li>Redeploy to Vercel — live billing activates immediately</li>
+      </ol>
     </div>
   </div>
 </div>
@@ -1655,6 +1862,68 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 ============================================================ -->
 <div id="page-admin" class="page">
   <div id="adminContent"></div>
+</div>
+
+<!-- ============================================================
+     PAGE: TRADE NEWS
+============================================================ -->
+<div id="page-news" class="page">
+  <div class="blog-hero">
+    <div class="container">
+      <div class="section-label">Live From Ontario &amp; Canada</div>
+      <h1 style="font-size:44px;margin-bottom:10px;">Trade Industry News</h1>
+      <p style="color:var(--s300);font-size:16px;max-width:600px;">Real-time headlines from Canadian Contractor, Daily Commercial News, Construction Canada, Plumbing &amp; HVAC, Electrical Canada, and more — updated every 20 minutes.</p>
+    </div>
+  </div>
+
+  <!-- Filter bar -->
+  <div style="background:var(--n700);border-bottom:1px solid var(--n500);padding:16px 0;">
+    <div class="container" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <span style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--s300);">Filter:</span>
+      <button class="news-filter-btn active" onclick="loadNews('')" data-kw="">All Trades</button>
+      <button class="news-filter-btn" onclick="loadNews('electrical')" data-kw="electrical">Electrical</button>
+      <button class="news-filter-btn" onclick="loadNews('plumbing')" data-kw="plumbing">Plumbing</button>
+      <button class="news-filter-btn" onclick="loadNews('hvac')" data-kw="hvac">HVAC</button>
+      <button class="news-filter-btn" onclick="loadNews('roofing')" data-kw="roofing">Roofing</button>
+      <button class="news-filter-btn" onclick="loadNews('construction')" data-kw="construction">General Construction</button>
+      <div style="margin-left:auto;">
+        <button class="btn btn-navy btn-sm" onclick="loadNews(window._newsKw||'')">&#8635; Refresh</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-pale" style="padding:48px 0 80px;">
+    <div class="container">
+      <!-- News grid -->
+      <div id="newsGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:24px;"></div>
+      <div id="newsStatus" style="text-align:center;padding:60px 0;color:var(--lz-muted);"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: BLOG LIST
+============================================================ -->
+<div id="page-blog" class="page">
+  <div class="blog-hero">
+    <div class="container">
+      <div class="section-label">Trade Knowledge &amp; Hiring Guides</div>
+      <h1 style="font-size:44px;margin-bottom:10px;">The BookYourTrades Blog</h1>
+      <p style="color:var(--s300);font-size:16px;max-width:560px;">Expert advice on hiring Ontario contractors, understanding trade licensing, writing RFQs, and getting the best value from commercial trades.</p>
+    </div>
+  </div>
+  <div class="section-pale" style="padding:56px 0 80px;">
+    <div class="container">
+      <div id="blogGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:28px;"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     PAGE: BLOG POST
+============================================================ -->
+<div id="page-blog-post" class="page">
+  <div id="blogPostContent"></div>
 </div>
 
 <!-- ============================================================
@@ -1688,13 +1957,13 @@ textarea.form-control { resize: vertical; min-height: 100px; }
         </div>
       </div>
       <div>
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--s200);margin-bottom:16px;">Regions</div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--s200);margin-bottom:16px;">Resources</div>
         <div style="display:flex;flex-direction:column;gap:10px;">
-          <span style="font-size:14px;color:var(--s400);">Greater Toronto Area</span>
-          <span style="font-size:14px;color:var(--s400);">Ottawa Region</span>
-          <span style="font-size:14px;color:var(--s400);">Golden Horseshoe</span>
-          <span style="font-size:14px;color:var(--s400);">Southwestern Ontario</span>
-          <span style="font-size:14px;color:var(--s400);">Northern Ontario</span>
+          <a onclick="navigate('/blog')" style="font-size:14px;color:var(--s400);cursor:pointer;">Trade Knowledge Blog</a>
+          <a onclick="navigate('/how-it-works')" style="font-size:14px;color:var(--s400);cursor:pointer;">How It Works</a>
+          <a onclick="navigate('/pricing')" style="font-size:14px;color:var(--s400);cursor:pointer;">Pricing Plans</a>
+          <a onclick="navigate('/rfq')" style="font-size:14px;color:var(--s400);cursor:pointer;">Post a Job Request</a>
+          <a href="mailto:hello@bookyourtrades.com" style="font-size:14px;color:var(--s400);">Contact Us</a>
         </div>
       </div>
     </div>
@@ -2644,7 +2913,7 @@ const App = { currentUser: null, providers: [], users: [], clients: [], bookings
 // ── Stripe publishable key ──────────────────────────────────────────────────
 // Replace with your key from https://dashboard.stripe.com/apikeys
 // Set STRIPE_SECRET_KEY in Vercel → Project → Settings → Environment Variables
-const STRIPE_PK = 'pk_live_YOUR_STRIPE_PUBLISHABLE_KEY';
+const STRIPE_PK = 'pk_test_51TOJPu6rH0SW1eMMikWtHWT2ByN7iakbPvVYTnxem8FJDG22cEJGV0aFpiFxbwE3xn5vFe1YOCE2ZCljrXP8wBFj00McDhM4Fp';
 // ───────────────────────────────────────────────────────────────────────────
 let _stripeInstance = null;
 let _stripeElements = null;
@@ -2734,6 +3003,290 @@ function saveUsers()     { localStorage.setItem('to_users',     JSON.stringify(A
 function saveBookings()  { localStorage.setItem('to_bookings',  JSON.stringify(App.bookings));  }
 
 /* ============================================================
+   TRADE NEWS
+============================================================ */
+window._newsKw = '';
+
+function loadNews(keyword) {
+  window._newsKw = keyword;
+
+  /* Update active filter button */
+  document.querySelectorAll('.news-filter-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.kw === keyword);
+  });
+
+  var grid   = document.getElementById('newsGrid');
+  var status = document.getElementById('newsStatus');
+  if (!grid) return;
+
+  grid.innerHTML = '';
+  if (status) {
+    status.innerHTML = '<div style="font-size:40px;margin-bottom:12px;">&#8987;</div>'
+      + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;">Loading live news&#8230;</div>';
+  }
+
+  var url = '/api/news' + (keyword ? '?category=' + encodeURIComponent(keyword) : '');
+
+  fetch(url)
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var articles = data.articles || [];
+      if (status) status.innerHTML = '';
+
+      if (articles.length === 0) {
+        if (status) {
+          status.innerHTML = '<div style="font-size:40px;margin-bottom:12px;">&#128240;</div>'
+            + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;margin-bottom:8px;">No articles found</div>'
+            + '<div style="font-size:14px;">Try a different filter or check back soon.</div>';
+        }
+        return;
+      }
+
+      grid.innerHTML = articles.map(function(a) {
+        return '<div class="news-card">'
+          + '<div class="news-card-source"><span>' + (a.icon || '📰') + '</span><span>' + a.source + '</span></div>'
+          + '<div class="news-card-title"><a href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a></div>'
+          + (a.description ? '<div class="news-card-desc">' + a.description + '</div>' : '')
+          + '<div class="news-card-date">&#128197; ' + (a.displayDate || 'Recent') + '</div>'
+          + '</div>';
+      }).join('');
+    })
+    .catch(function(err) {
+      if (status) {
+        status.innerHTML = '<div style="font-size:40px;margin-bottom:12px;">&#9888;</div>'
+          + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:20px;margin-bottom:8px;">Could not load news</div>'
+          + '<div style="font-size:14px;color:var(--lz-muted);">The news feed is temporarily unavailable. Please try again shortly.</div>';
+      }
+    });
+}
+
+/* ============================================================
+   BLOG DATA
+============================================================ */
+const BLOG_POSTS = [
+  {
+    slug: 'find-licensed-electrician-ontario',
+    title: 'How to Find a Licensed Electrician in Ontario',
+    tag: 'Electrical',
+    icon: '⚡',
+    author: 'BookYourTrades Editorial',
+    date: 'April 10, 2026',
+    readTime: '5 min read',
+    excerpt: 'Hiring an unlicensed electrician in Ontario is illegal and dangerous. Here\'s exactly what to look for — and where to find ECRA/ESA-licensed contractors for commercial work.',
+    body: '<p>In Ontario, all electrical work must be performed by a licensed electrical contractor registered with the <strong>Electrical Contractors Registration Agency (ECRA)</strong> and inspected by the <strong>Electrical Safety Authority (ESA)</strong>. Hiring an unlicensed electrician for commercial work isn\'t just risky — it\'s illegal and can void your property insurance.</p><h2>What Licences to Look For</h2><p>There are two key credentials: the <strong>Electrician (309A)</strong> licence for industrial and commercial projects, and the <strong>Electrician (309B)</strong> for residential. For most commercial properties in Ontario, you want a 309A Red Seal electrician working under an ECRA-registered contractor.</p><blockquote>"Always ask for the contractor\'s ECRA registration number before signing anything. Verification takes 30 seconds at ecrasafe.ca."</blockquote><h2>Where to Find Licensed Electricians</h2><ul><li>Use a verified trades directory like <a href="/directory">BookYourTrades</a> and filter by Electrical + your city</li><li>Ask for an ECRA registration number and verify it at ecrasafe.ca</li><li>Request a Certificate of Insurance with minimum $2M liability</li><li>Get at least 3 quotes — commercial electrical pricing varies significantly</li></ul><h2>Red Flags to Avoid</h2><p>Be cautious of electricians who cannot provide an ECRA number, ask for more than 30% upfront, or refuse to pull a permit. Proper permits protect you when selling or insuring your property.</p><p>Ontario\'s commercial sector runs on reliable electrical infrastructure. Taking 20 extra minutes to verify credentials can save you from costly re-work, fines, or worse.</p>'
+  },
+  {
+    slug: 'cost-hiring-unlicensed-tradespeople',
+    title: 'The Real Cost of Hiring Unlicensed Tradespeople in Ontario',
+    tag: 'Industry Insight',
+    icon: '💰',
+    author: 'BookYourTrades Editorial',
+    date: 'April 4, 2026',
+    readTime: '6 min read',
+    excerpt: 'Saving $500 upfront can cost $50,000 later. Ontario businesses continue to learn this lesson the hard way. Here\'s what the data shows about unlicensed trade work.',
+    body: '<p>Every year, Ontario businesses lose millions of dollars to substandard trade work performed without proper licences. The short-term savings of hiring unverified tradespeople rarely survive contact with reality.</p><h2>The Hidden Costs</h2><ul><li><strong>Insurance voidance</strong>: Most commercial property insurance policies have clauses that void coverage when non-licensed contractors perform regulated work</li><li><strong>Order-to-comply costs</strong>: The Ontario College of Trades can issue orders requiring all unlicensed work to be torn out and redone by licensed trades</li><li><strong>Permit failures</strong>: Buildings without proper permits face issues at sale or refinancing</li><li><strong>Liability</strong>: If an injury occurs due to faulty trade work, the building owner can face personal liability</li></ul><h2>What "Licensed" Actually Means</h2><p>In Ontario, compulsory trades require a Certificate of Qualification — commonly called a C of Q — and often a Red Seal endorsement for interprovincial recognition. These trades include electricians (309A/309B), plumbers, gasfitters, and HVAC/refrigeration mechanics, among others.</p><blockquote>"The cheapest quote is often the one that didn\'t include proper insurance, permits, or qualified labour."</blockquote><h2>How to Protect Your Business</h2><p>Always verify credentials before signing a contract. Use a trusted directory that vets its listings, ask for proof of insurance, and ensure permits are pulled for regulated work. The extra due diligence is worth every minute.</p>'
+  },
+  {
+    slug: '5-questions-before-hiring-contractor',
+    title: '5 Questions to Ask Before Hiring Any Ontario Contractor',
+    tag: 'Hiring Guide',
+    icon: '📋',
+    author: 'BookYourTrades Editorial',
+    date: 'March 28, 2026',
+    readTime: '4 min read',
+    excerpt: 'Whether you\'re hiring a plumber, electrician, or general contractor, these five questions will protect your business and ensure you get the job done right the first time.',
+    body: '<p>Hiring a trade contractor for your commercial property is a significant decision. These five questions will help you separate qualified professionals from risky bets before you sign anything.</p><h2>1. Are You Licensed for This Specific Trade in Ontario?</h2><p>Ontario has compulsory and voluntary trades. Ask for their Certificate of Qualification (C of Q) number and verify it through the Ontario College of Trades online directory. For electrical work, ask for an ECRA registration number.</p><h2>2. Do You Carry WSIB Coverage and Liability Insurance?</h2><p>Ask for a WSIB clearance certificate — this confirms the contractor is in good standing and that you won\'t be held liable for workplace injuries. Minimum $2M commercial liability insurance is standard.</p><h2>3. Will You Pull the Necessary Permits?</h2><p>For any structural, electrical, plumbing, or HVAC work, permits are legally required in Ontario. A contractor who suggests skipping permits is a red flag. Permits protect you when selling or insuring the property.</p><h2>4. Can You Provide References From Similar Commercial Projects?</h2><p>Residential work doesn\'t necessarily translate to commercial competency. Ask for 2-3 recent commercial references — not just names on a sheet, but verifiable contacts you can actually call.</p><h2>5. What\'s Your Timeline and What Could Cause Delays?</h2><p>Commercial operations can\'t afford open-ended timelines. A professional contractor should give you a realistic schedule and be transparent about factors that could cause delays — material lead times, permit processing, or subcontractor availability.</p><blockquote>"A good contractor answers these questions confidently and without hesitation. Hesitation is information."</blockquote>'
+  },
+  {
+    slug: 'hvac-maintenance-fall-tuneup',
+    title: 'HVAC Maintenance: Why Fall Tune-Ups Save Ontario Businesses Thousands',
+    tag: 'HVAC',
+    icon: '❄️',
+    author: 'BookYourTrades Editorial',
+    date: 'March 20, 2026',
+    readTime: '5 min read',
+    excerpt: 'Ontario winters are brutal on commercial HVAC systems. A $400 fall tune-up prevents a $12,000 emergency replacement in February. Here\'s the full maintenance checklist.',
+    body: '<p>Commercial HVAC systems in Ontario take a beating. From sweltering August humidity to -30°C January wind chills, Ontario\'s climate demands more of HVAC equipment than almost anywhere in the country. Regular maintenance isn\'t a nice-to-have — it\'s the difference between a smooth winter and a costly emergency shutdown.</p><h2>The Fall Tune-Up Checklist</h2><ul><li>Heat exchanger inspection for cracks and leaks (critical for safety)</li><li>Burner cleaning and combustion testing</li><li>Thermostat calibration and control testing</li><li>Filter replacement — commercial units should be checked every 1-3 months</li><li>Duct inspection for leaks (can increase energy costs by 20-30%)</li><li>Belt and bearing inspection</li><li>Refrigerant levels check</li><li>Coil cleaning for heat pumps and split systems</li></ul><h2>What TSSA Certification Means</h2><p>For natural gas HVAC equipment in Ontario, the contractor must hold a TSSA Gas Technician certification — G1 for commercial/industrial, G2 for smaller commercial applications. Always ask for this credential before allowing work on gas-fired equipment.</p><blockquote>"One emergency call-out on a Saturday night in January costs more than two full years of preventive maintenance contracts."</blockquote><h2>Finding a Certified HVAC Contractor</h2><p>Search the <a href="/directory">BookYourTrades directory</a> and filter by HVAC and your city. Look for contractors with TSSA certification and HRAI membership, and ask about maintenance contract pricing for ongoing support.</p>'
+  },
+  {
+    slug: 'ontario-trade-licensing-guide',
+    title: 'Ontario Trade Licensing: A Complete Guide for Commercial Property Owners',
+    tag: 'Licensing',
+    icon: '📜',
+    author: 'BookYourTrades Editorial',
+    date: 'March 14, 2026',
+    readTime: '7 min read',
+    excerpt: 'Ontario has 156 designated trades, 22 of which are compulsory. This guide explains what that means for you as a business owner hiring trade contractors.',
+    body: '<p>Ontario\'s trade licensing framework is administered primarily through the <strong>Ontario College of Trades (OCOT)</strong> and various sector-specific bodies like TSSA, ECRA/ESA, and the TSSA. Understanding the basics protects your business every time you hire.</p><h2>Compulsory vs. Voluntary Trades</h2><p><strong>Compulsory trades</strong> require a Certificate of Qualification to work legally in Ontario. These include electricians, plumbers, gasfitters, steamfitters, and auto mechanics, among others. Hiring someone without a C of Q in a compulsory trade is an offence under the Ontario College of Trades and Apprenticeship Act.</p><p><strong>Voluntary trades</strong> — such as carpentry, drywall, and painting — do not require certification to practice, though certified tradespeople in voluntary trades have completed formal apprenticeships and are often higher quality.</p><h2>Key Licensing Bodies</h2><ul><li><strong>Ontario College of Trades</strong> — ocot.ca — oversees most trades</li><li><strong>ECRA/ESA</strong> — ecrasafe.ca — electrical contractors registration</li><li><strong>TSSA</strong> — tssa.org — gas, pressure, and elevator equipment</li><li><strong>WSIB</strong> — wsib.ca — workplace insurance (required for all contractors)</li></ul><h2>What to Verify Before Hiring</h2><p>For compulsory trades, verify the C of Q number at ocot.ca. For electrical, verify the ECRA registration. For gas/HVAC, verify TSSA certification. For any contractor, request a current WSIB clearance certificate (valid 90 days) and proof of minimum $2M commercial liability insurance.</p><blockquote>"Proper due diligence takes 10 minutes. A lawsuit or order-to-comply from OCOT can take years."</blockquote>'
+  },
+  {
+    slug: 'how-to-write-rfq-trade-services',
+    title: 'How to Write a Winning RFQ for Trade Services',
+    tag: 'Hiring Guide',
+    icon: '✍️',
+    author: 'BookYourTrades Editorial',
+    date: 'March 7, 2026',
+    readTime: '5 min read',
+    excerpt: 'A well-written Request for Quote gets better contractors, better pricing, and fewer surprises. Here\'s the exact framework Ontario procurement managers use.',
+    body: '<p>A Request for Quote (RFQ) is your first communication with a potential trade contractor. A vague RFQ gets vague quotes. A specific RFQ gets competitive, accurate pricing that you can actually compare apples to apples.</p><h2>The 6-Part RFQ Framework</h2><h3>1. Project Overview (2-3 sentences)</h3><p>What are you trying to accomplish? Be specific: "Replace 3 roof-mounted HVAC units at 450 King St W, Toronto. Units are Carrier 5-ton commercial splits installed 2011. Building is occupied 7am-6pm weekdays."</p><h3>2. Scope of Work</h3><p>List every deliverable. Don\'t assume the contractor knows what you want. Include demolition/removal of existing equipment, permits, inspections, testing, and cleanup.</p><h3>3. Site Access and Constraints</h3><p>Hours of access, security requirements, loading dock availability, parking, floor load limits, noise restrictions, and whether the building is occupied during work.</p><h3>4. Timeline</h3><p>Target start date, required completion date, and any hard milestones (e.g., must be complete before tenant occupancy on May 1).</p><h3>5. Deliverables From the Contractor</h3><p>What you need: itemized quote, project schedule, proof of insurance, WSIB clearance, list of any subcontractors, warranty terms.</p><h3>6. Award Criteria</h3><p>Tell contractors how you\'re deciding: price, experience, timeline, references. Transparency here gets you more competitive responses.</p><blockquote>"The best RFQ I ever wrote was two pages. The worst was two paragraphs. Guess which one got better contractors responding."</blockquote><p>Post your job directly on <a href="/rfq">BookYourTrades</a> and get matched with licensed Ontario contractors in your area within 24 hours.</p>'
+  },
+  {
+    slug: 'commercial-roofing-what-to-expect',
+    title: 'Commercial Roofing in Ontario: What to Expect When It\'s Time to Replace',
+    tag: 'Roofing',
+    icon: '🏗️',
+    author: 'BookYourTrades Editorial',
+    date: 'February 28, 2026',
+    readTime: '6 min read',
+    excerpt: 'A commercial roof replacement is a $30,000–$200,000 project. Here\'s how to choose a roofing contractor, what questions to ask, and how to read a roofing proposal.',
+    body: '<p>A commercial flat roof replacement is one of the largest capital expenditures a building owner faces. In Ontario, extreme freeze-thaw cycling adds urgency — a failing roof doesn\'t wait for budget season. Here\'s what you need to know before signing a contract.</p><h2>Types of Commercial Roofing Systems</h2><ul><li><strong>TPO (Thermoplastic Polyolefin)</strong> — Energy efficient, heat-welded seams, 20-30 year lifespan. Popular for new construction and re-roofing in Ontario.</li><li><strong>EPDM (Ethylene Propylene Diene Monomer)</strong> — Rubber membrane, excellent cold-weather performance, 20-25 years. Common on older Ontario commercial buildings.</li><li><strong>Modified Bitumen</strong> — Multi-ply system with a torch-applied cap sheet. Durable in Ontario winters, 15-20 year lifespan.</li><li><strong>Metal Roofing</strong> — Extremely long lifespan (40-60 years), high upfront cost, excellent for steep-slope commercial applications.</li></ul><h2>What a Proper Proposal Should Include</h2><p>Before accepting any quote, ensure it specifies: existing roof condition assessment, full tear-off vs. recover, insulation R-value, membrane thickness, seam method, drain/flashing details, manufacturer warranty (minimum 10 years), and workmanship warranty (minimum 2 years).</p><h2>Key Questions for Your Roofing Contractor</h2><ul><li>Are you a certified installer for the membrane manufacturer?</li><li>Who is your roofing inspector and will you provide a third-party inspection report?</li><li>Do you carry fall arrest certification for all workers?</li><li>Can you provide references from similar-sized commercial projects in Ontario?</li></ul><blockquote>"Never choose a roofer on price alone. A 10-year warranty from a bankrupt company is worthless."</blockquote>'
+  },
+  {
+    slug: 'plumbing-emergencies-commercial',
+    title: 'Commercial Plumbing Emergencies: Prevention and Response for Ontario Businesses',
+    tag: 'Plumbing',
+    icon: '🔧',
+    author: 'BookYourTrades Editorial',
+    date: 'February 20, 2026',
+    readTime: '5 min read',
+    excerpt: 'A burst pipe during business hours can shut down operations for days. Ontario commercial property managers share the prevention checklist that keeps their buildings running.',
+    body: '<p>Commercial plumbing emergencies in Ontario peak in two seasons: February, when extreme cold causes pipe failures, and spring thaw, when ground movement and increased usage expose weaknesses. Prevention is dramatically cheaper than response.</p><h2>The Commercial Plumbing Preventive Maintenance Schedule</h2><h3>Monthly</h3><ul><li>Check under-sink cabinets and around visible supply lines for drips</li><li>Test floor drains — pour water to confirm they\'re flowing</li><li>Check water pressure at main shut-off (ideal 40-80 PSI)</li></ul><h3>Annually (Before Winter)</h3><ul><li>Have a licensed plumber inspect all exterior hose bibs and shut off</li><li>Insulate any exposed pipes in unheated areas (garage, exterior walls)</li><li>Test backflow prevention devices — required annually in most Ontario municipalities</li><li>Inspect water heater anode rod and test pressure relief valve</li></ul><h2>Building Your Emergency Response Protocol</h2><p>Every commercial building manager should have posted, in plain view: the location of the main water shut-off, emergency contact for a licensed Master Plumber, building insurance policy number, and a 24-hour plumbing service pre-approved by your insurance carrier.</p><blockquote>"The main water shut-off takes 30 seconds to close. Not knowing where it is takes 30 minutes to figure out while your basement fills."</blockquote><h2>Finding a Commercial Plumber in Ontario</h2><p>Use <a href="/directory">BookYourTrades</a> to find Master Plumbers licensed by the Ontario College of Trades in your city. Look for contractors with commercial backflow certification and 24/7 emergency availability.</p>'
+  },
+  {
+    slug: 'verified-trades-directory-vs-google',
+    title: 'Why Verified Trade Directories Beat Google for Hiring Contractors',
+    tag: 'Industry Insight',
+    icon: '🔍',
+    author: 'BookYourTrades Editorial',
+    date: 'February 12, 2026',
+    readTime: '4 min read',
+    excerpt: '"Best electrician Toronto" returns 2 million results. Most of them are ads. Here\'s why procurement managers are moving to verified trade directories for contractor sourcing.',
+    body: '<p>Google is an extraordinary tool for research. It\'s a mediocre tool for hiring licensed contractors. Here\'s why the professionals who hire trade contractors most often have moved to specialist directories.</p><h2>The Problem With Google for Contractor Sourcing</h2><p>A Google search for trade services returns: paid ads (often from lead-generation companies that resell your inquiry), SEO-optimized pages that don\'t correlate with quality, unverified reviews that anyone can post, and national platforms that aggregate contractors without local vetting.</p><h2>What Verified Directories Provide</h2><ul><li><strong>Credential verification</strong> — listings have been checked against licensing databases</li><li><strong>Ontario-specific compliance</strong> — contractors are verified against OCOT, ECRA, and TSSA records</li><li><strong>Structured comparison</strong> — compare contractors on the same criteria: trade type, service area, years in business, reviews</li><li><strong>Direct booking</strong> — request quotes and book appointments without going through a middleman</li><li><strong>Accountable reviews</strong> — tied to verified bookings, not anonymous submissions</li></ul><h2>The Time Cost Comparison</h2><p>Ontario procurement managers report spending an average of 4.5 hours sourcing a contractor through Google vs. 45 minutes through a specialized trade directory. The verification work — WSIB certificates, insurance certificates, licence numbers — that directories do in advance saves hours per hire.</p><blockquote>"I stopped Googling electricians after I paid for two removal-and-replacements of unlicensed work. The directory pays for itself in the first hire."</blockquote><p>Search Ontario\'s verified trade directory at <a href="/directory">BookYourTrades</a>.</p>'
+  },
+  {
+    slug: 'general-contractor-oversight-guide',
+    title: 'General Contracting Oversight: What Ontario Business Owners Need to Know',
+    tag: 'General Contracting',
+    icon: '🏢',
+    author: 'BookYourTrades Editorial',
+    date: 'February 5, 2026',
+    readTime: '6 min read',
+    excerpt: 'A general contractor manages your trades — but who manages the general contractor? This guide gives you the oversight framework to protect your project and your money.',
+    body: '<p>A General Contractor (GC) is responsible for the overall execution of your project — coordinating subtrades, managing the schedule, and ensuring the work meets the specifications you agreed to. But many building owners treat "hiring a GC" as the end of their involvement. That\'s a mistake.</p><h2>Understanding the GC\'s Legal Obligations</h2><p>In Ontario, any contract for construction over $10,000 falls under the <strong>Construction Act</strong>. The GC is the prime contractor and carries liability for the work of all subtrades. However, this doesn\'t eliminate your responsibility as the property owner — you have obligations around WSIB, payment holdbacks, and notice requirements.</p><h2>The 10% Holdback Rule</h2><p>Ontario\'s Construction Act requires you to hold back 10% of every progress payment until the statutory holdback period expires (typically 60 days after substantial completion). This protects you against liens from unpaid subtrades or suppliers. Never waive this right.</p><h2>Progress Meetings and Documentation</h2><p>Require weekly site meetings with written minutes. Insist on progress photos tied to payment claims. Any approved scope change should generate a written Change Order before work begins — verbal approvals lead to disputed invoices.</p><h2>Red Flags in GC Management</h2><ul><li>Reluctance to provide a detailed schedule or milestone plan</li><li>Pressure to skip the 10% holdback</li><li>Inability to name the licensed subtrades being used</li><li>Payment requests that outpace actual work completed</li></ul><blockquote>"A good GC welcomes oversight. They know it protects both parties. A bad GC resists documentation for exactly the same reason."</blockquote>'
+  },
+  {
+    slug: 'welding-standards-ontario-businesses',
+    title: 'Welding Standards in Ontario: What Commercial Businesses Need to Know',
+    tag: 'Welding & Fabrication',
+    icon: '⚙️',
+    author: 'BookYourTrades Editorial',
+    date: 'January 28, 2026',
+    readTime: '5 min read',
+    excerpt: 'Not all welders are equal — and in Ontario\'s commercial and industrial sector, the difference between a certified and uncertified welder can mean the difference between a structure that lasts 50 years and one that fails.',
+    body: '<p>Welding is one of Ontario\'s most critical skilled trades, underpinning everything from structural steel in highrise construction to process piping in manufacturing facilities. Yet it\'s also one of the most misunderstood from a compliance perspective.</p><h2>Welding Certification Standards in Ontario</h2><p>In Ontario, welders working on regulated pressure equipment must hold certification under <strong>CSA W47.1</strong> (fusion welding of steel) or <strong>CSA W47.2</strong> (fusion welding of aluminum). For structural steel, <strong>CSA W59</strong> governs welded steel construction, and welders are typically certified under <strong>CSA W47.1</strong> by a certified welding company.</p><h2>When to Require Certified Welding</h2><ul><li>Any pressure vessel, boiler, or pressure piping work (regulated by TSSA)</li><li>Structural steel connections in buildings and bridges</li><li>Overhead crane rails and supports</li><li>Industrial process piping in manufacturing, food processing, or chemical facilities</li></ul><h2>Hiring a Certified Welding Company</h2><p>Ask for a <strong>CSA W47.1 company certification</strong> — this is issued to the company, not the individual welder. Then ask for individual <strong>Welder Qualification Test (WQT)</strong> records for the specific welders assigned to your project. These are not optional for regulated applications.</p><blockquote>"A weld that passes visual inspection and fails under load is worse than no weld at all — it creates false confidence."</blockquote><p>Find certified welding contractors across Ontario at <a href="/directory">BookYourTrades</a> by filtering for Welding &amp; Fabrication.</p>'
+  },
+  {
+    slug: 'commercial-security-systems-hiring',
+    title: 'Hiring a Commercial Security System Installer in Ontario: A Complete Guide',
+    tag: 'Security Systems',
+    icon: '🔒',
+    author: 'BookYourTrades Editorial',
+    date: 'January 20, 2026',
+    readTime: '5 min read',
+    excerpt: 'From access control to CCTV to intrusion detection, commercial security system installation in Ontario requires specific credentials. Here\'s what to look for.',
+    body: '<p>Commercial security system installation is a rapidly growing trade in Ontario, driven by rising insurance requirements and an increasingly connected building management landscape. Yet many businesses hire security installers without understanding what credentials are required.</p><h2>Licensing Requirements for Security Installers in Ontario</h2><p>Under the <strong>Private Security and Investigative Services Act (PSISA)</strong>, individuals who install, service, or monitor security systems must hold a valid <strong>Security Installer Licence</strong> issued by the Ministry of the Solicitor General. Companies providing these services must hold a <strong>Security Agency Licence</strong>.</p><p>Note: Installing low-voltage wiring for security systems in commercial buildings may also require involvement of an ECRA-licensed electrical contractor, depending on the system voltage and connection to the building\'s electrical infrastructure.</p><h2>Key System Types and What to Ask</h2><h3>Access Control Systems</h3><p>Ask about integration with your existing building management system, credentials management (key fobs, PIN, biometric), and remote management capabilities.</p><h3>IP Video Surveillance</h3><p>Clarify storage type (on-site NVR vs. cloud), retention period required by your insurance carrier, and whether the system integrates with your access control.</p><h3>Intrusion Detection</h3><p>Ask about ULC certification for the monitoring station, response time guarantees, and false alarm management protocols — repeated false alarms can result in fines from municipalities.</p><blockquote>"Your security system is only as good as the installer\'s knowledge of the building. Local experience matters."</blockquote><p>Find licensed security system contractors in Ontario on <a href="/directory">BookYourTrades</a>.</p>'
+  },
+  {
+    slug: 'top-10-things-before-hiring-contractor',
+    title: 'Top 10 Things to Know Before Hiring Any Contractor in Ontario',
+    tag: 'Top 10',
+    icon: '🏆',
+    author: 'BookYourTrades Editorial',
+    date: 'April 15, 2026',
+    readTime: '6 min read',
+    excerpt: 'From licence checks to holdback requirements, here are the 10 essential things every Ontario property owner must know before signing a contract with any trade contractor.',
+    body: '<p>Hiring a contractor is one of the most significant decisions you can make as a business or property owner. Getting it right protects your investment, your liability, and your timeline. Here are the 10 things you must know before any contract is signed.</p><h2>1. Verify Their Licence — Every Time</h2><p>Ontario has 22 compulsory trades requiring a Certificate of Qualification. Verify at <strong>ocot.ca</strong> for trades, <strong>ecrasafe.ca</strong> for electricians, and <strong>tssa.org</strong> for gas/HVAC work. Don\'t take their word for it.</p><h2>2. Get a Current WSIB Clearance Certificate</h2><p>Valid for 90 days. Download it directly from wsib.ca using the contractor\'s registration number. If they\'re not registered, you may be liable for any on-site injury.</p><h2>3. Require Minimum $2M Commercial Liability Insurance</h2><p>Ask for a certificate of insurance naming you as an additional insured. Residential-grade $1M policies are not sufficient for commercial work.</p><h2>4. Understand the 10% Statutory Holdback</h2><p>Ontario\'s Construction Act requires you to hold back 10% of every progress payment for 60 days after substantial completion — this protects you against liens from unpaid subcontractors.</p><h2>5. Insist on a Written Scope of Work</h2><p>Every deliverable, material specification, and exclusion must be in writing. Verbal agreements are not enforceable in construction disputes.</p><h2>6. Get at Least 3 Competitive Quotes</h2><p>Pricing varies significantly. Three quotes also help you identify anomalies — both unusually low bids (red flag) and unusually high ones.</p><h2>7. Check Online Reviews and References</h2><p>Platforms with verified reviews tied to real bookings — like BookYourTrades — are more reliable than anonymous Google reviews. Call 2 references from recent similar projects.</p><h2>8. Confirm Who\'s Actually Doing the Work</h2><p>A GC or prime contractor often subcontracts the actual work. Ask who the licensed subtrades are and whether they carry their own insurance.</p><h2>9. Understand the Payment Schedule</h2><p>Progress payments tied to milestones, not arbitrary dates. Never pay more than 30% upfront. Final payment only after a walk-through and deficiency list is resolved.</p><h2>10. Know Your Lien Rights</h2><p>Under the Construction Act, suppliers and subcontractors can place liens against your property if the prime contractor doesn\'t pay them — even if you\'ve paid the prime in full. The 10% holdback is your primary protection.</p><blockquote>"The best time to understand your rights as a property owner is before the project starts, not after a dispute begins."</blockquote>'
+  },
+  {
+    slug: 'top-10-contractor-red-flags',
+    title: 'Top 10 Red Flags When Getting a Quote From a Contractor',
+    tag: 'Top 10',
+    icon: '🚩',
+    author: 'BookYourTrades Editorial',
+    date: 'April 12, 2026',
+    readTime: '5 min read',
+    excerpt: 'Not all quotes are created equal. These 10 red flags should make you pause — or walk away — before signing anything with a trade contractor.',
+    body: '<p>Getting multiple quotes is smart. Knowing what to look for in those quotes is even smarter. Here are 10 warning signs that a contractor quote deserves serious scrutiny.</p><h2>1. Significantly Lower Than All Other Quotes</h2><p>A quote that\'s 30–40% below competitors usually means missing scope, unqualified labour, no insurance, or materials substitutions you haven\'t agreed to. Low bids win projects and lose money for owners.</p><h2>2. No Itemization — Just a Lump Sum</h2><p>A professional contractor provides a breakdown: labour hours, material costs, equipment, subtrades. A single number with no detail makes change orders impossible to evaluate.</p><h2>3. Asking for More Than 30% Upfront</h2><p>Requesting 50% or more before a single nail is driven is a warning sign of cash flow problems or, worse, intent to disappear.</p><h2>4. Resistance to Pulling Permits</h2><p>Any contractor suggesting you "skip the permit to save money" is exposing you to significant legal and financial risk. Permits exist to protect you, not them.</p><h2>5. No Written Contract Offered</h2><p>If a contractor is comfortable with a handshake deal, they\'re comfortable with disputes that favour them. Everything in writing, always.</p><h2>6. Cannot Provide Licence or Insurance Documentation</h2><p>A licensed contractor has their documentation ready. "I\'ll send it later" often means "I don\'t have it."</p><h2>7. No Physical Business Address</h2><p>A PO box or phone number only is a red flag for a contractor who may not be around after the job — or after a problem.</p><h2>8. High-Pressure Sales Tactics</h2><p>"This price is only good today" is a manipulation technique, not a business practice. Legitimate contractors understand you need time to compare quotes.</p><h2>9. Payment in Cash Only</h2><p>Cash-only contractors are often operating outside the tax system and won\'t provide receipts or warranties that hold up legally.</p><h2>10. No References From Similar Commercial Projects</h2><p>Residential experience doesn\'t automatically translate to commercial competency. If they can\'t name a recent comparable project with a reachable reference, that\'s your answer.</p><blockquote>"A contractor who resists basic due diligence has something to hide. A good contractor welcomes it."</blockquote>'
+  },
+  {
+    slug: 'top-10-in-demand-trades-gta',
+    title: 'Top 10 Most In-Demand Trades in the GTA Right Now (2026)',
+    tag: 'Top 10',
+    icon: '📊',
+    author: 'BookYourTrades Editorial',
+    date: 'April 8, 2026',
+    readTime: '5 min read',
+    excerpt: 'The Greater Toronto Area is facing a critical trades shortage. These 10 trades have the longest booking waits and highest demand — and what that means for your project timeline.',
+    body: '<p>Ontario\'s construction boom, aging infrastructure, and a retiring trades workforce have created a perfect storm of demand. If you\'re a commercial property owner or project manager in the GTA, understanding which trades are hardest to book will help you plan smarter.</p><h2>1. Electricians (309A Commercial)</h2><p>With major infrastructure projects, EV charging installations, and new commercial builds all competing for the same ECRA-licensed contractors, commercial electricians in Toronto are booking 6–10 weeks out as of Q2 2026.</p><h2>2. Pipefitters &amp; Steamfitters</h2><p>Industrial process piping work is surging with Ontario\'s manufacturing reshoring. Certified pipefitters (447A) are in exceptionally short supply in the Hamilton-Niagara corridor.</p><h2>3. HVAC Mechanics</h2><p>Both commercial refrigeration and HVAC are in critical shortage. TSSA G1-certified mechanics are commanding premium rates and long lead times, particularly for chiller and VRF system work.</p><h2>4. Millwrights</h2><p>Ontario\'s advanced manufacturing sector is driving millwright demand to record levels. Industrial mechanic millwrights (433A) are often the hardest trade to book in the province.</p><h2>5. Commercial Plumbers</h2><p>High-rise development and aging municipal infrastructure mean commercial Master Plumbers are consistently oversubscribed. Expect 4–8 week lead times for non-emergency commercial plumbing.</p><h2>6. Elevator Mechanics</h2><p>With thousands of aging elevator units in Ontario requiring modernization and new high-rise construction at record levels, elevator mechanics are one of the highest-earning and hardest-to-book trades in the province.</p><h2>7. Sheet Metal Workers</h2><p>HVAC ductwork, commercial kitchen ventilation, and architectural metal work are all driving strong demand for certified sheet metal workers province-wide.</p><h2>8. Boilermakers</h2><p>Industrial boiler installation, maintenance, and compliance work in Ontario\'s manufacturing and institutional sectors keeps boilermakers consistently busy.</p><h2>9. Welders (Red Seal)</h2><p>Structural steel, pressure vessel, and process piping welding are all in strong demand. Red Seal welders certified to CSA W47.1 standards command significant premiums.</p><h2>10. Commercial Roofers</h2><p>An aging commercial roofing stock across Ontario, combined with extreme weather events causing accelerated damage, has made commercial roofers among the busiest trades in the province.</p><blockquote>"If you need any of these trades for a project starting in the next 30 days, you\'re already behind schedule. Plan 8–12 weeks ahead."</blockquote><p>Search and book any of these trades on <a href="/directory">BookYourTrades</a> — Ontario\'s verified commercial trades directory.</p>'
+  },
+  {
+    slug: 'commercial-electrical-cost-guide-ontario',
+    title: 'Commercial Electrical Work Cost Guide Ontario 2026',
+    tag: 'Cost Guide',
+    icon: '💡',
+    author: 'BookYourTrades Editorial',
+    date: 'April 2, 2026',
+    readTime: '7 min read',
+    excerpt: 'What does commercial electrical work actually cost in Ontario in 2026? We break down hourly rates, panel upgrades, EV charging, and service upgrades by project type.',
+    body: '<p>Commercial electrical pricing in Ontario varies widely depending on trade complexity, permit requirements, and the current labour market. Here\'s a practical cost reference for the most common commercial electrical projects in 2026.</p><h2>Journeyman Electrician Hourly Rates</h2><ul><li><strong>Journeyman Electrician (309A):</strong> $85–$110/hour plus HST in Toronto/GTA; $70–$90/hour in mid-size Ontario cities</li><li><strong>Master Electrician Supervision:</strong> add $15–$25/hour or included in project overhead</li><li><strong>After-hours / emergency rate:</strong> 1.5–2x standard rate</li></ul><h2>Common Commercial Project Costs</h2><h3>Electrical Panel Upgrade (200A to 400A service)</h3><p>$8,000–$15,000 including materials, labour, permit, and ESA inspection. Larger services (600A+) start at $18,000.</p><h3>EV Charging Station Installation (Level 2, per station)</h3><p>$2,500–$5,500 per station for a standard installation in an existing commercial parking structure. Load management systems for multi-unit installations add $3,000–$8,000.</p><h3>Emergency Lighting System (per 1,000 sq ft)</h3><p>$4,000–$7,500 installed, tested, and OESC-compliant for a standard commercial tenant space.</p><h3>Commercial Lighting Retrofit (LED, per 1,000 sq ft)</h3><p>$8,000–$18,000 for a full fixture replacement and controls integration in a commercial office or retail environment.</p><h3>Generator Installation (100kW standby)</h3><p>$45,000–$85,000 for a transfer-switch-included, natural gas standby generator with TSSA permits for commercial applications.</p><h2>Why Prices Vary So Much</h2><p>Electrical quotes depend on: conduit type and routing complexity, ceiling height and access, existing wiring condition, permit complexity, ESA inspection fees, and current copper and equipment costs. Always get itemized quotes.</p><blockquote>"The permit and inspection aren\'t optional extras — they\'re the only way to know the work was done to code."</blockquote><p>Find ECRA-licensed commercial electricians on <a href="/directory">BookYourTrades</a>.</p>'
+  },
+  {
+    slug: 'spring-commercial-property-trade-checklist',
+    title: 'Spring Trade Checklist: 8 Things Every Ontario Commercial Property Needs',
+    tag: 'Seasonal Guide',
+    icon: '🌱',
+    author: 'BookYourTrades Editorial',
+    date: 'March 25, 2026',
+    readTime: '5 min read',
+    excerpt: 'Ontario\'s freeze-thaw winter is hard on commercial properties. This spring trade checklist helps building managers catch problems before they become expensive emergencies.',
+    body: '<p>Spring is the most important maintenance season for Ontario commercial properties. The brutal freeze-thaw cycle of a typical Ontario winter reveals exactly which systems and structures need attention. Here\'s your 8-point trade checklist for spring 2026.</p><h2>1. Roofing Inspection</h2><p>Winter snow loads, ice damming, and freeze-thaw cycling all stress commercial flat roofing systems. Have a certified commercial roofer inspect membranes, flashings, drains, and parapets before spring rains arrive. Small blisters and seam separations caught in April cost a fraction of emergency summer repairs.</p><h2>2. HVAC Seasonal Changeover</h2><p>Before switching from heating to cooling mode, a TSSA-certified HVAC technician should: clean or replace all filters, inspect and test cooling coils, check refrigerant charge, verify economizer function, and calibrate building controls.</p><h2>3. Exterior Concrete and Masonry</h2><p>Freeze-thaw cycling is concrete\'s worst enemy. Inspect all exterior walkways, loading docks, stairwells, and parking decks for spalling, cracking, and joint failures. Repairs in spring are dramatically cheaper than dealing with trip-and-fall liability in summer.</p><h2>4. Plumbing System Check</h2><p>Reconnect and test all exterior hose bibs shut off for winter. Check for any supply line or pipe damage from the cold season. Test backflow prevention devices — required annually in most Ontario municipalities.</p><h2>5. Electrical Inspection</h2><p>Inspect all exterior electrical outlets, lighting fixtures, and any equipment stored outdoors over winter. Water infiltration during spring thaw is a common cause of electrical faults.</p><h2>6. Parking Lot and Asphalt</h2><p>Freeze-thaw cycling causes pothole formation and cracking in asphalt surfaces. Spring is the ideal time for crack filling and pothole patching before the base further deteriorates.</p><h2>7. Landscaping and Drainage</h2><p>Ensure all exterior drainage is clear of winter debris. Check that grading around the building still directs water away from the foundation. Tree limbs damaged over winter should be removed by a professional arborist.</p><h2>8. Fire Safety Systems</h2><p>Schedule your annual fire protection inspection (required by Ontario Fire Code). Sprinkler heads, pull stations, exit lighting, and fire extinguisher inspections must be current.</p><blockquote>"Every trade issue caught in spring is a problem that won\'t become an emergency call in July."</blockquote><p>Book any of these trade services through <a href="/directory">BookYourTrades</a>.</p>'
+  },
+  {
+    slug: 'understanding-wsib-ontario-contractors',
+    title: 'Understanding WSIB: What Ontario Businesses Must Know When Hiring Contractors',
+    tag: 'Compliance',
+    icon: '📋',
+    author: 'BookYourTrades Editorial',
+    date: 'March 18, 2026',
+    readTime: '5 min read',
+    excerpt: 'Hiring a contractor without a WSIB clearance certificate can make YOUR business liable for their workplace injuries. Here\'s what WSIB means, why it matters, and how to verify it.',
+    body: '<p>The Workplace Safety and Insurance Board (WSIB) is Ontario\'s no-fault workplace insurance system. Understanding how WSIB obligations flow between businesses and contractors is one of the most commonly misunderstood aspects of hiring trade contractors in Ontario.</p><h2>What Is a WSIB Clearance Certificate?</h2><p>A WSIB Clearance Certificate confirms that a contractor is registered with WSIB, is in good standing (no outstanding premiums), and that their workers are covered under the WSIB system. It\'s valid for <strong>90 days</strong> from the issue date.</p><h2>Why It Protects YOU — Not Just the Worker</h2><p>If you hire a contractor who is not registered with WSIB and one of their workers is injured on your property, you — the property owner — can be held jointly liable for WSIB premiums and potentially for the cost of the claim. This is called "Schedule 1 employer" liability and it\'s not theoretical — Ontario businesses face this regularly.</p><h2>How to Verify a WSIB Clearance Certificate</h2><ol style="margin:16px 0 16px 24px;line-height:2;"><li>Ask the contractor for their WSIB Account Number</li><li>Go to <strong>wsib.ca</strong> → Businesses → Clearance Certificates</li><li>Enter the contractor\'s name or account number</li><li>Download the certificate directly — don\'t accept a PDF from the contractor</li></ol><h2>Which Contractors Need WSIB Coverage?</h2><p>Most incorporated contractors and their employees must have WSIB coverage. However, some <strong>independent operators</strong> (sole proprietors in certain industries) may apply for <strong>optional WSIB coverage</strong> — or may be exempt. If a contractor claims exemption, verify it with WSIB directly.</p><h2>WSIB Isn\'t Optional — And It\'s Not Just a Formality</h2><p>Beyond legal protection, a contractor registered in good standing with WSIB is more likely to be operating a legitimate, properly run business. It\'s one of the simplest proxy indicators of contractor quality available.</p><blockquote>"Always download the WSIB clearance certificate yourself from wsib.ca. A contractor sending you a PDF can send you anything."</blockquote>'
+  },
+  {
+    slug: 'what-is-a-master-plumber-ontario',
+    title: 'Master Plumber vs. Journeyman: Understanding Ontario\'s Plumbing Licence Tiers',
+    tag: 'Licensing',
+    icon: '🔧',
+    author: 'BookYourTrades Editorial',
+    date: 'March 10, 2026',
+    readTime: '4 min read',
+    excerpt: 'Not all plumbers have the same authority to work in Ontario. Here\'s the difference between an Apprentice, Journeyman, and Master Plumber — and why it matters for your commercial project.',
+    body: '<p>Ontario\'s plumbing licensing system has multiple tiers, and understanding them matters when you\'re hiring for commercial work. Here\'s the plain-English breakdown.</p><h2>Apprentice Plumber</h2><p>Enrolled in a formal plumbing apprenticeship program registered with the Ontario College of Trades. Can only work under the direct supervision of a licensed journeyman or master plumber. Cannot sign off on their own work or pull permits.</p><h2>Journeyman Plumber (306A)</h2><p>Holds a Certificate of Qualification in the compulsory trade of Plumber (306A). Has completed their apprenticeship and passed the provincial exam. Can perform all plumbing work and supervise apprentices, but <strong>cannot pull permits</strong> independently in most Ontario municipalities.</p><h2>Master Plumber</h2><p>A Master Plumber has completed additional education and examination beyond the journeyman level. Masters can operate independently, pull permits, and take full responsibility for a plumbing installation. In most Ontario municipalities, commercial plumbing permits require a Master Plumber of record.</p><h2>What This Means for Your Commercial Project</h2><p>For any commercial plumbing work requiring permits — and most does — you need a company with a licensed Master Plumber on staff. When getting quotes, ask: "Is there a Master Plumber pulling the permit for this project?" The answer should always be yes.</p><h2>Backflow Prevention — a Special Note</h2><p>Ontario municipalities require annual backflow prevention device testing by a <strong>Certified Cross Connection Control Specialist</strong> — a separate credential from the plumbing licence. Confirm your plumber holds this certification for any backflow work.</p><blockquote>"A journeyman can do excellent work, but for commercial projects requiring permits, you need a Master Plumber taking responsibility for the installation."</blockquote><p>Find Master Plumbers in your Ontario city at <a href="/directory">BookYourTrades</a>.</p>'
+  },
+  {
+    slug: 'commercial-hvac-cost-guide-ontario',
+    title: 'Commercial HVAC Replacement Cost Guide: Ontario 2026',
+    tag: 'Cost Guide',
+    icon: '❄️',
+    author: 'BookYourTrades Editorial',
+    date: 'March 3, 2026',
+    readTime: '6 min read',
+    excerpt: 'Replacing a commercial HVAC system in Ontario in 2026? Here are realistic cost ranges by system type — rooftop units, chillers, split systems, and full building retrofits.',
+    body: '<p>Commercial HVAC replacement is one of the largest capital expenditures a building owner faces. Prices have risen significantly since 2022 due to supply chain pressures and refrigerant regulation changes. Here are current Ontario market rates for 2026.</p><h2>Rooftop Units (RTUs)</h2><ul><li><strong>3–5 ton RTU (small retail/office):</strong> $12,000–$22,000 installed, including crane, curb adapter, and commissioning</li><li><strong>7.5–10 ton RTU (medium commercial):</strong> $25,000–$42,000 installed</li><li><strong>15–20 ton RTU (large commercial):</strong> $55,000–$90,000 installed</li></ul><h2>Split Systems (Commercial Grade)</h2><ul><li><strong>2–3 ton commercial split:</strong> $8,000–$16,000 installed</li><li><strong>5–10 ton commercial split:</strong> $18,000–$38,000 installed</li></ul><h2>VRF/VRV Systems</h2><p>Variable refrigerant flow systems are increasingly popular for Ontario commercial buildings due to zoning flexibility and efficiency. Typical commercial VRF installation costs $3,500–$5,500 per ton of capacity, all-in.</p><h2>Chiller Systems (Large Commercial)</h2><ul><li><strong>50–100 ton air-cooled chiller:</strong> $180,000–$320,000 installed</li><li><strong>100–200 ton water-cooled chiller:</strong> $280,000–$520,000 with cooling tower</li></ul><h2>What Drives Pricing in Ontario</h2><p>TSSA permits for gas-fired equipment, refrigerant type (R-410A phase-down adds cost), crane rental for rooftop work, electrical service upgrades for higher-efficiency equipment, and commissioning and controls integration all add significant cost to base equipment pricing.</p><h2>Why Get Multiple Quotes</h2><p>Commercial HVAC quotes can vary by 25–40% between contractors for identical scope. Labour rates, equipment brands, refrigerant choices, and included commissioning differ significantly. Always compare itemized quotes, not lump sums.</p><blockquote>"An HVAC contractor who can\'t give you a 10-year total cost of ownership estimate isn\'t giving you a real quote — they\'re giving you a number."</blockquote><p>Find TSSA-certified HVAC contractors across Ontario at <a href="/directory">BookYourTrades</a>.</p>'
+  }
+];
+
+/* ============================================================
    ROUTING
 ============================================================ */
 function navigate(path) {
@@ -2784,6 +3337,17 @@ function router() {
     if (s) s.style.display = 'none';
   } else if (page === 'pricing') {
     document.getElementById('page-pricing').classList.add('active');
+  } else if (page === 'blog') {
+    if (parts[1]) {
+      document.getElementById('page-blog-post').classList.add('active');
+      renderBlogPost(parts[1]);
+    } else {
+      document.getElementById('page-blog').classList.add('active');
+      renderBlogList();
+    }
+  } else if (page === 'news') {
+    document.getElementById('page-news').classList.add('active');
+    loadNews(window._newsKw || '');
   } else if (page === 'admin') {
     document.getElementById('page-admin').classList.add('active');
     renderAdmin();
@@ -2846,6 +3410,155 @@ function closeMobileNav() {
   burger.classList.remove('open');
   if (close) close.style.display = 'none';
   document.body.style.overflow = '';
+}
+
+/* ============================================================
+   BLOG
+============================================================ */
+function renderBlogList() {
+  const grid = document.getElementById('blogGrid');
+  if (!grid) return;
+  grid.innerHTML = BLOG_POSTS.map(function(p) {
+    return '<div class="blog-card" onclick="navigate(\'/blog/' + p.slug + '\')">'
+      + '<div class="blog-card-img">' + p.icon + '</div>'
+      + '<div class="blog-card-body">'
+      + '<div class="blog-card-tag">' + p.tag + '</div>'
+      + '<div class="blog-card-title">' + p.title + '</div>'
+      + '<div class="blog-card-excerpt">' + p.excerpt + '</div>'
+      + '<div class="blog-card-meta">'
+      + '<span>&#128100; ' + p.author + '</span>'
+      + '<span>&#128336; ' + p.readTime + '</span>'
+      + '<span>&#128197; ' + p.date + '</span>'
+      + '</div>'
+      + '</div></div>';
+  }).join('');
+}
+
+function renderBlogPost(slug) {
+  const post = BLOG_POSTS.find(function(p) { return p.slug === slug; });
+  const el = document.getElementById('blogPostContent');
+  if (!el) return;
+
+  if (!post) {
+    el.innerHTML = '<div class="container" style="padding:80px 0;text-align:center;">'
+      + '<div style="font-size:48px;margin-bottom:16px;">&#128269;</div>'
+      + '<h2 style="font-size:28px;margin-bottom:12px;">Post Not Found</h2>'
+      + '<a class="btn btn-orange" onclick="navigate(\'/blog\')">Back to Blog</a>'
+      + '</div>';
+    return;
+  }
+
+  /* Update page meta for SEO/AEO */
+  document.title = post.title + ' | BookYourTrades Blog';
+  var metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.setAttribute('content', post.excerpt);
+
+  /* Inject BlogPosting structured data */
+  var existing = document.getElementById('blogLd');
+  if (existing) existing.remove();
+  var ld = document.createElement('script');
+  ld.type = 'application/ld+json';
+  ld.id = 'blogLd';
+  ld.textContent = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    'headline': post.title,
+    'description': post.excerpt,
+    'author': { '@type': 'Organization', 'name': post.author, 'url': 'https://bookyourtrades.com' },
+    'publisher': { '@type': 'Organization', 'name': 'BookYourTrades', 'url': 'https://bookyourtrades.com', 'logo': { '@type': 'ImageObject', 'url': 'https://bookyourtrades.com/logo.png' } },
+    'datePublished': post.date,
+    'url': 'https://bookyourtrades.com/blog/' + post.slug,
+    'mainEntityOfPage': { '@type': 'WebPage', '@id': 'https://bookyourtrades.com/blog/' + post.slug },
+    'keywords': post.tag + ', Ontario trades, contractor hiring, commercial trades Ontario'
+  });
+  document.head.appendChild(ld);
+
+  el.innerHTML = '<div class="blog-hero">'
+    + '<div class="container">'
+    + '<div style="margin-bottom:12px;">'
+    + '<a onclick="navigate(\'/blog\')" style="color:var(--s300);cursor:pointer;font-size:13px;">&#8592; Back to Blog</a>'
+    + '</div>'
+    + '<div class="blog-card-tag" style="font-size:12px;margin-bottom:10px;">' + post.tag + '</div>'
+    + '<h1 style="font-size:clamp(28px,4vw,48px);line-height:1.1;max-width:800px;margin-bottom:16px;">' + post.title + '</h1>'
+    + '<div style="display:flex;gap:20px;color:var(--s300);font-size:13px;flex-wrap:wrap;">'
+    + '<span>&#128100; ' + post.author + '</span>'
+    + '<span>&#128197; ' + post.date + '</span>'
+    + '<span>&#128336; ' + post.readTime + '</span>'
+    + '</div>'
+    + '</div>'
+    + '</div>'
+    + '<div class="section-white" style="padding:56px 0 80px;">'
+    + '<div class="container">'
+    + '<div class="blog-post-body">'
+    + post.body
+    + '<div style="margin-top:48px;padding:28px;background:var(--lz-bg);border:1.5px solid var(--lz-border);border-radius:10px;">'
+    + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:18px;color:var(--lz-text);margin-bottom:8px;">Need a Qualified Contractor?</div>'
+    + '<div style="font-size:14px;color:var(--lz-sub);margin-bottom:16px;">Search Ontario\'s verified commercial trades directory and book an appointment directly — no middleman, no commission.</div>'
+    + '<button class="btn btn-orange" onclick="navigate(\'/directory\')">Browse the Directory &#8594;</button>'
+    + '</div>'
+    + '</div>'
+    + '<div style="max-width:740px;margin:48px auto 0;border-top:1px solid var(--lz-border);padding-top:32px;">'
+    + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:18px;color:var(--lz-text);margin-bottom:20px;">More From the Blog</div>'
+    + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">'
+    + BLOG_POSTS.filter(function(x) { return x.slug !== slug; }).slice(0,3).map(function(x) {
+        return '<div class="blog-card" onclick="navigate(\'/blog/' + x.slug + '\')" style="cursor:pointer;">'
+          + '<div class="blog-card-img" style="height:100px;font-size:36px;">' + x.icon + '</div>'
+          + '<div class="blog-card-body" style="padding:16px;">'
+          + '<div class="blog-card-tag">' + x.tag + '</div>'
+          + '<div class="blog-card-title" style="font-size:15px;">' + x.title + '</div>'
+          + '</div></div>';
+      }).join('')
+    + '</div></div>'
+    + '</div>'
+    + '</div>';
+}
+
+/* ============================================================
+   MEMBERSHIP / STRIPE SUBSCRIPTIONS
+============================================================ */
+function startSubscription(plan) {
+  var notice = document.getElementById('stripeSetupNotice');
+  if (STRIPE_PK && STRIPE_PK.includes('YOUR_STRIPE')) {
+    /* Stripe not configured yet — show setup notice */
+    if (notice) {
+      notice.style.display = 'block';
+      notice.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    showToast('Stripe not configured yet — see setup instructions below', 'error');
+    return;
+  }
+
+  if (!App.currentUser) {
+    showToast('Please log in or register first', 'error');
+    navigate('/register');
+    return;
+  }
+
+  /* Redirect to Stripe Checkout via server-side session */
+  var priceKey = plan === 'pro' ? 'STRIPE_PRO_PRICE_ID' : 'STRIPE_ENT_PRICE_ID';
+  showToast('Redirecting to secure checkout...', '');
+
+  fetch('/api/create-checkout-session', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      plan: plan,
+      email: App.currentUser.email || '',
+      successUrl: window.location.origin + '/dashboard?subscribed=1',
+      cancelUrl: window.location.origin + '/pricing'
+    })
+  })
+  .then(function(r) { return r.json(); })
+  .then(function(data) {
+    if (data.url) {
+      window.location.href = data.url;
+    } else {
+      showToast('Could not start checkout: ' + (data.error || 'unknown error'), 'error');
+    }
+  })
+  .catch(function(err) {
+    showToast('Checkout error: ' + err.message, 'error');
+  });
 }
 
 /* ============================================================
@@ -2946,6 +3659,10 @@ function renderDirectory() {
   filterDirectory();
 }
 
+const DIR_PAGE_SIZE = 10;
+let dirCurrentPage = 1;
+let dirFilteredResults = [];
+
 function filterDirectory() {
   const q     = (document.getElementById('dirSearch')?.value||'').toLowerCase();
   const city  = document.getElementById('dirCity')?.value||'';
@@ -2966,55 +3683,132 @@ function filterDirectory() {
   if (sort==='name')    res.sort((a,b)=>a.companyName.localeCompare(b.companyName));
   if (sort==='reviews') res.sort((a,b)=>b.reviewCount-a.reviewCount);
 
+  dirFilteredResults = res;
+  dirCurrentPage = 1;
+  renderDirPage();
+}
+
+function dirGoToPage(n) {
+  const totalPages = Math.ceil(dirFilteredResults.length / DIR_PAGE_SIZE);
+  if (n < 1 || n > totalPages) return;
+  dirCurrentPage = n;
+  renderDirPage();
+  const grid = document.getElementById('dirGrid');
+  if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderDirPage() {
+  const res = dirFilteredResults;
+  const totalPages = Math.ceil(res.length / DIR_PAGE_SIZE);
+  const page = dirCurrentPage;
+  const start = (page - 1) * DIR_PAGE_SIZE;
+  const pageItems = res.slice(start, start + DIR_PAGE_SIZE);
+
   const cnt = document.getElementById('dirCount');
-  if (cnt) cnt.textContent = `${res.length} CONTRACTOR${res.length!==1?'S':''} FOUND`;
+  if (cnt) {
+    const showing = res.length === 0 ? 0 : Math.min(start + DIR_PAGE_SIZE, res.length);
+    cnt.textContent = res.length === 0
+      ? '0 CONTRACTORS FOUND'
+      : res.length + ' CONTRACTOR' + (res.length !== 1 ? 'S' : '') + ' FOUND'
+        + (totalPages > 1 ? ' \u2014 Page ' + page + ' of ' + totalPages : '');
+  }
 
   const grid = document.getElementById('dirGrid');
   if (!grid) return;
 
-  if (res.length===0) {
-    grid.innerHTML = `<div style="text-align:center;padding:60px;color:var(--s400);">
-      <div style="font-size:40px;margin-bottom:12px;">&#128269;</div>
-      <div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;margin-bottom:8px;">No contractors found</div>
-      <div style="font-size:14px;">Try adjusting your filters or search terms</div>
-    </div>`;
+  if (res.length === 0) {
+    grid.innerHTML = '<div style="text-align:center;padding:60px;color:var(--s400);">'
+      + '<div style="font-size:40px;margin-bottom:12px;">&#128269;</div>'
+      + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;margin-bottom:8px;">No contractors found</div>'
+      + '<div style="font-size:14px;">Try adjusting your filters or search terms</div>'
+      + '</div>';
+    const pag = document.getElementById('dirPagination');
+    if (pag) pag.style.display = 'none';
     return;
   }
 
-  grid.innerHTML = res.map(p => {
-    const ini = p.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
+  grid.innerHTML = pageItems.map(p => {
     const reqCount = getRequestCount(p.id);
-    return `
-      <div class="provider-card" onclick="navigate('/provider/${p.id}')">
-        <div style="display:flex;align-items:flex-start;gap:20px;">
-          ${providerLogoHTML(p,60,6)}
-          <div style="flex:1;min-width:0;">
-            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap;">
-              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:21px;color:white;">${p.companyName}</div>
-              <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-                ${p.claimed
-                  ? '<span style="font-size:12px;color:#6FE09A;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;">✓ CLAIMED</span>'
-                  : '<span style="font-size:12px;color:var(--o400);font-family:\'Barlow Condensed\',sans-serif;font-weight:700;">⚑ UNCLAIMED</span>'}
-                <span style="display:flex;align-items:center;gap:4px;"><span class="stars" style="font-size:12px;">&#9733;</span><span style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;color:white;">${p.rating}</span><span style="font-size:13px;color:var(--s400);">(${p.reviewCount})</span></span>
-              </div>
-            </div>
-            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">
-              <span class="badge badge-orange">${p.tradeType}</span>
-              <span style="font-size:13px;color:var(--s400);">${p.yearsInBusiness}</span>
-              <span style="font-size:13px;color:var(--s400);">&#128205; ${p.serviceAreas.join(', ')}</span>
-            </div>
-            <div style="font-size:14px;color:var(--s300);line-height:1.65;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${p.description}</div>
-            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-              <div style="display:flex;gap:6px;flex-wrap:wrap;">
-                ${p.certifications.slice(0,3).map(c=>`<span class="badge badge-navy">${c}</span>`).join('')}
-              </div>
-              <div style="font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;">📋 ${reqCount} booking request${reqCount!==1?'s':''}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
+    return '<div class="provider-card" onclick="navigate(\'/provider/' + p.id + '\')">'
+      + '<div style="display:flex;align-items:flex-start;gap:20px;">'
+      + providerLogoHTML(p, 60, 6)
+      + '<div style="flex:1;min-width:0;">'
+      + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:6px;flex-wrap:wrap;">'
+      + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:21px;color:white;">' + p.companyName + '</div>'
+      + '<div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">'
+      + (p.claimed
+          ? '<span style="font-size:12px;color:#6FE09A;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;">&#10003; CLAIMED</span>'
+          : '<span style="font-size:12px;color:var(--o400);font-family:\'Barlow Condensed\',sans-serif;font-weight:700;">&#9873; UNCLAIMED</span>')
+      + '<span style="display:flex;align-items:center;gap:4px;"><span class="stars" style="font-size:12px;">&#9733;</span>'
+      + '<span style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;color:white;">' + p.rating + '</span>'
+      + '<span style="font-size:13px;color:var(--s400);">(' + p.reviewCount + ')</span></span>'
+      + '</div></div>'
+      + '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">'
+      + '<span class="badge badge-orange">' + p.tradeType + '</span>'
+      + '<span style="font-size:13px;color:var(--s400);">' + p.yearsInBusiness + '</span>'
+      + '<span style="font-size:13px;color:var(--s400);">&#128205; ' + p.serviceAreas.join(', ') + '</span>'
+      + '</div>'
+      + '<div style="font-size:14px;color:var(--s300);line-height:1.65;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + p.description + '</div>'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">'
+      + '<div style="display:flex;gap:6px;flex-wrap:wrap;">'
+      + p.certifications.slice(0, 3).map(function(c) { return '<span class="badge badge-navy">' + c + '</span>'; }).join('')
+      + '</div>'
+      + '<div style="font-size:12px;color:var(--o400);font-family:\'Barlow Condensed\',sans-serif;font-weight:700;">&#128203; ' + reqCount + ' booking request' + (reqCount !== 1 ? 's' : '') + '</div>'
+      + '</div></div></div></div>';
   }).join('');
+
+  /* --- pagination controls --- */
+  const pag = document.getElementById('dirPagination');
+  if (!pag) return;
+
+  if (totalPages <= 1) {
+    pag.style.display = 'none';
+    return;
+  }
+
+  pag.style.display = 'flex';
+  const btnBase = 'style="min-width:38px;height:38px;padding:0 12px;border:none;border-radius:6px;cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:15px;transition:background 0.15s;"';
+
+  let html = '';
+
+  /* Previous */
+  html += '<button ' + btnBase
+    + (page === 1
+        ? ' disabled style="min-width:38px;height:38px;padding:0 12px;border:none;border-radius:6px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:15px;background:var(--n700);color:var(--s600);cursor:not-allowed;"'
+        : ' onclick="dirGoToPage(' + (page - 1) + ')" style="min-width:38px;height:38px;padding:0 12px;border:none;border-radius:6px;cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:15px;background:var(--n600);color:var(--s300);"')
+    + '>&#8592; Prev</button>';
+
+  /* Page number buttons — show up to 7, with ellipsis */
+  var pagesToShow = [];
+  if (totalPages <= 7) {
+    for (var i = 1; i <= totalPages; i++) pagesToShow.push(i);
+  } else {
+    pagesToShow.push(1);
+    if (page > 3) pagesToShow.push('...');
+    for (var i = Math.max(2, page - 1); i <= Math.min(totalPages - 1, page + 1); i++) pagesToShow.push(i);
+    if (page < totalPages - 2) pagesToShow.push('...');
+    pagesToShow.push(totalPages);
+  }
+
+  pagesToShow.forEach(function(pg) {
+    if (pg === '...') {
+      html += '<span style="color:var(--s400);font-family:\'Barlow Condensed\',sans-serif;font-size:15px;padding:0 4px;">&#8230;</span>';
+    } else {
+      var isActive = pg === page;
+      html += '<button onclick="dirGoToPage(' + pg + ')" style="min-width:38px;height:38px;padding:0 12px;border:none;border-radius:6px;cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:15px;'
+        + (isActive ? 'background:var(--o400);color:var(--n900);' : 'background:var(--n600);color:var(--s300);')
+        + '">' + pg + '</button>';
+    }
+  });
+
+  /* Next */
+  html += '<button '
+    + (page === totalPages
+        ? ' disabled style="min-width:38px;height:38px;padding:0 12px;border:none;border-radius:6px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:15px;background:var(--n700);color:var(--s600);cursor:not-allowed;"'
+        : ' onclick="dirGoToPage(' + (page + 1) + ')" style="min-width:38px;height:38px;padding:0 12px;border:none;border-radius:6px;cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:15px;background:var(--n600);color:var(--s300);"')
+    + '>Next &#8594;</button>';
+
+  pag.innerHTML = html;
 }
 
 /* ============================================================
