@@ -2137,7 +2137,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
     <div class="container">
       <div style="text-align:center;margin-bottom:48px;">
         <div class="section-label">Why Skilled Trades?</div>
-        <h2 style="font-size:36px;">The Best-Kept Career Secret in Canada</h2>
+        <h2 style="font-size:36px;color:#1A2332;">The Best-Kept Career Secret in Canada</h2>
         <p style="color:var(--lz-sub);font-size:16px;max-width:600px;margin:12px auto 0;">Trades careers in Ontario offer exceptional wages, job security, and the ability to run your own business — without a four-year degree.</p>
       </div>
       <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
@@ -2165,7 +2165,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
     <div class="container">
       <div style="text-align:center;margin-bottom:48px;">
         <div class="section-label">The Pathway</div>
-        <h2 style="font-size:36px;">Step-by-Step: From High School to Journeyman</h2>
+        <h2 style="font-size:36px;color:#1A2332;">Step-by-Step: From High School to Journeyman</h2>
       </div>
       <div style="max-width:800px;margin:0 auto;">
 
@@ -2228,7 +2228,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
     <div class="container">
       <div style="text-align:center;margin-bottom:40px;">
         <div class="section-label">Trades Overview</div>
-        <h2 style="font-size:36px;">Ontario's Key Trades: Hours, Pay &amp; Demand</h2>
+        <h2 style="font-size:36px;color:#1A2332;">Ontario's Key Trades: Hours, Pay &amp; Demand</h2>
       </div>
       <div style="overflow-x:auto;">
         <table style="width:100%;border-collapse:collapse;background:var(--lz-surface);border-radius:10px;overflow:hidden;font-size:14px;">
@@ -2263,7 +2263,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;">
         <div>
           <div class="section-label">Key Resources</div>
-          <h2 style="font-size:32px;margin-bottom:24px;">Where to Go Next</h2>
+          <h2 style="font-size:32px;margin-bottom:24px;color:#1A2332;">Where to Go Next</h2>
           <div style="display:flex;flex-direction:column;gap:16px;">
             <a href="https://www.ontario.ca/page/apprenticeship-trades" target="_blank" rel="noopener" style="display:flex;gap:14px;padding:16px;border:1px solid var(--lz-border);border-radius:8px;text-decoration:none;color:inherit;transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--o500)'" onmouseout="this.style.borderColor='var(--lz-border)'">
               <div style="font-size:28px;">🏛️</div>
@@ -3531,6 +3531,22 @@ function saveBookings()  { localStorage.setItem('to_bookings',  JSON.stringify(A
 ============================================================ */
 window._newsKw = '';
 
+/* Stock images for news cards — trade/construction themed, cycles by article index */
+const NEWS_STOCK_IMAGES = [
+  'photo-1504307651254-35680f356dfd', // construction site workers
+  'photo-1621905251189-08b45d6a269e', // electrician at panel
+  'photo-1558618666-fcd25c85cd64',    // roofing work
+  'photo-1503387837-b154d5074bd2',    // building under construction
+  'photo-1581578731548-c64695cc6952', // tools / renovation
+  'photo-1530124566582-a618bc2615dc', // worker with hard hat
+  'photo-1590578329029-d5e80a596e17', // industrial pipes
+  'photo-1477959858617-67f85cf4f1df', // commercial building exterior
+  'photo-1513467655676-561b7d489a8b', // welding sparks
+  'photo-1540910419892-4a36d2c326c',  // HVAC unit on rooftop
+  'photo-1583511655826-05700d52f4d9', // electrical wiring close-up
+  'photo-1504328345606-18bbc8c9d7d1', // industrial machinery
+];
+
 function loadNews(keyword) {
   window._newsKw = keyword;
 
@@ -3566,13 +3582,12 @@ function loadNews(keyword) {
         return;
       }
 
-      grid.innerHTML = articles.map(function(a) {
+      grid.innerHTML = articles.map(function(a, i) {
+        var stockUrl = 'https://images.unsplash.com/' + NEWS_STOCK_IMAGES[i % NEWS_STOCK_IMAGES.length] + '?w=600&q=70&auto=format&fit=crop';
         return '<div class="news-card">'
-          + (a.image && !/construction dive/i.test(a.source)
-              ? '<div style="width:100%;height:200px;overflow:hidden;flex-shrink:0;flex-grow:0;background:var(--lz-bg);">'
-                + '<img src="' + a.image + '" alt="" loading="lazy" style="width:100%;height:200px;object-fit:cover;object-position:center;display:block;" onerror="this.parentNode.style.display=\'none\'">'
-                + '</div>'
-              : '')
+          + '<div style="width:100%;height:200px;overflow:hidden;flex-shrink:0;flex-grow:0;">'
+          + '<img src="' + stockUrl + '" alt="" loading="lazy" style="width:100%;height:200px;object-fit:cover;object-position:center;display:block;" onerror="this.parentNode.style.display=\'none\'">'
+          + '</div>'
           + '<div class="news-card-body">'
           + '<div class="news-card-source"><span>' + (a.icon || '📰') + '</span><span>' + a.source + '</span></div>'
           + '<div class="news-card-title"><a href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a></div>'
