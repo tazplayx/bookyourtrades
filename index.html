@@ -934,10 +934,14 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   transition: box-shadow 0.2s, transform 0.2s;
 }
 .news-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.1); transform: translateY(-2px); }
+.news-card-thumb-wrap {
+  width: 100%; height: 180px; overflow: hidden; flex-shrink: 0;
+  background: var(--lz-bg);
+}
 .news-card-thumb {
-  width: 100%; height: 180px; max-height: 200px;
+  width: 100%; height: 100%;
   object-fit: cover; object-position: center;
-  display: block; flex-shrink: 0;
+  display: block;
 }
 .news-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; flex: 1; }
 .news-card-source {
@@ -3564,7 +3568,9 @@ function loadNews(keyword) {
 
       grid.innerHTML = articles.map(function(a) {
         return '<div class="news-card">'
-          + (a.image ? '<img class="news-card-thumb" src="' + a.image + '" alt="" loading="lazy" onerror="this.style.display=\'none\'">' : '')
+          + (a.image
+              ? '<div class="news-card-thumb-wrap"><img class="news-card-thumb" src="' + a.image + '" alt="" loading="lazy" onerror="this.parentNode.style.display=\'none\'"></div>'
+              : '')
           + '<div class="news-card-body">'
           + '<div class="news-card-source"><span>' + (a.icon || '📰') + '</span><span>' + a.source + '</span></div>'
           + '<div class="news-card-title"><a href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a></div>'
