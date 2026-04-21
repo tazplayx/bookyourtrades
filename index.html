@@ -3568,9 +3568,6 @@ function loadNews(keyword) {
 
       grid.innerHTML = articles.map(function(a) {
         return '<div class="news-card">'
-          + (a.image
-              ? '<div class="news-card-thumb-wrap"><img class="news-card-thumb" src="' + a.image + '" alt="" loading="lazy" onerror="this.parentNode.style.display=\'none\'"></div>'
-              : '')
           + '<div class="news-card-body">'
           + '<div class="news-card-source"><span>' + (a.icon || '📰') + '</span><span>' + a.source + '</span></div>'
           + '<div class="news-card-title"><a href="' + a.link + '" target="_blank" rel="noopener">' + a.title + '</a></div>'
