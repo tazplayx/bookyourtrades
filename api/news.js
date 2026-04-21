@@ -51,8 +51,11 @@ function extractImage(item) {
 /* Strip HTML tags, decode entities, and truncate */
 function clean(str, maxLen = 220) {
   const stripped = str
-    .replace(/<img[^>]*>/gi, '')          // remove img tags first
-    .replace(/<[^>]+>/g, '')              // remove all other HTML
+    .replace(/<figure[\s\S]*?<\/figure>/gi, '')   // remove figure blocks (image + caption)
+    .replace(/<picture[\s\S]*?<\/picture>/gi, '')  // remove picture elements
+    .replace(/<img[^>]*\/?>/gi, '')                // remove standalone img tags
+    .replace(/<source[^>]*\/?>/gi, '')             // remove source tags
+    .replace(/<[^>]+>/g, '')                       // remove all remaining HTML tags
     .replace(/&nbsp;/g, ' ').replace(/&amp;/g, '&')
     .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"')
     .replace(/&#\d+;/g, ' ').replace(/\s+/g, ' ').trim();
