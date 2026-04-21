@@ -3417,13 +3417,22 @@ function loadStorage() {
   /* Merge any new seed providers that don't yet exist in localStorage */
   if (sp) {
     let saved = JSON.parse(sp);
-    if (sv !== SEED_VERSION) {
-      /* Add any seed providers whose IDs aren't already saved */
-      const savedIds = new Set(saved.map(p => p.id));
-      const newOnes  = SEED_PROVIDERS.filter(p => !savedIds.has(p.id));
-      if (newOnes.length) { saved = [...saved, ...newOnes]; }
-      localStorage.setItem('to_seed_version', SEED_VERSION);
-    }
+    /* Always add any new seed providers whose IDs aren't already saved */
+    const savedIds = new Set(saved.map(p => p.id));
+    const newOnes  = SEED_PROVIDERS.filter(p => !savedIds.has(p.id));
+    if (newOnes.length) { saved = [...saved, ...newOnes]; }
+    /* Wipe any stale fake requestCount/rating/reviewCount from old seed data.
+       Real ratings/reviews are computed live from App.reviews; real booking
+       counts come from App.bookings — never baked into provider records. */
+    saved = saved.map(function(p) {
+      const fresh = SEED_PROVIDERS.find(s => s.id === p.id);
+      if (fresh) {
+        p.requestCount = 0;
+        if ((p.reviewCount || 0) === 0) { p.rating = 0; p.reviewCount = 0; }
+      }
+      return p;
+    });
+    localStorage.setItem('to_seed_version', SEED_VERSION);
     App.providers = saved;
     saveProviders();
   } else {
@@ -4176,9 +4185,8 @@ function providerCardHTML(p) {
 }
 
 function getRequestCount(pid) {
-  const bookings = App.bookings.filter(b=>b.providerId===pid);
-  const p = App.providers.find(x=>x.id===pid);
-  return bookings.length + (p?.requestCount||0);
+  // Count only real bookings submitted through the platform — never seed/fake requestCount
+  return App.bookings.filter(b => b.providerId === pid).length;
 }
 
 function doHeroSearch() {
