@@ -264,6 +264,47 @@ input, textarea, select { font-family: inherit; }
 .nav-link:hover { color: white; background: var(--n600); }
 
 /* ============================================================
+   NAV DROPDOWNS
+============================================================ */
+.nav-dropdown { position: relative; }
+.nav-dropdown-trigger {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600; font-size: 15px; letter-spacing: 0.05em;
+  text-transform: uppercase; color: var(--s200);
+  padding: 6px 14px; border-radius: 3px;
+  transition: color 0.2s, background 0.2s;
+  display: flex; align-items: center; gap: 5px;
+  cursor: pointer; background: none; border: none;
+}
+.nav-dropdown-trigger:hover,
+.nav-dropdown:hover .nav-dropdown-trigger { color: white; background: var(--n600); }
+.nav-dropdown-menu {
+  position: absolute; top: calc(100% + 6px); left: 0;
+  background: var(--n700); border: 1px solid var(--n500);
+  border-top: 2px solid var(--o500);
+  border-radius: 0 0 6px 6px; padding: 6px 0; min-width: 200px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+  opacity: 0; visibility: hidden; transform: translateY(-6px);
+  transition: opacity 0.15s, transform 0.15s, visibility 0.15s; z-index: 1100;
+}
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+.nav-dropdown-item {
+  display: block; padding: 10px 18px; cursor: pointer;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 600; font-size: 14px; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--s200);
+  transition: color 0.15s, background 0.15s; border: none; background: none; width: 100%; text-align: left;
+}
+.nav-dropdown-item small {
+  display: block; font-size: 11px; text-transform: none;
+  letter-spacing: 0; color: var(--s400); font-weight: 400; margin-top: 1px;
+}
+.nav-dropdown-item:hover { color: white; background: var(--n600); }
+.nav-dropdown-chevron { font-size: 10px; opacity: 0.7; transition: transform 0.2s; }
+.nav-dropdown:hover .nav-dropdown-chevron { transform: rotate(180deg); }
+
+/* ============================================================
    BUTTONS
 ============================================================ */
 .btn {
@@ -600,7 +641,12 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .hiw-grid { grid-template-columns: 1fr !important; }
   .hamburger { display:flex !important; }
   .nav-links { display:none !important; }
-  .nav-links.mob-open { display:flex !important; flex-direction:column; position:fixed; inset:0; background:var(--n800); z-index:999; padding:80px 30px 40px; gap:8px; overflow-y:auto; }
+  .nav-links.mob-open { display:flex !important; flex-direction:column; position:fixed; inset:0; background:var(--n800); z-index:999; padding:80px 30px 40px; gap:4px; overflow-y:auto; }
+  .nav-dropdown-menu { position:static !important; opacity:1 !important; visibility:visible !important; transform:none !important; box-shadow:none !important; border:none !important; background:transparent !important; padding:0 !important; min-width:0 !important; }
+  .nav-dropdown-trigger { font-size:13px; padding:6px 8px; color:var(--s400); pointer-events:none; }
+  .nav-dropdown-chevron { display:none; }
+  .nav-dropdown-item { font-size:14px; padding:8px 16px; color:var(--s200); }
+  .nav-dropdown-item small { display:none; }
 }
 
 /* ============================================================
@@ -856,7 +902,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 }
 .news-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.1); transform: translateY(-2px); }
 .news-card-thumb {
-  width: 100%; height: 200px;
+  width: 100%; height: 150px;
   object-fit: cover; object-position: center;
   display: block; flex-shrink: 0;
 }
@@ -1037,15 +1083,46 @@ textarea.form-control { resize: vertical; min-height: 100px; }
         <img src="logo.png" alt="BookYourTrades" style="height:44px;width:auto;display:block;" />
       </a>
       <div class="nav-links" id="navLinks">
-        <a class="nav-link" onclick="navigate('/directory')">Directory</a>
-        <a class="nav-link" onclick="navigate('/rfq')">Post a Job</a>
-        <a class="nav-link" onclick="navigate('/blog')">Blog</a>
-        <a class="nav-link" onclick="navigate('/jobs')">Jobs</a>
-        <a class="nav-link" onclick="navigate('/news')">Trade News</a>
-        <a class="nav-link" onclick="navigate('/how-it-works')">How It Works</a>
-        <a class="nav-link" onclick="navigate('/pricing')">Pricing</a>
-        <div id="navAuth" style="display:flex;align-items:center;gap:6px;"></div>
         <button class="mob-nav-close" onclick="closeMobileNav()" style="display:none;" id="mobClose">&times;</button>
+
+        <a class="nav-link" onclick="navigate('/directory');closeMobileNav()">Directory</a>
+
+        <div class="nav-dropdown">
+          <button class="nav-dropdown-trigger">Careers <span class="nav-dropdown-chevron">▾</span></button>
+          <div class="nav-dropdown-menu">
+            <button class="nav-dropdown-item" onclick="navigate('/jobs');closeMobileNav()">
+              Trades Careers
+              <small>Open positions &amp; apprenticeships</small>
+            </button>
+            <button class="nav-dropdown-item" onclick="navigate('/trades-education');closeMobileNav()">
+              Get Into Trades
+              <small>Career guide for new tradespeople</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="nav-dropdown">
+          <button class="nav-dropdown-trigger">Resources <span class="nav-dropdown-chevron">▾</span></button>
+          <div class="nav-dropdown-menu">
+            <button class="nav-dropdown-item" onclick="navigate('/blog');closeMobileNav()">
+              Trade Blog
+              <small>Knowledge &amp; tips for contractors</small>
+            </button>
+            <button class="nav-dropdown-item" onclick="navigate('/news');closeMobileNav()">
+              Trade News
+              <small>Latest Ontario trades industry news</small>
+            </button>
+            <button class="nav-dropdown-item" onclick="navigate('/how-it-works');closeMobileNav()">
+              How It Works
+              <small>Listing, leads &amp; booking explained</small>
+            </button>
+          </div>
+        </div>
+
+        <a class="nav-link" onclick="navigate('/rfq');closeMobileNav()">Post a Project</a>
+        <a class="nav-link" onclick="navigate('/pricing');closeMobileNav()">Pricing</a>
+
+        <div id="navAuth" style="display:flex;align-items:center;gap:6px;"></div>
       </div>
       <button class="hamburger" id="hamburger" onclick="toggleMobileNav()">
         <span></span><span></span><span></span>
@@ -1415,7 +1492,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
           <h3 style="font-size:22px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--n500);color:white;">
             <span style="color:var(--o500);margin-right:10px;">🔍</span> Your Work Profile
           </h3>
-          <p style="color:var(--s300);font-size:14px;margin-bottom:20px;">This helps employers and contractors find you on the jobs board.</p>
+          <p style="color:var(--s300);font-size:14px;margin-bottom:20px;">This helps employers and contractors find you on the careers board.</p>
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Trade You're Seeking Work In</label>
@@ -1902,7 +1979,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
           <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Featured listing placement &amp; priority ranking</div>
           <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Analytics dashboard (profile views, booking stats)</div>
           <div class="pricing-feature"><span class="pricing-check">&#10003;</span> <span class="provider-verified">&#10003; Verified</span> badge on profile</div>
-          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Available jobs board (view matching job requests)</div>
+          <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Trades careers board (view &amp; apply to matching job posts)</div>
           <div class="pricing-feature"><span class="pricing-check">&#10003;</span> Project photo gallery (up to 20 photos)</div>
           <div class="pricing-feature"><span class="pricing-x">&#10005;</span> Multi-location support</div>
           <div class="pricing-feature"><span class="pricing-x">&#10005;</span> Dedicated account manager</div>
@@ -2012,7 +2089,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
       <h1 style="font-size:48px;line-height:1.1;margin-bottom:16px;">How to Get Into the Trades in Ontario</h1>
       <p style="color:var(--s300);font-size:17px;max-width:640px;line-height:1.7;">A complete guide for high school students and career-changers. Everything you need to know about apprenticeships, schooling, Red Seal certification, and launching a trades career in Ontario.</p>
       <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:28px;">
-        <button class="btn btn-orange" onclick="navigate('/jobs')">Browse Apprenticeship Openings &#8594;</button>
+        <button class="btn btn-orange" onclick="navigate('/jobs')">Browse Trades Careers &#8594;</button>
         <button class="btn btn-navy" onclick="navigate('/register')">Create a Job Seeker Profile</button>
       </div>
     </div>
@@ -2128,14 +2205,14 @@ textarea.form-control { resize: vertical; min-height: 100px; }
             </tr>
           </thead>
           <tbody>
-            <tr style="border-top:1px solid var(--lz-border);"><td style="padding:14px 18px;font-weight:600;">Electrician (309A)</td><td style="padding:14px 18px;color:var(--lz-sub);">9,000 hours (~5 yrs)</td><td style="padding:14px 18px;">$45–$58/hr</td><td style="padding:14px 18px;"><span style="color:#EF4444;">Yes</span></td><td style="padding:14px 18px;"><span style="color:#22C55E;font-weight:700;">🔥 Very High</span></td></tr>
-            <tr style="border-top:1px solid var(--lz-border);background:var(--lz-bg);"><td style="padding:14px 18px;font-weight:600;">Plumber (306A)</td><td style="padding:14px 18px;color:var(--lz-sub);">9,000 hours (~5 yrs)</td><td style="padding:14px 18px;">$42–$56/hr</td><td style="padding:14px 18px;"><span style="color:#EF4444;">Yes</span></td><td style="padding:14px 18px;"><span style="color:#22C55E;font-weight:700;">🔥 Very High</span></td></tr>
-            <tr style="border-top:1px solid var(--lz-border);"><td style="padding:14px 18px;font-weight:600;">HVAC/Refrigeration (313A)</td><td style="padding:14px 18px;color:var(--lz-sub);">8,000 hours (~4 yrs)</td><td style="padding:14px 18px;">$40–$55/hr</td><td style="padding:14px 18px;"><span style="color:#EF4444;">Yes</span></td><td style="padding:14px 18px;"><span style="color:#22C55E;font-weight:700;">🔥 Very High</span></td></tr>
-            <tr style="border-top:1px solid var(--lz-border);background:var(--lz-bg);"><td style="padding:14px 18px;font-weight:600;">Millwright (433A)</td><td style="padding:14px 18px;color:var(--lz-sub);">8,000 hours (~4 yrs)</td><td style="padding:14px 18px;">$42–$58/hr</td><td style="padding:14px 18px;"><span style="color:#EF4444;">Yes</span></td><td style="padding:14px 18px;"><span style="color:#F97316;font-weight:700;">High</span></td></tr>
-            <tr style="border-top:1px solid var(--lz-border);"><td style="padding:14px 18px;font-weight:600;">Welder (456A)</td><td style="padding:14px 18px;color:var(--lz-sub);">6,000 hours (~3 yrs)</td><td style="padding:14px 18px;">$32–$48/hr</td><td style="padding:14px 18px;"><span style="color:#6B7280;">No (voluntary)</span></td><td style="padding:14px 18px;"><span style="color:#F97316;font-weight:700;">High</span></td></tr>
-            <tr style="border-top:1px solid var(--lz-border);background:var(--lz-bg);"><td style="padding:14px 18px;font-weight:600;">Pipefitter (447A)</td><td style="padding:14px 18px;color:var(--lz-sub);">9,000 hours (~5 yrs)</td><td style="padding:14px 18px;">$48–$62/hr</td><td style="padding:14px 18px;"><span style="color:#EF4444;">Yes</span></td><td style="padding:14px 18px;"><span style="color:#22C55E;font-weight:700;">🔥 Very High</span></td></tr>
-            <tr style="border-top:1px solid var(--lz-border);"><td style="padding:14px 18px;font-weight:600;">Carpenter (403A)</td><td style="padding:14px 18px;color:var(--lz-sub);">6,000 hours (~3 yrs)</td><td style="padding:14px 18px;">$30–$48/hr</td><td style="padding:14px 18px;"><span style="color:#6B7280;">No (voluntary)</span></td><td style="padding:14px 18px;"><span style="color:#F97316;font-weight:700;">High</span></td></tr>
-            <tr style="border-top:1px solid var(--lz-border);background:var(--lz-bg);"><td style="padding:14px 18px;font-weight:600;">Sheet Metal Worker (308A)</td><td style="padding:14px 18px;color:var(--lz-sub);">8,000 hours (~4 yrs)</td><td style="padding:14px 18px;">$38–$52/hr</td><td style="padding:14px 18px;"><span style="color:#EF4444;">Yes</span></td><td style="padding:14px 18px;"><span style="color:#F97316;font-weight:700;">High</span></td></tr>
+            <tr style="border-top:1px solid var(--lz-border);"><td style="padding:14px 18px;font-weight:600;color:#1A2332;">Electrician (309A)</td><td style="padding:14px 18px;color:#374151;">9,000 hours (~5 yrs)</td><td style="padding:14px 18px;color:#1A2332;">$45–$58/hr</td><td style="padding:14px 18px;"><span style="color:#B91C1C;font-weight:600;">Yes</span></td><td style="padding:14px 18px;"><span style="color:#15803D;font-weight:700;">🔥 Very High</span></td></tr>
+            <tr style="border-top:1px solid var(--lz-border);background:var(--lz-bg);"><td style="padding:14px 18px;font-weight:600;color:#1A2332;">Plumber (306A)</td><td style="padding:14px 18px;color:#374151;">9,000 hours (~5 yrs)</td><td style="padding:14px 18px;color:#1A2332;">$42–$56/hr</td><td style="padding:14px 18px;"><span style="color:#B91C1C;font-weight:600;">Yes</span></td><td style="padding:14px 18px;"><span style="color:#15803D;font-weight:700;">🔥 Very High</span></td></tr>
+            <tr style="border-top:1px solid var(--lz-border);"><td style="padding:14px 18px;font-weight:600;color:#1A2332;">HVAC/Refrigeration (313A)</td><td style="padding:14px 18px;color:#374151;">8,000 hours (~4 yrs)</td><td style="padding:14px 18px;color:#1A2332;">$40–$55/hr</td><td style="padding:14px 18px;"><span style="color:#B91C1C;font-weight:600;">Yes</span></td><td style="padding:14px 18px;"><span style="color:#15803D;font-weight:700;">🔥 Very High</span></td></tr>
+            <tr style="border-top:1px solid var(--lz-border);background:var(--lz-bg);"><td style="padding:14px 18px;font-weight:600;color:#1A2332;">Millwright (433A)</td><td style="padding:14px 18px;color:#374151;">8,000 hours (~4 yrs)</td><td style="padding:14px 18px;color:#1A2332;">$42–$58/hr</td><td style="padding:14px 18px;"><span style="color:#B91C1C;font-weight:600;">Yes</span></td><td style="padding:14px 18px;"><span style="color:#C2410C;font-weight:700;">High</span></td></tr>
+            <tr style="border-top:1px solid var(--lz-border);"><td style="padding:14px 18px;font-weight:600;color:#1A2332;">Welder (456A)</td><td style="padding:14px 18px;color:#374151;">6,000 hours (~3 yrs)</td><td style="padding:14px 18px;color:#1A2332;">$32–$48/hr</td><td style="padding:14px 18px;"><span style="color:#374151;font-weight:600;">No (voluntary)</span></td><td style="padding:14px 18px;"><span style="color:#C2410C;font-weight:700;">High</span></td></tr>
+            <tr style="border-top:1px solid var(--lz-border);background:var(--lz-bg);"><td style="padding:14px 18px;font-weight:600;color:#1A2332;">Pipefitter (447A)</td><td style="padding:14px 18px;color:#374151;">9,000 hours (~5 yrs)</td><td style="padding:14px 18px;color:#1A2332;">$48–$62/hr</td><td style="padding:14px 18px;"><span style="color:#B91C1C;font-weight:600;">Yes</span></td><td style="padding:14px 18px;"><span style="color:#15803D;font-weight:700;">🔥 Very High</span></td></tr>
+            <tr style="border-top:1px solid var(--lz-border);"><td style="padding:14px 18px;font-weight:600;color:#1A2332;">Carpenter (403A)</td><td style="padding:14px 18px;color:#374151;">6,000 hours (~3 yrs)</td><td style="padding:14px 18px;color:#1A2332;">$30–$48/hr</td><td style="padding:14px 18px;"><span style="color:#374151;font-weight:600;">No (voluntary)</span></td><td style="padding:14px 18px;"><span style="color:#C2410C;font-weight:700;">High</span></td></tr>
+            <tr style="border-top:1px solid var(--lz-border);background:var(--lz-bg);"><td style="padding:14px 18px;font-weight:600;color:#1A2332;">Sheet Metal Worker (308A)</td><td style="padding:14px 18px;color:#374151;">8,000 hours (~4 yrs)</td><td style="padding:14px 18px;color:#1A2332;">$38–$52/hr</td><td style="padding:14px 18px;"><span style="color:#B91C1C;font-weight:600;">Yes</span></td><td style="padding:14px 18px;"><span style="color:#C2410C;font-weight:700;">High</span></td></tr>
           </tbody>
         </table>
       </div>
@@ -2174,7 +2251,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
             <div style="font-size:48px;margin-bottom:16px;">🚀</div>
             <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;color:var(--lz-text);margin-bottom:12px;">Ready to Start?</div>
             <p style="color:var(--lz-sub);font-size:15px;margin-bottom:28px;">Create your free job seeker profile and browse apprenticeship openings posted by verified Ontario trade companies.</p>
-            <button class="btn btn-orange" style="width:100%;justify-content:center;margin-bottom:12px;" onclick="navigate('/jobs')">Browse Apprenticeship Jobs &#8594;</button>
+            <button class="btn btn-orange" style="width:100%;justify-content:center;margin-bottom:12px;" onclick="navigate('/jobs')">Browse Trades Careers &#8594;</button>
             <button class="btn btn-navy" style="width:100%;justify-content:center;" onclick="navigate('/register')">Create Seeker Profile — Free</button>
             <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--lz-border);">
               <div style="font-size:13px;color:var(--lz-muted);">Already a trade professional?</div>
@@ -2195,11 +2272,11 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 
   <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:48px 0 36px;">
     <div class="container">
-      <div class="section-label">Open Positions Across Ontario</div>
-      <h1 style="font-size:42px;margin-bottom:10px;">Trades Jobs &amp; Apprenticeships</h1>
+      <div class="section-label">Trades Careers Across Ontario</div>
+      <h1 style="font-size:42px;margin-bottom:10px;">Trades Careers &amp; Apprenticeships</h1>
       <p style="color:var(--s300);font-size:16px;max-width:580px;">Positions posted by verified Ontario trade companies. Filter by trade, city, or experience level.</p>
       <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
-        <button class="btn btn-orange" onclick="navigate('/register')">Post a Job Opening &#8594;</button>
+        <button class="btn btn-orange" onclick="navigate('/register')">Post a Career Opening &#8594;</button>
         <button class="btn btn-navy" onclick="navigate('/trades-education')">&#127891; Get Into the Trades Guide</button>
       </div>
     </div>
@@ -2290,7 +2367,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
         <div style="display:flex;flex-direction:column;gap:10px;">
           <a onclick="navigate('/blog')" style="font-size:14px;color:var(--s400);cursor:pointer;">Trade Knowledge Blog</a>
           <a onclick="navigate('/trades-education')" style="color:var(--s300);font-size:14px;cursor:pointer;display:block;margin-bottom:6px;">Get Into Trades Guide</a>
-          <a onclick="navigate('/jobs')" style="color:var(--s300);font-size:14px;cursor:pointer;display:block;margin-bottom:6px;">Jobs &amp; Apprenticeships</a>
+          <a onclick="navigate('/jobs')" style="color:var(--s300);font-size:14px;cursor:pointer;display:block;margin-bottom:6px;">Trades Careers</a>
           <a onclick="navigate('/how-it-works')" style="font-size:14px;color:var(--s400);cursor:pointer;">How It Works</a>
           <a onclick="navigate('/pricing')" style="font-size:14px;color:var(--s400);cursor:pointer;">Pricing Plans</a>
           <a onclick="navigate('/rfq')" style="font-size:14px;color:var(--s400);cursor:pointer;">Post a Job Request</a>
@@ -5954,7 +6031,7 @@ function renderDashboard() {
         <button class="tab-btn" onclick="switchTab('tab-reviews',this)">&#9733; Reviews</button>
         <button class="tab-btn" onclick="switchTab('tab-profile',this)">&#9881;&#65039; Profile</button>
         <button class="tab-btn" onclick="switchTab('tab-avail',this)">&#128336; Availability</button>
-        <button class="tab-btn" onclick="switchTab('tab-jobs',this)">&#128203; Available Jobs</button>
+        <button class="tab-btn" onclick="switchTab('tab-jobs',this)">&#128203; Available Careers</button>
         <button class="tab-btn" onclick="switchTab('tab-post-job',this)">&#128226; Post a Job</button>
       </div>
 
@@ -6102,7 +6179,7 @@ function renderDashboard() {
         </div>
       </div>
 
-      <!-- Available Jobs -->
+      <!-- Available Careers -->
       <div id="tab-jobs" class="tab-content">
         ${(function() {
           const matchingJobs = (App.rfqs || []).filter(r => r.status === 'open' && r.tradeType === prov.tradeType);
