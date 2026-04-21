@@ -700,6 +700,39 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .gallery-grid {
   display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
 }
+
+/* ============================================================
+   PHOTO UPLOAD / MANAGEMENT (dashboard)
+============================================================ */
+.photo-upload-area {
+  display:block; border:2px dashed var(--n400); border-radius:8px;
+  padding:36px 24px; text-align:center; cursor:pointer;
+  transition:border-color 0.2s, background 0.2s; background:var(--n700);
+}
+.photo-upload-area:hover { border-color:var(--o500); background:rgba(230,81,0,0.04); }
+.photo-manage-grid {
+  display:grid; grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:12px; margin-top:20px;
+}
+.photo-manage-item {
+  position:relative; border-radius:6px; overflow:hidden;
+  background:var(--n600); border:1px solid var(--n500);
+}
+.photo-manage-img { width:100%; height:140px; object-fit:cover; display:block; }
+.photo-manage-caption { padding:6px 8px; background:var(--n600); }
+.photo-manage-caption input {
+  width:100%; background:transparent; border:none; color:var(--s300);
+  font-size:12px; outline:none;
+}
+.photo-manage-caption input::placeholder { color:var(--n400); }
+.photo-manage-remove {
+  position:absolute; top:6px; right:6px;
+  background:rgba(0,0,0,0.65); color:white; border:none;
+  border-radius:50%; width:26px; height:26px; font-size:16px;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background 0.15s; line-height:1;
+}
+.photo-manage-remove:hover { background:#DC2626; }
 .gallery-thumb {
   border-radius:5px; aspect-ratio:4/3; overflow:hidden;
   position:relative; cursor:pointer;
@@ -902,7 +935,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 }
 .news-card:hover { box-shadow: 0 8px 28px rgba(0,0,0,0.1); transform: translateY(-2px); }
 .news-card-thumb {
-  width: 100%; height: 150px;
+  width: 100%; height: 180px; max-height: 200px;
   object-fit: cover; object-position: center;
   display: block; flex-shrink: 0;
 }
@@ -4474,10 +4507,19 @@ function renderProvider(id) {
           </div>
 
           <!-- Gallery -->
+          ${(p.photos && p.photos.length > 0) ? `
           <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:24px;">
-            <h2 style="font-size:24px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Project Gallery</h2>
-            <div class="gallery-grid">${buildGallery(p.tradeType)}</div>
-          </div>
+            <h2 style="font-size:24px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Project Gallery <span style="font-size:14px;color:var(--s400);font-weight:400;">(${p.photos.length} photo${p.photos.length !== 1 ? 's' : ''})</span></h2>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;">
+              ${p.photos.map((ph, i) => `
+                <div style="border-radius:6px;overflow:hidden;background:var(--n600);border:1px solid var(--n500);">
+                  <img src="${ph.data}" alt="${ph.caption || p.companyName + ' project ' + (i+1)}" loading="lazy"
+                    style="width:100%;height:180px;object-fit:cover;display:block;">
+                  ${ph.caption ? `<div style="padding:8px 10px;font-size:12px;color:var(--s300);">${ph.caption}</div>` : ''}
+                </div>
+              `).join('')}
+            </div>
+          </div>` : ''}
 
           <!-- Service Areas -->
           <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:24px;">
@@ -6043,6 +6085,7 @@ function renderDashboard() {
         <button class="tab-btn" onclick="switchTab('tab-avail',this)">&#128336; Availability</button>
         <button class="tab-btn" onclick="switchTab('tab-jobs',this)">&#128203; Available Careers</button>
         <button class="tab-btn" onclick="switchTab('tab-post-job',this)">&#128226; Post a Job</button>
+        <button class="tab-btn" onclick="switchTab('tab-photos',this)">&#128247; Photos</button>
       </div>
 
       <!-- Appointments -->
@@ -6218,7 +6261,7 @@ function renderDashboard() {
       </div>
 
       <!-- Post a Job -->
-      <div id="tab-post-job" class="tab-content" style="display:none;">
+      <div id="tab-post-job" class="tab-content">
         <div style="max-width:640px;">
           <div id="postJobAlert"></div>
           <form onsubmit="handlePostJob(event)">
@@ -6286,9 +6329,30 @@ function renderDashboard() {
         </div>
       </div>
 
+      <!-- Photos -->
+      <div id="tab-photos" class="tab-content">
+        <div style="max-width:820px;">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+            <div>
+              <h3 style="font-size:20px;color:white;margin-bottom:4px;">Project Photos</h3>
+              <p style="font-size:13px;color:var(--s400);">Photos appear on your public listing so clients can see your work. Up to 20 photos. Add optional captions.</p>
+            </div>
+            <div id="photoCount" style="font-size:13px;color:var(--s400);white-space:nowrap;padding-top:4px;">0 / 20 photos</div>
+          </div>
+          <label class="photo-upload-area" for="photoFileInput">
+            <div style="font-size:44px;margin-bottom:12px;">&#128247;</div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:white;margin-bottom:6px;">Upload Project Photos</div>
+            <div style="font-size:13px;color:var(--s400);">Click to browse — JPG, PNG, or WEBP. You can select multiple at once.</div>
+            <input type="file" id="photoFileInput" accept="image/*" multiple style="display:none;" onchange="handlePhotoUpload(event)">
+          </label>
+          <div class="photo-manage-grid" id="photoManageGrid"></div>
+        </div>
+      </div>
+
     </div>
   `;
   renderMyJobs();
+  renderPhotosTab(prov);
 }
 
 function markAllRead(pid) {
@@ -6331,6 +6395,68 @@ function handlePostJob(e) {
 
   // Refresh my jobs list
   renderMyJobs();
+}
+
+/* ============================================================
+   PHOTO UPLOAD
+============================================================ */
+function renderPhotosTab(prov) {
+  const countEl = document.getElementById('photoCount');
+  const grid    = document.getElementById('photoManageGrid');
+  if (!countEl || !grid) return;
+  const photos = prov.photos || [];
+  countEl.textContent = photos.length + ' / 20 photos';
+  if (photos.length === 0) { grid.innerHTML = ''; return; }
+  grid.innerHTML = photos.map(function(ph, i) {
+    return '<div class="photo-manage-item">'
+      + '<img class="photo-manage-img" src="' + ph.data + '" alt="Project photo ' + (i+1) + '" loading="lazy">'
+      + '<button class="photo-manage-remove" onclick="removePhoto(' + i + ')" title="Remove">&times;</button>'
+      + '<div class="photo-manage-caption"><input type="text" placeholder="Add a caption..." value="' + (ph.caption || '').replace(/"/g, '&quot;') + '" onchange="savePhotoCaption(' + i + ', this.value)"></div>'
+      + '</div>';
+  }).join('');
+}
+
+function handlePhotoUpload(e) {
+  if (!App.currentUser) return;
+  const prov = App.providers.find(function(p) { return p.id === App.currentUser.providerId; });
+  if (!prov) return;
+  if (!prov.photos) prov.photos = [];
+  const remaining = 20 - prov.photos.length;
+  if (remaining <= 0) { showToast('Maximum 20 photos reached. Remove some to add more.', 'error'); return; }
+  const files = Array.from(e.target.files).slice(0, remaining);
+  let loaded = 0;
+  files.forEach(function(file) {
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      prov.photos.push({ data: ev.target.result, caption: '' });
+      loaded++;
+      if (loaded === files.length) {
+        saveProviders();
+        renderPhotosTab(prov);
+        showToast(loaded + ' photo' + (loaded !== 1 ? 's' : '') + ' uploaded.', 'success');
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  e.target.value = '';
+}
+
+function removePhoto(idx) {
+  if (!App.currentUser) return;
+  const prov = App.providers.find(function(p) { return p.id === App.currentUser.providerId; });
+  if (!prov || !prov.photos) return;
+  prov.photos.splice(idx, 1);
+  saveProviders();
+  renderPhotosTab(prov);
+  showToast('Photo removed.');
+}
+
+function savePhotoCaption(idx, val) {
+  if (!App.currentUser) return;
+  const prov = App.providers.find(function(p) { return p.id === App.currentUser.providerId; });
+  if (!prov || !prov.photos || !prov.photos[idx]) return;
+  prov.photos[idx].caption = val;
+  saveProviders();
 }
 
 function renderMyJobs() {
