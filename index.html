@@ -3891,8 +3891,14 @@ function router() {
     document.title = 'List Your Trade Business | BookYourTrades';
   } else if (page === 'login') {
     document.getElementById('page-login').classList.add('active');
+  } else if (page === 'admin') {
+    if (!App.currentUser || App.currentUser.role !== 'admin') { navigate('/login'); return; }
+    document.getElementById('page-admin').classList.add('active');
+    document.title = 'Admin Panel | BookYourTrades';
+    renderAdmin();
   } else if (page === 'dashboard') {
     if (!App.currentUser) { navigate('/login'); return; }
+    if (App.currentUser.role === 'admin') { navigate('/admin'); return; }
     /* Handle return from Stripe Checkout */
     const sp = new URLSearchParams(location.search);
     if (sp.get('subscribed') === '1') {
@@ -3947,9 +3953,6 @@ function router() {
     document.getElementById('page-news').classList.add('active');
     document.title = 'Ontario Trade Industry News | BookYourTrades';
     loadNews(window._newsKw || '');
-  } else if (page === 'admin') {
-    document.getElementById('page-admin').classList.add('active');
-    renderAdmin();
   } else {
     document.getElementById('page-home').classList.add('active');
     renderHome();
@@ -3979,6 +3982,12 @@ function updateNav() {
         <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
       `;
     }
+  } else if (App.currentUser.role === 'admin') {
+    el.innerHTML = `
+      <span style="font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.08em;">&#9889; ADMIN</span>
+      <a class="nav-link" onclick="navigate('/admin')">Admin Panel</a>
+      <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
+    `;
   } else {
     el.innerHTML = `
       <a class="nav-link" style="font-weight:600;" onclick="navigate('/login')">Login</a>
@@ -4932,6 +4941,16 @@ function handleLogin(e) {
   const email = document.getElementById('loginEmail').value.trim().toLowerCase();
   const pass  = document.getElementById('loginPassword').value;
 
+  // Super admin check
+  if (email === 'admin@bookyourtrades.com' && pass === 'BYT@dmin2026!') {
+    App.currentUser = { email, role: 'admin', name: 'Super Admin' };
+    sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
+    updateNav();
+    navigate('/admin');
+    showToast('Welcome, Super Admin.', 'success');
+    return;
+  }
+
   // Try provider user first
   const user = App.users.find(u => u.email.toLowerCase() === email && u.password === pass);
   if (user) {
@@ -5422,11 +5441,15 @@ function handleProfileUpdate(e, pid) {
 
   const file = document.getElementById('profileLogoInput')?.files[0];
   const finalize = (logoData) => {
+    const certs = data.certifications ? data.certifications.split(',').map(c=>c.trim()).filter(Boolean) : App.providers[idx].certifications;
     App.providers[idx] = {
       ...App.providers[idx],
       companyName:data.companyName, tradeType:data.tradeType,
-      licenseNumber:data.licenseNumber, phone:data.phone,
-      website:data.website, description:data.description, serviceAreas:areas,
+      contactName:data.contactName, email:data.email,
+      phone:data.phone, yearsInBusiness:data.yearsInBusiness,
+      licenseNumber:data.licenseNumber, website:data.website,
+      description:data.description, serviceAreas:areas,
+      certifications:certs,
       ...(logoData ? {logoData} : {})
     };
     saveProviders();
@@ -6218,10 +6241,23 @@ function renderDashboard() {
                 <div class="form-group"><label class="form-label">Trade Type</label><select class="form-control" name="tradeType">${TRADE_TYPES.map(t=>`<option ${t===prov.tradeType?'selected':''}>${t}</option>`).join('')}</select></div>
               </div>
               <div class="form-row">
-                <div class="form-group"><label class="form-label">License Number</label><input class="form-control" type="text" name="licenseNumber" value="${prov.licenseNumber}" /></div>
-                <div class="form-group"><label class="form-label">Phone</label><input class="form-control" type="tel" name="phone" value="${prov.phone}" /></div>
+                <div class="form-group"><label class="form-label">Contact Name</label><input class="form-control" type="text" name="contactName" value="${prov.contactName||''}" placeholder="Primary contact person" /></div>
+                <div class="form-group"><label class="form-label">Email Address</label><input class="form-control" type="email" name="email" value="${prov.email||''}" placeholder="info@yourcompany.ca" /></div>
               </div>
-              <div class="form-group"><label class="form-label">Website</label><input class="form-control" type="url" name="website" value="${prov.website}" placeholder="https://yourcompany.ca" /></div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Phone</label><input class="form-control" type="tel" name="phone" value="${prov.phone||''}" /></div>
+                <div class="form-group"><label class="form-label">Years in Business</label><select class="form-control" name="yearsInBusiness">
+                  ${['Under 1 year','1-2 years','3-5 years','6-10 years','11-20 years','20+ years'].map(y=>`<option ${y===prov.yearsInBusiness?'selected':''}>${y}</option>`).join('')}
+                </select></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">License / Registration Number</label><input class="form-control" type="text" name="licenseNumber" value="${prov.licenseNumber||''}" /></div>
+                <div class="form-group"><label class="form-label">Website</label><input class="form-control" type="url" name="website" value="${prov.website||''}" placeholder="https://yourcompany.ca" /></div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Certifications <span style="font-size:12px;color:var(--s400);font-weight:400;">— comma separated, up to 5 shown on listing</span></label>
+                <input class="form-control" type="text" name="certifications" value="${(prov.certifications||[]).join(', ')}" placeholder="e.g. ESA Licensed, ECRA Certified, Red Seal Electrician" />
+              </div>
               <div class="form-group"><label class="form-label">Company Description</label><textarea class="form-control" name="description" required style="min-height:120px;">${prov.description}</textarea></div>
             </div>
             <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
@@ -6383,6 +6419,263 @@ function renderDashboard() {
   `;
   renderMyJobs();
   renderPhotosTab(prov);
+}
+
+/* ============================================================
+   ADMIN PANEL
+============================================================ */
+function renderAdmin() {
+  if (!App.currentUser || App.currentUser.role !== 'admin') { navigate('/login'); return; }
+  const el = document.getElementById('adminContent');
+  const allProviders = App.providers;
+  const allUsers     = App.users;
+  const allClients   = App.clients || [];
+
+  el.innerHTML = `
+    <div style="background:var(--n800);border-bottom:3px solid var(--o500);padding:32px 0;">
+      <div class="container">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+          <div>
+            <div style="font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">&#9889; Super Admin</div>
+            <h1 style="font-size:32px;color:white;">Admin Panel</h1>
+          </div>
+          <div style="display:flex;gap:24px;flex-wrap:wrap;">
+            <div style="text-align:center;"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;color:var(--o400);">${allProviders.length}</div><div style="font-size:12px;color:var(--s400);">Listings</div></div>
+            <div style="text-align:center;"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;color:var(--o400);">${allUsers.length + allClients.length}</div><div style="font-size:12px;color:var(--s400);">Accounts</div></div>
+            <div style="text-align:center;"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;color:var(--o400);">${App.bookings.length}</div><div style="font-size:12px;color:var(--s400);">Bookings</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container" style="padding-top:36px;padding-bottom:80px;">
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('admin-tab-listings',this)">&#127970; Listings (${allProviders.length})</button>
+        <button class="tab-btn" onclick="switchTab('admin-tab-accounts',this)">&#128100; Accounts (${allUsers.length + allClients.length})</button>
+      </div>
+
+      <!-- Listings -->
+      <div id="admin-tab-listings" class="tab-content active">
+        <div style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+          <input id="adminListingSearch" class="form-control" style="max-width:320px;" placeholder="Search by name or trade..." oninput="adminFilterListings()" />
+        </div>
+        <div id="adminListingsTable">
+          ${renderAdminListingsTable(allProviders)}
+        </div>
+      </div>
+
+      <!-- Accounts -->
+      <div id="admin-tab-accounts" class="tab-content">
+        <h3 style="font-size:18px;margin-bottom:16px;color:white;">Provider Accounts</h3>
+        <div style="overflow-x:auto;margin-bottom:36px;">
+          <table style="width:100%;border-collapse:collapse;font-size:14px;">
+            <thead><tr style="background:var(--n700);color:var(--s300);">
+              <th style="padding:10px 14px;text-align:left;">Email</th>
+              <th style="padding:10px 14px;text-align:left;">Linked Listing</th>
+              <th style="padding:10px 14px;text-align:left;">Actions</th>
+            </tr></thead>
+            <tbody>
+              ${allUsers.map(u => {
+                const prov = App.providers.find(p=>p.id===u.providerId);
+                return `<tr style="border-top:1px solid var(--n500);">
+                  <td style="padding:10px 14px;color:var(--s200);">${u.email}</td>
+                  <td style="padding:10px 14px;color:var(--s300);">${prov ? prov.companyName : '<em style="color:var(--s500);">No listing</em>'}</td>
+                  <td style="padding:10px 14px;">
+                    <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteUser('${u.id}','provider')">Remove Account</button>
+                  </td>
+                </tr>`;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+        <h3 style="font-size:18px;margin-bottom:16px;color:white;">Client / Seeker Accounts</h3>
+        <div style="overflow-x:auto;">
+          <table style="width:100%;border-collapse:collapse;font-size:14px;">
+            <thead><tr style="background:var(--n700);color:var(--s300);">
+              <th style="padding:10px 14px;text-align:left;">Name</th>
+              <th style="padding:10px 14px;text-align:left;">Email</th>
+              <th style="padding:10px 14px;text-align:left;">Role</th>
+              <th style="padding:10px 14px;text-align:left;">Actions</th>
+            </tr></thead>
+            <tbody>
+              ${allClients.map(c => `<tr style="border-top:1px solid var(--n500);">
+                <td style="padding:10px 14px;color:var(--s200);">${c.name||'—'}</td>
+                <td style="padding:10px 14px;color:var(--s300);">${c.email}</td>
+                <td style="padding:10px 14px;"><span class="badge badge-navy">${c.role||'client'}</span></td>
+                <td style="padding:10px 14px;">
+                  <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteUser('${c.id}','client')">Remove Account</button>
+                </td>
+              </tr>`).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Admin Edit Modal -->
+    <div id="adminEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:2000;overflow-y:auto;padding:40px 20px;">
+      <div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;max-width:720px;margin:0 auto;padding:32px;position:relative;">
+        <button onclick="closeAdminEdit()" style="position:absolute;top:16px;right:20px;background:none;border:none;color:var(--s300);font-size:24px;cursor:pointer;">&times;</button>
+        <h2 style="font-size:24px;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Edit Listing</h2>
+        <div id="adminEditFormContainer"></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderAdminListingsTable(providers) {
+  if (!providers.length) return '<div style="padding:40px;text-align:center;color:var(--s400);">No listings found.</div>';
+  return `<div style="overflow-x:auto;">
+    <table style="width:100%;border-collapse:collapse;font-size:14px;">
+      <thead><tr style="background:var(--n700);color:var(--s300);">
+        <th style="padding:10px 14px;text-align:left;">Company</th>
+        <th style="padding:10px 14px;text-align:left;">Trade</th>
+        <th style="padding:10px 14px;text-align:left;">City</th>
+        <th style="padding:10px 14px;text-align:left;">Status</th>
+        <th style="padding:10px 14px;text-align:left;">Actions</th>
+      </tr></thead>
+      <tbody>
+        ${providers.map(p => `<tr style="border-top:1px solid var(--n500);">
+          <td style="padding:10px 14px;">
+            <div style="font-weight:600;color:white;">${p.companyName}</div>
+            <div style="font-size:12px;color:var(--s400);">${p.email||''}</div>
+          </td>
+          <td style="padding:10px 14px;"><span class="badge badge-orange" style="font-size:11px;">${p.tradeType}</span></td>
+          <td style="padding:10px 14px;color:var(--s300);">${(p.serviceAreas||[])[0]||'—'}</td>
+          <td style="padding:10px 14px;">${p.claimed ? '<span class="badge badge-green" style="font-size:11px;">Claimed</span>' : '<span class="badge badge-yellow" style="font-size:11px;">Unclaimed</span>'}</td>
+          <td style="padding:10px 14px;">
+            <div style="display:flex;gap:6px;flex-wrap:wrap;">
+              <button class="btn btn-sm btn-navy" onclick="adminOpenEdit('${p.id}')">Edit</button>
+              <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteProvider('${p.id}')">Remove</button>
+            </div>
+          </td>
+        </tr>`).join('')}
+      </tbody>
+    </table>
+  </div>`;
+}
+
+function adminFilterListings() {
+  const q = (document.getElementById('adminListingSearch')?.value||'').toLowerCase();
+  const filtered = q ? App.providers.filter(p =>
+    p.companyName.toLowerCase().includes(q) || p.tradeType.toLowerCase().includes(q)
+  ) : App.providers;
+  const el = document.getElementById('adminListingsTable');
+  if (el) el.innerHTML = renderAdminListingsTable(filtered);
+}
+
+function adminOpenEdit(pid) {
+  const p = App.providers.find(x=>x.id===pid);
+  if (!p) return;
+  const container = document.getElementById('adminEditFormContainer');
+  if (!container) return;
+  container.innerHTML = `
+    <div id="adminEditAlert"></div>
+    <form onsubmit="adminSaveEdit(event,'${p.id}')">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Company Name</label><input class="form-control" name="companyName" value="${p.companyName}" required /></div>
+        <div class="form-group"><label class="form-label">Trade Type</label><select class="form-control" name="tradeType">${TRADE_TYPES.map(t=>`<option ${t===p.tradeType?'selected':''}>${t}</option>`).join('')}</select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Contact Name</label><input class="form-control" name="contactName" value="${p.contactName||''}" /></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-control" type="email" name="email" value="${p.email||''}" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-control" type="tel" name="phone" value="${p.phone||''}" /></div>
+        <div class="form-group"><label class="form-label">Website</label><input class="form-control" type="url" name="website" value="${p.website||''}" /></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">License Number</label><input class="form-control" name="licenseNumber" value="${p.licenseNumber||''}" /></div>
+        <div class="form-group"><label class="form-label">Years in Business</label><select class="form-control" name="yearsInBusiness">
+          ${['Under 1 year','1-2 years','3-5 years','6-10 years','11-20 years','20+ years'].map(y=>`<option ${y===p.yearsInBusiness?'selected':''}>${y}</option>`).join('')}
+        </select></div>
+      </div>
+      <div class="form-group"><label class="form-label">Certifications <span style="font-size:12px;color:var(--s400);font-weight:400;">comma separated</span></label>
+        <input class="form-control" name="certifications" value="${(p.certifications||[]).join(', ')}" /></div>
+      <div class="form-group"><label class="form-label">Description</label>
+        <textarea class="form-control" name="description" style="min-height:100px;">${p.description||''}</textarea></div>
+      <div class="form-group"><label class="form-label">Service Areas <span style="font-size:12px;color:var(--s400);font-weight:400;">comma separated</span></label>
+        <input class="form-control" name="serviceAreas" value="${(p.serviceAreas||[]).join(', ')}" /></div>
+      <div class="form-row" style="margin-top:8px;">
+        <div class="form-group">
+          <label class="form-label">Claimed?</label>
+          <select class="form-control" name="claimed">
+            <option value="true" ${p.claimed?'selected':''}>Yes — Claimed</option>
+            <option value="false" ${!p.claimed?'selected':''}>No — Unclaimed</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Featured?</label>
+          <select class="form-control" name="featured">
+            <option value="true" ${p.featured?'selected':''}>Yes — Featured</option>
+            <option value="false" ${!p.featured?'selected':''}>No</option>
+          </select>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:8px;">
+        <button type="submit" class="btn btn-orange">Save Changes</button>
+        <button type="button" class="btn btn-navy" onclick="closeAdminEdit()">Cancel</button>
+      </div>
+    </form>
+  `;
+  document.getElementById('adminEditModal').style.display = 'block';
+}
+
+function adminSaveEdit(e, pid) {
+  e.preventDefault();
+  const data  = Object.fromEntries(new FormData(e.target));
+  const idx   = App.providers.findIndex(p=>p.id===pid);
+  if (idx === -1) return;
+  App.providers[idx] = {
+    ...App.providers[idx],
+    companyName:  data.companyName,
+    tradeType:    data.tradeType,
+    contactName:  data.contactName,
+    email:        data.email,
+    phone:        data.phone,
+    website:      data.website,
+    licenseNumber:data.licenseNumber,
+    yearsInBusiness: data.yearsInBusiness,
+    certifications: data.certifications.split(',').map(c=>c.trim()).filter(Boolean),
+    description:  data.description,
+    serviceAreas: data.serviceAreas.split(',').map(s=>s.trim()).filter(Boolean),
+    claimed:      data.claimed === 'true',
+    featured:     data.featured === 'true',
+  };
+  saveProviders();
+  closeAdminEdit();
+  showToast('Listing updated.', 'success');
+  renderAdmin();
+}
+
+function closeAdminEdit() {
+  document.getElementById('adminEditModal').style.display = 'none';
+}
+
+function adminDeleteProvider(pid) {
+  if (!confirm('Permanently remove this listing and its associated account? This cannot be undone.')) return;
+  App.providers = App.providers.filter(p=>p.id!==pid);
+  App.users = App.users.filter(u=>u.providerId!==pid);
+  saveProviders();
+  localStorage.setItem('to_users', JSON.stringify(App.users));
+  showToast('Listing removed.', 'success');
+  renderAdmin();
+}
+
+function adminDeleteUser(uid, type) {
+  if (!confirm('Permanently remove this account? This cannot be undone.')) return;
+  if (type === 'client') {
+    App.clients = App.clients.filter(c=>c.id!==uid);
+    localStorage.setItem('to_clients', JSON.stringify(App.clients));
+  } else {
+    const user = App.users.find(u=>u.id===uid);
+    if (user) App.providers = App.providers.filter(p=>p.id!==user.providerId);
+    App.users = App.users.filter(u=>u.id!==uid);
+    saveProviders();
+    localStorage.setItem('to_users', JSON.stringify(App.users));
+  }
+  showToast('Account removed.', 'success');
+  renderAdmin();
 }
 
 function markAllRead(pid) {
