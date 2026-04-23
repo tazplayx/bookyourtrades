@@ -626,6 +626,11 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 /* ============================================================
    RESPONSIVE
 ============================================================ */
+@media (max-width: 1100px) {
+  .dir-outer-layout { grid-template-columns: 1fr !important; }
+  .dir-outer-layout > div:last-child { position: static !important; }
+  #dirMapWrap { height: 340px !important; min-height: 340px !important; }
+}
 @media (max-width: 900px) {
   .dir-layout { grid-template-columns: 1fr !important; }
   .filter-sidebar { position: static; }
@@ -1398,42 +1403,49 @@ textarea.form-control { resize: vertical; min-height: 100px; }
       </div>
     </div>
   </div>
-  <!-- Directory Map -->
-  <div style="background:var(--n800);border-bottom:1px solid var(--n500);">
-    <div class="container" style="padding:0;">
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0 8px;">
-        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--s300);">&#128205; Company Location Map</div>
-        <button onclick="toggleDirectoryMap()" id="mapToggleBtn" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;background:var(--n600);border:1px solid var(--n400);color:var(--s200);padding:5px 14px;border-radius:3px;cursor:pointer;">Hide Map</button>
-      </div>
-    </div>
-    <div id="dirMapWrap" style="height:360px;width:100%;position:relative;border-top:1px solid var(--n600);">
-      <div id="dirMap" style="height:100%;width:100%;"></div>
-    </div>
-  </div>
+  <div class="container" style="padding-top:32px;padding-bottom:60px;">
+    <div class="dir-outer-layout" style="display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start;">
 
-  <div class="container" style="padding-top:40px;padding-bottom:60px;">
-    <div class="dir-layout" style="display:grid;grid-template-columns:260px 1fr;gap:32px;align-items:start;">
-      <div class="filter-sidebar">
-        <div class="filter-title">Filter By Trade</div>
-        <div id="tradeFilters"></div>
-        <div class="filter-title" style="margin-top:24px;">Minimum Rating</div>
-        <label class="filter-option"><input type="radio" name="ratingFilter" value="0" checked onchange="filterDirectory()"> Any Rating</label>
-        <label class="filter-option"><input type="radio" name="ratingFilter" value="4" onchange="filterDirectory()"> &#9733; 4.0+</label>
-        <label class="filter-option"><input type="radio" name="ratingFilter" value="4.5" onchange="filterDirectory()"> &#9733; 4.5+</label>
-        <div class="filter-title" style="margin-top:24px;">Sort By</div>
-        <select class="form-control" id="sortDir" onchange="filterDirectory()">
-          <option value="rating">Highest Rated</option>
-          <option value="name">Company Name</option>
-          <option value="reviews">Most Reviews</option>
-        </select>
-      </div>
+      <!-- LEFT: filter sidebar + listings -->
       <div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-          <div id="dirCount" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;color:var(--s300);font-size:15px;letter-spacing:0.05em;"></div>
+        <div class="dir-layout" style="display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:start;">
+          <div class="filter-sidebar">
+            <div class="filter-title">Filter By Trade</div>
+            <div id="tradeFilters"></div>
+            <div class="filter-title" style="margin-top:24px;">Minimum Rating</div>
+            <label class="filter-option"><input type="radio" name="ratingFilter" value="0" checked onchange="filterDirectory()"> Any Rating</label>
+            <label class="filter-option"><input type="radio" name="ratingFilter" value="4" onchange="filterDirectory()"> &#9733; 4.0+</label>
+            <label class="filter-option"><input type="radio" name="ratingFilter" value="4.5" onchange="filterDirectory()"> &#9733; 4.5+</label>
+            <div class="filter-title" style="margin-top:24px;">Sort By</div>
+            <select class="form-control" id="sortDir" onchange="filterDirectory()">
+              <option value="rating">Highest Rated</option>
+              <option value="name">Company Name</option>
+              <option value="reviews">Most Reviews</option>
+            </select>
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+              <div id="dirCount" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;color:var(--s300);font-size:15px;letter-spacing:0.05em;"></div>
+            </div>
+            <div id="dirGrid" style="display:flex;flex-direction:column;gap:16px;"></div>
+            <div id="dirPagination" style="display:none;align-items:center;justify-content:center;gap:8px;margin-top:32px;flex-wrap:wrap;"></div>
+          </div>
         </div>
-        <div id="dirGrid" style="display:flex;flex-direction:column;gap:16px;"></div>
-        <div id="dirPagination" style="display:none;align-items:center;justify-content:center;gap:8px;margin-top:32px;flex-wrap:wrap;"></div>
       </div>
+
+      <!-- RIGHT: sticky map panel -->
+      <div style="position:sticky;top:72px;">
+        <div style="background:var(--n800);border:1px solid var(--n600);border-radius:8px;overflow:hidden;">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--n900);border-bottom:1px solid var(--n600);">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--s300);">&#128205; Company Locations</div>
+            <button onclick="toggleDirectoryMap()" id="mapToggleBtn" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;background:var(--n600);border:1px solid var(--n400);color:var(--s200);padding:4px 12px;border-radius:3px;cursor:pointer;">Hide Map</button>
+          </div>
+          <div id="dirMapWrap" style="height:calc(100vh - 230px);min-height:480px;position:relative;">
+            <div id="dirMap" style="height:100%;width:100%;"></div>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 </div><!-- end page-directory -->
@@ -3236,11 +3248,16 @@ let _dirMapMarkers = [];
 let _dirMapVisible = true;
 
 function toggleDirectoryMap() {
-  const wrap = document.getElementById('dirMapWrap');
-  const btn  = document.getElementById('mapToggleBtn');
+  const wrap  = document.getElementById('dirMapWrap');
+  const btn   = document.getElementById('mapToggleBtn');
+  const panel = wrap && wrap.closest('[style*="position:sticky"]');
   _dirMapVisible = !_dirMapVisible;
   wrap.style.display = _dirMapVisible ? '' : 'none';
   btn.textContent = _dirMapVisible ? 'Hide Map' : 'Show Map';
+  // Invalidate map size so tiles re-render after show
+  if (_dirMapVisible && _dirMap) {
+    setTimeout(function() { _dirMap.invalidateSize(); }, 50);
+  }
 }
 
 function initDirectoryMap() {
