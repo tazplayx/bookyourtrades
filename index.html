@@ -192,6 +192,7 @@ input, textarea, select { font-family: inherit; }
 /* ============================================================
    UTILITIES
 ============================================================ */
+@keyframes spin { to { transform: rotate(360deg); } }
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 .container-wide { max-width: 82vw; margin: 0 auto; padding: 0 24px; }
 @media (max-width: 1600px) { .container-wide { max-width: 88vw; } }
@@ -4595,37 +4596,92 @@ function doHeroSearch() {
 
 /* ============================================================
    SCRAPED COMPANY LOADER
-   Fetches live trade businesses from /api/scrape-companies (OSM/Overpass).
-   Results are cached in localStorage for 24 hours.
+   Primary source : /api/scrape-all  (Yellow Pages CA + OSM, 8 cities)
+   Fallback       : /api/scrape-companies (OSM only)
+   Results cached 24 h in localStorage.  Loading banner shown while fetching.
 ============================================================ */
 async function loadScrapedCompanies() {
-  const CACHE_KEY = 'to_scraped_companies';
-  const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+  const CACHE_KEY = 'to_scraped_v2';
+  const CACHE_TTL = 24 * 60 * 60 * 1000;
+
+  // Serve from cache immediately if fresh
   try {
     const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
     if (cached && cached.fetched && (Date.now() - new Date(cached.fetched).getTime()) < CACHE_TTL) {
-      mergeScrapedCompanies(cached.companies);
+      mergeScrapedCompanies(cached.companies, false);
       return;
     }
   } catch(e) {}
+
+  // Show non-blocking loading banner
+  _setScrapeBanner('loading');
+
   try {
-    const resp = await fetch('/api/scrape-companies');
-    if (!resp.ok) return;
-    const data = await resp.json();
-    if (data.companies && data.companies.length > 0) {
-      localStorage.setItem(CACHE_KEY, JSON.stringify({ companies: data.companies, fetched: data.fetched }));
-      mergeScrapedCompanies(data.companies);
+    // Primary: aggregator (Yellow Pages + OSM, top 8 cities)
+    const resp = await fetch('/api/scrape-all?cities=8');
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data.companies && data.companies.length > 0) {
+        try { localStorage.setItem(CACHE_KEY, JSON.stringify({ companies: data.companies, fetched: data.fetched })); } catch(e) {}
+        mergeScrapedCompanies(data.companies, true);
+        _setScrapeBanner('done', data.companies.length);
+        return;
+      }
     }
-  } catch(e) { /* silent — scraped data is supplementary */ }
+  } catch(e) {}
+
+  // Fallback: OSM-only scraper
+  try {
+    const resp2 = await fetch('/api/scrape-companies');
+    if (resp2.ok) {
+      const data2 = await resp2.json();
+      if (data2.companies && data2.companies.length > 0) {
+        mergeScrapedCompanies(data2.companies, true);
+        _setScrapeBanner('done', data2.companies.length);
+        return;
+      }
+    }
+  } catch(e) {}
+
+  _setScrapeBanner('hidden');
 }
 
-function mergeScrapedCompanies(companies) {
+function _setScrapeBanner(state, count) {
+  let el = document.getElementById('scrapeBanner');
+  if (!el) {
+    const cnt = document.getElementById('dirCount');
+    if (!cnt) return;
+    el = document.createElement('div');
+    el.id = 'scrapeBanner';
+    cnt.parentNode.insertBefore(el, cnt.nextSibling);
+  }
+  if (state === 'loading') {
+    el.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);border-radius:6px;margin-bottom:14px;font-size:13px;color:#93C5FD;';
+    el.innerHTML = '<div style="width:14px;height:14px;border:2px solid #93C5FD;border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0;"></div> Searching Yellow Pages Canada for more contractors…';
+  } else if (state === 'done' && count > 0) {
+    el.style.cssText = 'display:flex;align-items:center;gap:8px;padding:8px 14px;background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:6px;margin-bottom:14px;font-size:13px;color:#6FE09A;';
+    el.innerHTML = '✓ Loaded ' + count + ' live listings from Yellow Pages Canada &amp; OpenStreetMap';
+    setTimeout(function() { el.style.display = 'none'; }, 5000);
+  } else {
+    el.style.display = 'none';
+  }
+}
+
+function mergeScrapedCompanies(companies, rerender) {
   if (!companies || !companies.length) return;
   const existingIds = new Set(App.providers.map(p => p.id));
-  const newOnes = companies.filter(c => !existingIds.has(c.id));
+  // Deduplicate also by normalised name+city to avoid near-dupes with seed data
+  const existingKeys = new Set(App.providers.map(p =>
+    (p.companyName + '|' + (p.serviceAreas||[])[0]).toLowerCase().replace(/[^a-z0-9|]/g,'')
+  ));
+  const newOnes = companies.filter(c => {
+    if (existingIds.has(c.id)) return false;
+    const key = (c.companyName + '|' + c.city).toLowerCase().replace(/[^a-z0-9|]/g,'');
+    return !existingKeys.has(key);
+  });
   if (!newOnes.length) return;
   App.providers = [...App.providers, ...newOnes];
-  // Re-render directory if it is the active page
+  if (!rerender) return;
   const dirPage = document.getElementById('page-directory');
   if (dirPage && dirPage.classList.contains('active')) {
     filterDirectory();
