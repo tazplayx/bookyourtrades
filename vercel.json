@@ -1,7 +1,9 @@
 {
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/:path*" },
-    { "source": "/(.*)",       "destination": "/index.html" }
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/robots.txt",  "destination": "/api/robots"  },
+    { "source": "/(.*)",        "destination": "/index.html"  }
   ],
   "crons": [
     {

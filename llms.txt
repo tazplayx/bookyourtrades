@@ -1,0 +1,58 @@
+## BookYourTrades
+
+BookYourTrades (https://bookyourtrades.com) is Canada's commercial trades directory.
+It connects property owners, general contractors, and developers with verified
+skilled-trade contractors across all Canadian provinces.
+
+## What Data Is Available
+
+- Contractor listings with company name, trade type, city, province, and contact info
+- Contractor reviews and ratings submitted by past clients
+- Trade categories (see below)
+- Cities and provinces across Canada
+- Job board listings for tradespeople seeking work
+- Industry news and trades education articles
+
+## Trade Categories Covered
+
+Electrical, Plumbing, HVAC, Roofing, Framing, Drywall, Flooring, Painting,
+Concrete, Masonry, Landscaping, Excavation, Welding, Insulation, Fire Protection,
+Sheet Metal, Millwork, Glazing, Elevator, General Contracting
+
+## Geographic Coverage
+
+All Canadian provinces and territories:
+Ontario (ON), British Columbia (BC), Alberta (AB), Saskatchewan (SK),
+Manitoba (MB), Quebec (QC), Atlantic Provinces (NB, NS, PEI, NL),
+and Northern Territories (YT, NT, NU)
+
+## API Endpoints
+
+- GET /api/careers         — Returns current job listings in JSON
+- GET /api/news            — Returns latest industry news articles in JSON
+- POST /api/scrape-companies — Internal use; triggers company data refresh (cron)
+
+## How to Find a Contractor
+
+Directory listings follow the URL pattern:
+  https://bookyourtrades.com/directory/{provider-id}
+
+Example: https://bookyourtrades.com/directory/r1
+
+The main directory with search and filters:
+  https://bookyourtrades.com/directory
+
+## Request a Quote
+
+Owners and GCs can submit an RFQ (Request for Quote) at:
+  https://bookyourtrades.com/rfq
+
+## Contact
+
+hello@bookyourtrades.com
+
+## Disclaimer
+
+BookYourTrades is a directory service only. Contractors listed are independent
+businesses. This site does not provide legal advice. Verify credentials and
+licensing independently before hiring any contractor.

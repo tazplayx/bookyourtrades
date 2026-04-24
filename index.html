@@ -1529,12 +1529,29 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 
         <!-- Section 02 -->
         <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:32px;margin-bottom:24px;">
-          <h3 style="font-size:22px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--n500);color:white;">
-            <span style="color:var(--o500);margin-right:10px;">02</span> Company Information
+          <h3 style="font-size:22px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--n500);color:white;">
+            <span style="color:var(--o500);margin-right:10px;">02</span> Profile Type &amp; Information
           </h3>
+          <!-- Profile type toggle -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;" id="profileTypeGrid">
+            <label id="ptCompanyLabel" style="display:flex;align-items:flex-start;gap:12px;padding:16px;border:2px solid var(--o500);border-radius:8px;cursor:pointer;background:rgba(224,98,26,0.07);" onclick="setProfileType('company')">
+              <input type="radio" name="profileType" value="company" checked style="margin-top:3px;accent-color:var(--o500);" />
+              <div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:white;margin-bottom:3px;">🏢 Company / Business</div>
+                <div style="font-size:12px;color:var(--s300);">Registered business with employees or subcontractors</div>
+              </div>
+            </label>
+            <label id="ptIndividualLabel" style="display:flex;align-items:flex-start;gap:12px;padding:16px;border:2px solid var(--n500);border-radius:8px;cursor:pointer;" onclick="setProfileType('individual')">
+              <input type="radio" name="profileType" value="individual" style="margin-top:3px;accent-color:var(--o500);" />
+              <div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:white;margin-bottom:3px;">👤 Independent Tradesperson</div>
+                <div style="font-size:12px;color:var(--s300);">Self-employed individual offering your own skilled labour</div>
+              </div>
+            </label>
+          </div>
           <div class="form-row">
             <div class="form-group">
-              <label class="form-label">Company Name *</label>
+              <label class="form-label" id="nameFieldLabel">Company Name *</label>
               <input class="form-control" type="text" name="companyName" required placeholder="e.g. Volt Pro Electrical Inc." />
             </div>
             <div class="form-group">
@@ -2490,6 +2507,151 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 </div>
 
 <!-- ============================================================
+     PAGE: TERMS OF SERVICE
+============================================================ -->
+<div id="page-terms" class="page">
+  <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:40px 0;">
+    <div class="container"><div class="section-label">Legal</div><h1 style="font-size:36px;">Terms of Service</h1><p style="color:var(--s300);margin-top:8px;">Last updated: January 1, 2025 &nbsp;|&nbsp; Governing law: Ontario, Canada</p></div>
+  </div>
+  <div class="container" style="padding:48px 24px 80px;max-width:820px;">
+    <div style="background:var(--n800);border:1px solid var(--o500);border-radius:8px;padding:20px 24px;margin-bottom:32px;">
+      <strong style="color:var(--o300);">⚠️ Key Point:</strong> <span style="color:var(--s200);font-size:14px;">BookYourTrades is a <strong>directory and communication platform only</strong>. We are not a contractor, employer, or party to any agreement between users and contractors. Read Sections 4 and 5 carefully.</span>
+    </div>
+    <div style="line-height:1.85;color:var(--s200);font-size:15px;">
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">1. Acceptance of Terms</h2>
+      <p style="margin-bottom:20px;">By accessing or using BookYourTrades (the "Platform"), operated by BookYourTrades Inc. ("we", "us", or "our"), you agree to be bound by these Terms of Service. If you do not agree, you must not use the Platform.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">2. Nature of the Platform</h2>
+      <p style="margin-bottom:20px;">BookYourTrades is an online directory and communication tool that facilitates introductions between businesses seeking trade services ("Clients") and independent trade contractors ("Contractors"). We do not provide trade services, employ Contractors, supervise work, or guarantee outcomes. All Contractors listed are independent professionals who operate their own businesses.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">3. User Responsibilities</h2>
+      <p style="margin-bottom:8px;"><strong style="color:white;">Clients agree to:</strong></p>
+      <ul style="margin:0 0 16px;padding-left:20px;color:var(--s200);">
+        <li>Independently verify a Contractor's licences, certifications, insurance (including WSIB clearance), and references before engaging them.</li>
+        <li>Enter all contracts, scopes of work, and payment agreements directly with the Contractor — not through BookYourTrades.</li>
+        <li>Not rely on the Platform as a substitute for professional due diligence.</li>
+      </ul>
+      <p style="margin-bottom:8px;"><strong style="color:white;">Contractors agree to:</strong></p>
+      <ul style="margin:0 0 20px;padding-left:20px;color:var(--s200);">
+        <li>Represent themselves and their qualifications truthfully and accurately.</li>
+        <li>Maintain all required licences, certifications, and insurance required by applicable law.</li>
+        <li>Not use the Platform to engage in fraudulent, misleading, or unlawful conduct.</li>
+      </ul>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">4. No Liability for Contractor Services</h2>
+      <p style="margin-bottom:20px;"><strong style="color:var(--o300);">BookYourTrades is not liable — in any way — for the quality, safety, legality, timeliness, or outcome of any services performed by a Contractor.</strong> This includes, without limitation: incomplete work, property damage, personal injury, cost overruns, scheduling failures, disputes over payment, contractor no-shows, licensing violations, or any other issue arising from the contractor-client relationship. Any dispute arising from work arranged through the Platform is strictly between the Client and the Contractor.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">5. Limitation of Liability</h2>
+      <p style="margin-bottom:20px;">To the fullest extent permitted by Ontario law, BookYourTrades Inc., its directors, officers, employees, and agents shall not be liable for any indirect, incidental, special, consequential, or punitive damages. Our maximum aggregate liability for any claim related to the Platform shall not exceed the total fees you paid to us in the twelve (12) months preceding the claim, or $100 CAD — whichever is greater.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">6. No Warranty</h2>
+      <p style="margin-bottom:20px;">The Platform is provided "AS IS" and "AS AVAILABLE" without warranty of any kind. We do not warrant that listings are accurate, complete, or current; that Contractors are licensed, insured, or competent; or that the Platform will be uninterrupted or error-free.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">7. Reviews and User Content</h2>
+      <p style="margin-bottom:20px;">Reviews submitted on the Platform represent the opinions of the reviewing party only. BookYourTrades does not verify the accuracy of reviews. By submitting a review, you grant us a non-exclusive licence to display it on the Platform. We reserve the right to remove any review that violates these Terms or applicable law.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">8. Governing Law &amp; Dispute Resolution</h2>
+      <p style="margin-bottom:20px;">These Terms are governed by the laws of the Province of Ontario and the federal laws of Canada applicable therein. Any dispute shall be subject to the exclusive jurisdiction of the courts of Ontario. You agree to attempt good-faith resolution before commencing legal proceedings.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">9. Changes to Terms</h2>
+      <p style="margin-bottom:20px;">We may update these Terms at any time by posting a revised version on the Platform. Continued use of the Platform after such posting constitutes acceptance of the revised Terms.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">10. Contact</h2>
+      <p style="margin-bottom:0;">BookYourTrades Inc. &bull; <a href="mailto:hello@bookyourtrades.com" style="color:var(--o400);">hello@bookyourtrades.com</a></p>
+      <p style="font-size:13px;color:var(--s400);margin-top:16px;">These Terms do not constitute legal advice. Consult a qualified lawyer for advice specific to your situation.</p>
+    </div>
+  </div>
+</div><!-- end page-terms -->
+
+<!-- ============================================================
+     PAGE: PRIVACY POLICY
+============================================================ -->
+<div id="page-privacy" class="page">
+  <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:40px 0;">
+    <div class="container"><div class="section-label">Legal</div><h1 style="font-size:36px;">Privacy Policy</h1><p style="color:var(--s300);margin-top:8px;">Last updated: January 1, 2025 &nbsp;|&nbsp; Compliant with PIPEDA (Canada)</p></div>
+  </div>
+  <div class="container" style="padding:48px 24px 80px;max-width:820px;">
+    <div style="line-height:1.85;color:var(--s200);font-size:15px;">
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">1. Information We Collect</h2>
+      <p style="margin-bottom:8px;">We collect the following types of information:</p>
+      <ul style="margin:0 0 20px;padding-left:20px;">
+        <li><strong style="color:white;">Account Information:</strong> Name, email address, phone number, company name, trade type, and service areas provided during registration.</li>
+        <li><strong style="color:white;">Booking Requests:</strong> Information you provide when submitting a booking request, including project descriptions and contact details.</li>
+        <li><strong style="color:white;">Reviews:</strong> Text, ratings, and associated metadata you submit.</li>
+        <li><strong style="color:white;">Usage Data:</strong> Pages visited, search queries, device type, and browser information (via standard web analytics).</li>
+      </ul>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">2. How We Use Your Information</h2>
+      <ul style="margin:0 0 20px;padding-left:20px;">
+        <li>To provide and operate the Platform and its features.</li>
+        <li>To send booking request notifications to Contractors.</li>
+        <li>To send transactional emails (account verification, booking confirmations).</li>
+        <li>To improve the Platform through analytics.</li>
+        <li>To comply with legal obligations.</li>
+      </ul>
+      <p style="margin-bottom:20px;">We do <strong style="color:white;">not</strong> sell your personal information to third parties.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">3. Information Sharing</h2>
+      <p style="margin-bottom:20px;">When you submit a booking request to a Contractor, your name, email, phone number, and project description are shared with that Contractor. By submitting a booking request, you consent to this disclosure. We use Resend (resend.com) to deliver transactional emails; your contact details may be processed by Resend for this purpose.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">4. Data Storage &amp; Security</h2>
+      <p style="margin-bottom:20px;">Data is stored in your browser's localStorage and on Vercel's infrastructure (United States / Canada). We implement reasonable technical measures to protect your data but cannot guarantee absolute security. You should use a strong, unique password for your account.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">5. Your Rights (PIPEDA)</h2>
+      <p style="margin-bottom:20px;">Under Canada's Personal Information Protection and Electronic Documents Act (PIPEDA), you have the right to: access your personal information, correct inaccuracies, withdraw consent (subject to legal or contractual restrictions), and file a complaint with the Office of the Privacy Commissioner of Canada. To exercise these rights, contact us at <a href="mailto:hello@bookyourtrades.com" style="color:var(--o400);">hello@bookyourtrades.com</a>.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">6. Cookies</h2>
+      <p style="margin-bottom:20px;">We use only functional browser storage (localStorage) essential to operate the Platform. We do not use advertising cookies or third-party tracking pixels.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">7. Contact</h2>
+      <p>BookYourTrades Inc. &bull; Privacy Officer &bull; <a href="mailto:hello@bookyourtrades.com" style="color:var(--o400);">hello@bookyourtrades.com</a></p>
+    </div>
+  </div>
+</div><!-- end page-privacy -->
+
+<!-- ============================================================
+     PAGE: DISCLAIMER
+============================================================ -->
+<div id="page-disclaimer" class="page">
+  <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:40px 0;">
+    <div class="container"><div class="section-label">Legal</div><h1 style="font-size:36px;">Contractor Disclaimer</h1><p style="color:var(--s300);margin-top:8px;">What BookYourTrades is — and isn't</p></div>
+  </div>
+  <div class="container" style="padding:48px 24px 80px;max-width:820px;">
+    <div style="background:var(--n800);border:1px solid var(--o500);border-radius:8px;padding:24px;margin-bottom:32px;">
+      <h2 style="font-size:20px;color:var(--o300);margin:0 0 12px;">📋 Plain-English Summary</h2>
+      <p style="color:var(--s200);font-size:15px;line-height:1.8;margin:0;">BookYourTrades helps you <strong style="color:white;">find and contact</strong> trade contractors. We don't do the work, supervise the work, or guarantee anything about it. If something goes wrong with a job — the price, the timing, the quality — that's between you and the contractor. We are not in the middle of that relationship, and we are not liable for it.</p>
+    </div>
+    <div style="line-height:1.85;color:var(--s200);font-size:15px;">
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">BookYourTrades is a Directory — Not a Contractor</h2>
+      <p style="margin-bottom:20px;">We provide an online directory where trade contractors list their businesses and where Clients can contact them. We do not perform any trade work, supervise any projects, manage payments, or act as an agent for any contractor or client.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">Contractors are Independent Professionals</h2>
+      <p style="margin-bottom:20px;">Every contractor listed on BookYourTrades is an independent professional or business. They are not employees, agents, or representatives of BookYourTrades. We have no control over the quality of their work, their availability, their pricing, or whether they fulfil a contract.</p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">We Do Not Guarantee Job Outcomes</h2>
+      <p style="margin-bottom:20px;">BookYourTrades makes no guarantees about: whether a contractor will respond to your request; whether work will be completed on time or on budget; whether the quality of work will meet your expectations; or whether the contractor holds current licences, certifications, or insurance. <strong style="color:white;">Always verify these directly with the contractor before work begins.</strong></p>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">Your Checklist Before Hiring Any Contractor</h2>
+      <ul style="margin:0 0 20px;padding-left:20px;">
+        <li>✅ Confirm their trade licence is current and valid (check with the Ontario College of Trades, ECRA, or TSSA).</li>
+        <li>✅ Request a valid WSIB Clearance Certificate.</li>
+        <li>✅ Confirm they carry general liability insurance ($2M minimum recommended for commercial work).</li>
+        <li>✅ Get a written quote and scope of work before any work begins.</li>
+        <li>✅ Check references from past clients.</li>
+        <li>✅ Never pay the full amount upfront — use milestone-based payments.</li>
+      </ul>
+
+      <h2 style="font-size:22px;color:white;margin:0 0 12px;">If Something Goes Wrong</h2>
+      <p style="margin-bottom:20px;">Disputes between Clients and Contractors are entirely private matters. BookYourTrades cannot mediate, arbitrate, or intervene. You may report a fraudulent or misleading listing to us at <a href="mailto:hello@bookyourtrades.com" style="color:var(--o400);">hello@bookyourtrades.com</a> and we will investigate; however, reporting to us does not create any legal obligation on our part.</p>
+
+      <div style="border-top:1px solid var(--n500);padding-top:20px;margin-top:8px;">
+        <p style="font-size:13px;color:var(--s400);">This disclaimer supplements our full <a onclick="navigate('/terms')" style="color:var(--o400);cursor:pointer;">Terms of Service</a>. For legal advice specific to your situation, please consult a qualified Ontario lawyer.</p>
+      </div>
+    </div>
+  </div>
+</div><!-- end page-disclaimer -->
+
+<!-- ============================================================
      FOOTER
 ============================================================ -->
 <footer style="background:var(--n800);border-top:3px solid var(--n600);margin-top:0;">
@@ -2532,9 +2694,19 @@ textarea.form-control { resize: vertical; min-height: 100px; }
         </div>
       </div>
     </div>
+      <div>
+        <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--s200);margin-bottom:16px;">Legal</div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <a onclick="navigate('/terms')" style="font-size:14px;color:var(--s400);cursor:pointer;">Terms of Service</a>
+          <a onclick="navigate('/privacy')" style="font-size:14px;color:var(--s400);cursor:pointer;">Privacy Policy</a>
+          <a onclick="navigate('/disclaimer')" style="font-size:14px;color:var(--s400);cursor:pointer;">Contractor Disclaimer</a>
+          <a href="mailto:hello@bookyourtrades.com" style="font-size:14px;color:var(--s400);">hello@bookyourtrades.com</a>
+        </div>
+      </div>
+    </div>
     <div style="border-top:1px solid var(--n600);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;">
-      <div style="font-size:13px;color:var(--s400);">&copy; 2026 BookYourTrades Inc. All rights reserved. Ontario, Canada &middot; bookyourtrades.com</div>
-      <div style="font-size:13px;color:var(--s400);">Licensed Trade Directory &middot; Not affiliated with the Ontario College of Trades &middot; <a href="mailto:hello@bookyourtrades.com" style="color:var(--s400);">hello@bookyourtrades.com</a></div>
+      <div style="font-size:13px;color:var(--s400);">&copy; 2026 BookYourTrades Inc. All rights reserved. &middot; bookyourtrades.com</div>
+      <div style="font-size:13px;color:var(--s400);">Directory service only &mdash; not a contractor, employer, or party to any agreement &middot; <a onclick="navigate('/disclaimer')" style="color:var(--s400);cursor:pointer;">Disclaimer</a> &middot; <a onclick="navigate('/terms')" style="color:var(--s400);cursor:pointer;">Terms</a></div>
     </div>
   </div>
 </footer>
@@ -3905,12 +4077,79 @@ function router() {
     document.getElementById('page-news').classList.add('active');
     document.title = 'Ontario Trade Industry News | BookYourTrades';
     loadNews(window._newsKw || '');
+  } else if (page === 'terms') {
+    document.getElementById('page-terms').classList.add('active');
+    document.title = 'Terms of Service | BookYourTrades';
+  } else if (page === 'privacy') {
+    document.getElementById('page-privacy').classList.add('active');
+    document.title = 'Privacy Policy | BookYourTrades';
+  } else if (page === 'disclaimer') {
+    document.getElementById('page-disclaimer').classList.add('active');
+    document.title = 'Contractor Disclaimer | BookYourTrades';
   } else {
     document.getElementById('page-home').classList.add('active');
     renderHome();
   }
 
+  // Update dynamic meta tags for SEO / social sharing
+  _updatePageMeta(page, parts);
   updateNav();
+}
+
+function _updatePageMeta(page, parts) {
+  const setMeta = (name, val, prop) => {
+    const el = document.querySelector(prop ? `meta[property="${name}"]` : `meta[name="${name}"]`);
+    if (el) el.setAttribute('content', val);
+  };
+  const setCanonical = (path) => {
+    const el = document.querySelector('link[rel="canonical"]');
+    if (el) el.setAttribute('href', 'https://bookyourtrades.com' + path);
+  };
+  const metaMap = {
+    'directory': {
+      desc: 'Browse hundreds of licensed trade contractors across Canada. Filter by trade, city, and rating. Free to contact — no middleman.',
+      path: '/directory'
+    },
+    'register': {
+      desc: 'List your trade business or individual trade profile on BookYourTrades — free. Get discovered by commercial clients across Canada.',
+      path: '/register'
+    },
+    'how-it-works': {
+      desc: 'Learn how BookYourTrades connects licensed Canadian trade contractors with commercial clients. Simple, free, and fast.',
+      path: '/how-it-works'
+    },
+    'pricing': {
+      desc: 'Starter (free), Pro, and Enterprise plans for Canadian trade contractors. Unlock unlimited leads, featured listings, and more.',
+      path: '/pricing'
+    },
+    'rfq': {
+      desc: 'Post a free job request and get matched with licensed trade contractors in your city. No account required.',
+      path: '/rfq'
+    },
+    'jobs': {
+      desc: 'Browse live trades job listings across Canada sourced from Indeed Canada. Electrician, plumber, HVAC, carpenter, and more.',
+      path: '/jobs'
+    },
+    'terms': {
+      desc: 'BookYourTrades Terms of Service — governing law Ontario, Canada. Includes liability disclaimer for contractor services.',
+      path: '/terms'
+    },
+    'privacy': {
+      desc: 'BookYourTrades Privacy Policy — PIPEDA compliant. How we collect, use, and protect your personal information.',
+      path: '/privacy'
+    },
+    'disclaimer': {
+      desc: 'BookYourTrades is a directory only — not a contractor. Read this before hiring any trade contractor through our platform.',
+      path: '/disclaimer'
+    },
+  };
+  const m = metaMap[page];
+  const desc = m ? m.desc : 'Find and book licensed electricians, plumbers, HVAC specialists, roofers, welders, and more across Canada.';
+  const path = m ? m.path : (page === 'provider' && parts[1] ? '/provider/' + parts[1] : '/');
+  setMeta('description', desc);
+  setMeta('og:description', desc, true);
+  setMeta('og:url', 'https://bookyourtrades.com' + path, true);
+  setCanonical(path);
 }
 
 function updateNav() {
@@ -4080,6 +4319,19 @@ function renderBlogPost(slug) {
 /* ============================================================
    MEMBERSHIP / STRIPE SUBSCRIPTIONS
 ============================================================ */
+function setProfileType(type) {
+  const companyLabel    = document.getElementById('ptCompanyLabel');
+  const individualLabel = document.getElementById('ptIndividualLabel');
+  const nameLabel       = document.getElementById('nameFieldLabel');
+  const nameInput       = document.querySelector('[name="companyName"]');
+  if (companyLabel)    companyLabel.style.borderColor    = type === 'company'    ? 'var(--o500)' : 'var(--n500)';
+  if (companyLabel)    companyLabel.style.background     = type === 'company'    ? 'rgba(224,98,26,0.07)' : '';
+  if (individualLabel) individualLabel.style.borderColor = type === 'individual' ? 'var(--o500)' : 'var(--n500)';
+  if (individualLabel) individualLabel.style.background  = type === 'individual' ? 'rgba(224,98,26,0.07)' : '';
+  if (nameLabel) nameLabel.textContent = type === 'individual' ? 'Your Full Name *' : 'Company Name *';
+  if (nameInput) nameInput.placeholder = type === 'individual' ? 'e.g. John Smith' : 'e.g. Volt Pro Electrical Inc.';
+}
+
 function togglePurpose(type) {
   const labelMap = { business: 'purposeBusinessLabel', seeker: 'purposeSeekerLabel', client: 'purposeClientLabel', post: 'purposePostLabel' };
   const cb = document.getElementById('purpose' + type.charAt(0).toUpperCase() + type.slice(1));
@@ -4174,6 +4426,119 @@ function providerLogoHTML(p, size=52, radius=5) {
   return `<div style="width:${size}px;height:${size}px;background:${p.claimed?'var(--o500)':'var(--n500)'};border-radius:${radius}px;display:flex;align-items:center;justify-content:center;font-family:'Barlow Condensed',sans-serif;font-weight:800;font-size:${Math.round(size*0.35)}px;color:white;flex-shrink:0;">${ini}</div>`;
 }
 
+/* ============================================================
+   GAMIFICATION — XP / LEVEL / ACHIEVEMENT SYSTEM
+   XP is calculated dynamically from profile data + reviews.
+   Levels and achievements display on cards and profile pages.
+============================================================ */
+const LEVELS = [
+  { min:    0, name: 'Apprentice',    icon: '🔰', color: '#64748B' },
+  { min:  300, name: 'Journeyman',    icon: '⚒️',  color: '#3B82F6' },
+  { min: 1000, name: 'Tradesperson',  icon: '🛠️',  color: '#10B981' },
+  { min: 2500, name: 'Master',        icon: '⭐',  color: '#F59E0B' },
+  { min: 5000, name: 'Elite',         icon: '🏆',  color: '#E0621A' },
+];
+
+function calculateXP(p) {
+  let xp = 0;
+  // Completed work (client reviews) — core XP source
+  const rc = p.reviewCount || 0;
+  const r  = p.rating || 0;
+  xp += rc * 100;
+  // Rating quality bonus per review
+  if (r >= 4.9) xp += rc * 100;
+  else if (r >= 4.5) xp += rc * 60;
+  else if (r >= 4.0) xp += rc * 30;
+  else if (r < 3.0 && rc > 0) xp -= rc * 20; // penalty for poor work
+  // Profile completeness
+  if (p.claimed)       xp += 200;
+  if (p.phone)         xp += 50;
+  if (p.email)         xp += 50;
+  if (p.website)       xp += 50;
+  if (p.licenceNo)     xp += 100;
+  if (p.description && p.description.length > 120) xp += 50;
+  if (p.certifications && p.certifications.length) xp += p.certifications.length * 75;
+  if (p.gallery && p.gallery.length) xp += Math.min(p.gallery.length * 25, 200);
+  // Years in business
+  if (p.yearFounded) xp += Math.min((new Date().getFullYear() - p.yearFounded) * 25, 500);
+  // Individual tradespeople get a participation bonus
+  if (p.profileType === 'individual') xp += 50;
+  return Math.max(0, Math.round(xp));
+}
+
+function getLevel(xp) {
+  let lvl = LEVELS[0];
+  for (const l of LEVELS) { if (xp >= l.min) lvl = l; }
+  return lvl;
+}
+
+function getNextLevel(xp) {
+  for (const l of LEVELS) { if (xp < l.min) return l; }
+  return null; // already Elite
+}
+
+function xpProgressPct(xp) {
+  const cur  = getLevel(xp);
+  const next = getNextLevel(xp);
+  if (!next) return 100;
+  const range = next.min - cur.min;
+  const done  = xp - cur.min;
+  return Math.round((done / range) * 100);
+}
+
+function getAchievements(p) {
+  const rc = p.reviewCount || 0;
+  const r  = p.rating || 0;
+  const badges = [];
+  if (p.claimed)                        badges.push({ icon: '✅', label: 'Verified Listing' });
+  if (p.profileType === 'individual')   badges.push({ icon: '👤', label: 'Independent Tradesperson' });
+  if (p.licenceNo)                      badges.push({ icon: '🪪', label: 'Licensed & Registered' });
+  if (rc >= 1)                          badges.push({ icon: '💬', label: 'First Review' });
+  if (rc >= 10)                         badges.push({ icon: '🔟', label: '10 Jobs Completed' });
+  if (rc >= 50)                         badges.push({ icon: '🏅', label: '50 Jobs Completed' });
+  if (rc >= 100)                        badges.push({ icon: '💯', label: '100 Jobs Completed' });
+  if (r >= 5.0 && rc >= 5)             badges.push({ icon: '✨', label: 'Perfect Score' });
+  if (r >= 4.8 && rc >= 10)            badges.push({ icon: '🥇', label: 'Top Rated' });
+  if (r >= 4.5 && rc >= 20)            badges.push({ icon: '🌟', label: 'Consistently Excellent' });
+  if ((p.certifications||[]).length >= 3) badges.push({ icon: '📜', label: 'Multi-Certified' });
+  const tradeIcons = {
+    'Electrical':'⚡','Plumbing':'🔧','HVAC':'🌡️','Roofing':'🏚️',
+    'Welding & Fabrication':'⚙️','Carpentry':'🪚','General Contracting':'🏗️',
+    'Sheet Metal':'🔨','Concrete & Masonry':'🧱','Millwright':'🔩',
+    'Pipefitting':'🛢️','Refrigeration':'❄️',
+  };
+  if (p.tradeType && tradeIcons[p.tradeType] && p.claimed)
+    badges.push({ icon: tradeIcons[p.tradeType], label: 'Certified ' + p.tradeType });
+  return badges;
+}
+
+function levelBadgeHTML(p, size) {
+  // size: 'sm' = inline chip, 'lg' = full bar for profile page
+  const xp  = calculateXP(p);
+  const lvl = getLevel(xp);
+  if (size === 'lg') {
+    const pct  = xpProgressPct(xp);
+    const next = getNextLevel(xp);
+    return `<div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:16px 20px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-size:22px;">${lvl.icon}</span>
+          <div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:${lvl.color};">${lvl.name}</div>
+            <div style="font-size:12px;color:var(--s400);">${xp.toLocaleString()} XP earned from verified work</div>
+          </div>
+        </div>
+        ${next ? `<div style="font-size:12px;color:var(--s400);">${(next.min - xp).toLocaleString()} XP to ${next.icon} ${next.name}</div>` : '<div style="font-size:12px;color:var(--o400);font-weight:700;">MAX LEVEL</div>'}
+      </div>
+      <div style="background:var(--n600);border-radius:4px;height:6px;overflow:hidden;">
+        <div style="background:${lvl.color};height:100%;width:${pct}%;border-radius:4px;transition:width 0.5s;"></div>
+      </div>
+    </div>`;
+  }
+  // sm chip
+  return `<span title="${xp} XP" style="display:inline-flex;align-items:center;gap:4px;background:rgba(0,0,0,0.2);border:1px solid ${lvl.color}33;border-radius:3px;padding:2px 8px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:11px;letter-spacing:0.06em;color:${lvl.color};">${lvl.icon} ${lvl.name}</span>`;
+}
+
 function providerCardHTML(p) {
   const ini = p.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
   const reqCount = getRequestCount(p.id);
@@ -4187,6 +4552,8 @@ function providerCardHTML(p) {
             <span class="badge badge-orange">${p.tradeType}</span>
             ${p.plan==='enterprise' ? '<span style="background:linear-gradient(90deg,#1A2C42,#243F5C);border:1px solid var(--o500);color:var(--o300);font-size:11px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:2px;">⭐ Enterprise</span>'
               : p.featured ? '<span style="background:rgba(224,98,26,0.12);border:1px solid rgba(224,98,26,0.4);color:var(--o400);font-size:11px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:3px 10px;border-radius:2px;">✦ Pro</span>' : ''}
+            ${p.profileType==='individual' ? '<span style="background:rgba(59,130,246,0.12);border:1px solid rgba(59,130,246,0.35);color:#93C5FD;font-size:11px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 9px;border-radius:2px;">👤 Independent</span>' : ''}
+            ${levelBadgeHTML(p,'sm')}
             <span style="font-size:13px;color:var(--s400);">${p.yearsInBusiness}</span>
             ${p.claimed ? '<span style="font-size:12px;color:#6FE09A;">✓ Claimed</span>' : '<span style="font-size:12px;color:var(--o400);">⚑ Unclaimed</span>'}
           </div>
@@ -4512,6 +4879,7 @@ function renderProvider(id) {
                   ? '<span style="background:rgba(224,98,26,0.15);border:1px solid var(--o500);color:var(--o300);font-size:12px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 12px;border-radius:3px;">✦ Pro Member</span>'
                   : ''}
               <span class="provider-verified">&#10003; Verified</span>
+              ${p.profileType==='individual' ? '<span style="background:rgba(59,130,246,0.15);border:1px solid #3B82F6;color:#93C5FD;font-size:12px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 12px;border-radius:3px;">👤 Independent Tradesperson</span>' : ''}
             </div>
             <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
               <div style="display:flex;align-items:center;gap:6px;">
@@ -4550,6 +4918,20 @@ function renderProvider(id) {
           <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:24px;">
             <h2 style="font-size:24px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">About ${p.companyName}</h2>
             <p style="color:var(--s200);line-height:1.85;font-size:15px;">${p.description}</p>
+          </div>
+
+          <!-- Reputation & Achievements -->
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:24px;">
+            <h2 style="font-size:24px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Reputation & Achievements</h2>
+            ${levelBadgeHTML(p,'lg')}
+            ${(function(){
+              const ach = getAchievements(p);
+              if (!ach.length) return '<p style="color:var(--s400);font-size:13px;margin-top:12px;">Complete your profile and receive your first review to earn achievements.</p>';
+              return '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;">'
+                + ach.map(a=>`<span title="${a.label}" style="display:inline-flex;align-items:center;gap:6px;background:var(--n600);border:1px solid var(--n500);border-radius:6px;padding:6px 12px;font-size:13px;color:var(--s200);">${a.icon} ${a.label}</span>`).join('')
+                + '</div>';
+            })()}
+            <p style="font-size:12px;color:var(--s400);margin-top:14px;line-height:1.6;">XP is earned through verified client reviews and profile completeness. Level up by completing more jobs and receiving high ratings from the people who hired you.</p>
           </div>
 
           <!-- Gallery -->
@@ -4688,6 +5070,17 @@ function renderProvider(id) {
                 <input type="hidden" name="serviceTime" id="selectedTime" />
               </div>
               <div class="form-group"><label class="form-label">Job Description *</label><textarea class="form-control" name="jobDescription" required placeholder="Describe the work, scope, location, and requirements..."></textarea></div>
+              <!-- Liability disclaimer -->
+              <div style="background:rgba(15,25,35,0.6);border:1px solid var(--n500);border-radius:6px;padding:14px 16px;margin-bottom:16px;">
+                <p style="font-size:12px;color:var(--s400);line-height:1.7;margin:0 0 10px;">
+                  <strong style="color:var(--s300);">Important — Please read before submitting:</strong> BookYourTrades is a communication and directory platform only. We are <em>not</em> a party to any agreement between you and this contractor. We make no representations about the quality, timing, licensing, or completion of any work. You are solely responsible for verifying the contractor's credentials, insurance (WSIB), and suitability for your project. BookYourTrades accepts no liability for any disputes, damages, or losses arising from work arranged through this platform.
+                  <a onclick="navigate('/disclaimer')" style="color:var(--o400);cursor:pointer;">View full disclaimer →</a>
+                </p>
+                <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;">
+                  <input type="checkbox" name="disclaimerAccepted" required style="margin-top:2px;accent-color:var(--o500);flex-shrink:0;" />
+                  <span style="font-size:12px;color:var(--s200);">I understand that BookYourTrades is a directory service and I accept full responsibility for vetting this contractor and any agreement I enter into with them. I agree to the <a onclick="navigate('/terms')" style="color:var(--o400);cursor:pointer;">Terms of Service</a>.</span>
+                </label>
+              </div>
               <button type="submit" class="btn btn-orange btn-lg" style="width:100%;justify-content:center;font-size:16px;padding:14px 24px;box-shadow:0 4px 20px rgba(224,98,26,0.5);letter-spacing:0.1em;">📋 Send Request →</button>
               <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--s400);">Your info stays private. Only this contractor sees your request.</div>
             </form>
@@ -5169,6 +5562,7 @@ function handleRegister(e) {
     const pid = 'p'+Date.now();
     const prov = {
       id:pid, companyName:data.companyName, tradeType:data.tradeType,
+      profileType: data.profileType || 'company',
       licenseNumber:data.licenseNumber||'Pending Verification', yearsInBusiness:data.yearsInBusiness,
       description:data.description, contactName:data.contactName,
       email:data.email, phone:data.phone, website:data.website||'',

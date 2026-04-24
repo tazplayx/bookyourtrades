@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "bookyourtrades",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["serve", "-p", "3737", "C:\\Personal\\trades-ontario"],
+      "port": 3737
+    }
+  ]
+}
