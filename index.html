@@ -193,6 +193,9 @@ input, textarea, select { font-family: inherit; }
    UTILITIES
 ============================================================ */
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+.container-wide { max-width: 82vw; margin: 0 auto; padding: 0 24px; }
+@media (max-width: 1600px) { .container-wide { max-width: 88vw; } }
+@media (max-width: 1100px) { .container-wide { max-width: 96vw; } }
 .page { display: none; }
 .page.active { display: block; }
 
@@ -1361,7 +1364,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 ============================================================ -->
 <div id="page-directory" class="page">
   <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:32px 0;">
-    <div class="container">
+    <div class="container-wide">
       <div class="section-label">Commercial Trades Directory</div>
       <h1 style="font-size:40px;margin-bottom:16px;">Canadian Trades Contractors</h1>
       <div class="search-bar" style="max-width:620px;">
@@ -1403,12 +1406,12 @@ textarea.form-control { resize: vertical; min-height: 100px; }
       </div>
     </div>
   </div>
-  <div class="container" style="padding-top:32px;padding-bottom:60px;">
-    <div class="dir-outer-layout" style="display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:start;">
+  <div class="container-wide" style="padding-top:32px;padding-bottom:60px;">
+    <div class="dir-outer-layout" style="display:grid;grid-template-columns:1fr 440px;gap:28px;align-items:start;">
 
       <!-- LEFT: filter sidebar + listings -->
       <div>
-        <div class="dir-layout" style="display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:start;">
+        <div class="dir-layout" style="display:grid;grid-template-columns:220px 1fr;gap:24px;align-items:start;">
           <div class="filter-sidebar">
             <div class="filter-title">Filter By Trade</div>
             <div id="tradeFilters"></div>
@@ -1436,11 +1439,17 @@ textarea.form-control { resize: vertical; min-height: 100px; }
       <!-- RIGHT: sticky map panel -->
       <div style="position:sticky;top:72px;">
         <div style="background:var(--n800);border:1px solid var(--n600);border-radius:8px;overflow:hidden;">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--n900);border-bottom:1px solid var(--n600);">
-            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--s300);">&#128205; Company Locations</div>
-            <button onclick="toggleDirectoryMap()" id="mapToggleBtn" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;background:var(--n600);border:1px solid var(--n400);color:var(--s200);padding:4px 12px;border-radius:3px;cursor:pointer;">Hide Map</button>
+          <div style="background:var(--n900);border-bottom:1px solid var(--n600);padding:10px 16px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--s300);">&#128205; Company Locations</div>
+              <button onclick="toggleDirectoryMap()" id="mapToggleBtn" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;background:var(--n600);border:1px solid var(--n400);color:var(--s200);padding:4px 12px;border-radius:3px;cursor:pointer;">Hide Map</button>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;">
+              <button id="mapBoundsBtn" onclick="toggleMapBoundsFilter()" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:11px;letter-spacing:0.06em;text-transform:uppercase;background:var(--n700);border:1px solid var(--n500);color:var(--s300);padding:4px 12px;border-radius:3px;cursor:pointer;transition:all 0.15s;">&#128247; Filter list by map view: OFF</button>
+              <span id="mapBoundsCount" style="font-family:'Barlow Condensed',sans-serif;font-size:11px;color:var(--s400);letter-spacing:0.05em;"></span>
+            </div>
           </div>
-          <div id="dirMapWrap" style="height:calc(100vh - 230px);min-height:480px;position:relative;">
+          <div id="dirMapWrap" style="height:calc(100vh - 260px);min-height:480px;position:relative;">
             <div id="dirMap" style="height:100%;width:100%;"></div>
           </div>
         </div>
@@ -3246,53 +3255,104 @@ const CITY_COORDS = {
 let _dirMap = null;
 let _dirMapMarkers = [];
 let _dirMapVisible = true;
+let _mapBoundsFilter = false;   // when true, map pan/zoom drives the listing results
+let _mapBoundsResults = null;   // null = inactive; array = currently filtered by bounds
 
 function toggleDirectoryMap() {
-  const wrap  = document.getElementById('dirMapWrap');
-  const btn   = document.getElementById('mapToggleBtn');
-  const panel = wrap && wrap.closest('[style*="position:sticky"]');
+  const wrap = document.getElementById('dirMapWrap');
+  const btn  = document.getElementById('mapToggleBtn');
   _dirMapVisible = !_dirMapVisible;
   wrap.style.display = _dirMapVisible ? '' : 'none';
   btn.textContent = _dirMapVisible ? 'Hide Map' : 'Show Map';
-  // Invalidate map size so tiles re-render after show
   if (_dirMapVisible && _dirMap) {
     setTimeout(function() { _dirMap.invalidateSize(); }, 50);
   }
 }
 
+function toggleMapBoundsFilter() {
+  _mapBoundsFilter = !_mapBoundsFilter;
+  const btn = document.getElementById('mapBoundsBtn');
+  const cnt = document.getElementById('mapBoundsCount');
+  if (btn) {
+    btn.textContent = '\uD83D\uDCF7 Filter list by map view: ' + (_mapBoundsFilter ? 'ON' : 'OFF');
+    btn.style.background    = _mapBoundsFilter ? 'rgba(224,98,26,0.15)' : '';
+    btn.style.borderColor   = _mapBoundsFilter ? 'var(--o500)'          : '';
+    btn.style.color         = _mapBoundsFilter ? 'var(--o300)'          : '';
+  }
+  if (_mapBoundsFilter) {
+    applyMapBoundsToListings();
+  } else {
+    _mapBoundsResults = null;
+    if (cnt) cnt.textContent = '';
+    renderDirPage();
+  }
+}
+
+function applyMapBoundsToListings() {
+  if (!_dirMap || !_mapBoundsFilter) return;
+  const bounds = _dirMap.getBounds();
+  const visible = dirFilteredResults.filter(function(p) {
+    // Use stored lat/lng if available (scraped OSM data), else fall back to CITY_COORDS
+    if (p.lat && p.lng) return bounds.contains(L.latLng(p.lat, p.lng));
+    const city   = p.serviceAreas && p.serviceAreas[0];
+    const coords = city && CITY_COORDS[city];
+    if (!coords) return false;
+    return bounds.contains(L.latLng(coords[0], coords[1]));
+  });
+  _mapBoundsResults = visible;
+  const cnt = document.getElementById('mapBoundsCount');
+  if (cnt) cnt.textContent = visible.length + ' in view';
+  renderDirPage();
+}
+
 function initDirectoryMap() {
-  if (_dirMap) return; // already initialized
+  if (_dirMap) return;
   const el = document.getElementById('dirMap');
   if (!el) return;
   _dirMap = L.map('dirMap', { zoomControl: true }).setView([56.0, -96.0], 4);
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    attribution: '\u00a9 <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom: 18
   }).addTo(_dirMap);
+  // When the user pans or zooms, refresh the listing if bounds-filter is active
+  _dirMap.on('moveend zoomend', function() {
+    if (_mapBoundsFilter) applyMapBoundsToListings();
+  });
 }
 
 function updateDirectoryMap(providers) {
   if (!_dirMap) initDirectoryMap();
   if (!_dirMap) return;
-  // Clear old markers
   _dirMapMarkers.forEach(m => _dirMap.removeLayer(m));
   _dirMapMarkers = [];
   const bounds = [];
   providers.forEach(function(p) {
-    const city = p.serviceAreas && p.serviceAreas[0];
-    const coords = city && CITY_COORDS[city];
-    if (!coords) return;
-    // Jitter slightly so stacked pins are visible
-    const lat = coords[0] + (Math.random() - 0.5) * 0.08;
-    const lng = coords[1] + (Math.random() - 0.5) * 0.08;
-    const color = p.featured ? '#E0621A' : '#406D96';
-    const icon = L.divIcon({
+    // Prefer exact coords (OSM data) over city lookup
+    let lat, lng;
+    if (p.lat && p.lng) {
+      lat = +p.lat + (Math.random() - 0.5) * 0.02;
+      lng = +p.lng + (Math.random() - 0.5) * 0.02;
+    } else {
+      const city   = p.serviceAreas && p.serviceAreas[0];
+      const coords = city && CITY_COORDS[city];
+      if (!coords) return;
+      lat = coords[0] + (Math.random() - 0.5) * 0.08;
+      lng = coords[1] + (Math.random() - 0.5) * 0.08;
+    }
+    const color = p.featured ? '#E0621A' : (p.source === 'OpenStreetMap' ? '#2E9E6B' : '#406D96');
+    const size  = p.featured ? 14 : 11;
+    const icon  = L.divIcon({
       className: '',
-      html: `<div style="width:12px;height:12px;background:${color};border:2px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.5);"></div>`,
-      iconSize: [12, 12], iconAnchor: [6, 6]
+      html: `<div style="width:${size}px;height:${size}px;background:${color};border:2px solid white;border-radius:50%;box-shadow:0 1px 4px rgba(0,0,0,0.5);cursor:pointer;"></div>`,
+      iconSize: [size, size], iconAnchor: [size/2, size/2]
     });
     const marker = L.marker([lat, lng], { icon }).addTo(_dirMap);
-    marker.bindPopup(`<strong>${p.companyName}</strong><br>${p.tradeType}<br><small>${p.serviceAreas.slice(0,2).join(', ')}</small><br><a href="#" onclick="navigate('/provider/${p.id}');return false;" style="color:#E0621A;font-weight:600;">View Profile →</a>`);
+    marker.bindPopup(
+      `<strong style="font-size:14px;">${p.companyName}</strong><br>`
+      + `<span style="color:#64748B;font-size:12px;">${p.tradeType}</span><br>`
+      + `<small>${(p.serviceAreas||[]).slice(0,2).join(', ')}</small><br>`
+      + `<a href="#" onclick="navigate('/provider/${p.id}');return false;" style="color:#E0621A;font-weight:600;font-size:13px;">View Profile \u2192</a>`
+    );
     _dirMapMarkers.push(marker);
     bounds.push([lat, lng]);
   });
@@ -3774,6 +3834,7 @@ function router() {
     document.title = 'Find Licensed Trade Contractors Across Canada | BookYourTrades';
     renderDirectory();
     setTimeout(initDirectoryMap, 100);
+    loadScrapedCompanies(); // async — merges OSM results after seed data renders
   } else if (page === 'provider') {
     document.getElementById('page-provider').classList.add('active');
     renderProvider(parts[1]);
@@ -4166,6 +4227,46 @@ function doHeroSearch() {
 }
 
 /* ============================================================
+   SCRAPED COMPANY LOADER
+   Fetches live trade businesses from /api/scrape-companies (OSM/Overpass).
+   Results are cached in localStorage for 24 hours.
+============================================================ */
+async function loadScrapedCompanies() {
+  const CACHE_KEY = 'to_scraped_companies';
+  const CACHE_TTL = 24 * 60 * 60 * 1000; // 24 hours
+  try {
+    const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+    if (cached && cached.fetched && (Date.now() - new Date(cached.fetched).getTime()) < CACHE_TTL) {
+      mergeScrapedCompanies(cached.companies);
+      return;
+    }
+  } catch(e) {}
+  try {
+    const resp = await fetch('/api/scrape-companies');
+    if (!resp.ok) return;
+    const data = await resp.json();
+    if (data.companies && data.companies.length > 0) {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ companies: data.companies, fetched: data.fetched }));
+      mergeScrapedCompanies(data.companies);
+    }
+  } catch(e) { /* silent — scraped data is supplementary */ }
+}
+
+function mergeScrapedCompanies(companies) {
+  if (!companies || !companies.length) return;
+  const existingIds = new Set(App.providers.map(p => p.id));
+  const newOnes = companies.filter(c => !existingIds.has(c.id));
+  if (!newOnes.length) return;
+  App.providers = [...App.providers, ...newOnes];
+  // Re-render directory if it is the active page
+  const dirPage = document.getElementById('page-directory');
+  if (dirPage && dirPage.classList.contains('active')) {
+    filterDirectory();
+    setTimeout(function() { updateDirectoryMap(dirFilteredResults); }, 80);
+  }
+}
+
+/* ============================================================
    DIRECTORY
 ============================================================ */
 function renderDirectory() {
@@ -4207,7 +4308,13 @@ function filterDirectory() {
 
   dirFilteredResults = res;
   dirCurrentPage = 1;
-  renderDirPage();
+  // Re-apply bounds filter against updated results, or clear if filter is off
+  if (_mapBoundsFilter) {
+    applyMapBoundsToListings();
+  } else {
+    _mapBoundsResults = null;
+    renderDirPage();
+  }
   // Update map pins to match current filter results
   setTimeout(function() { updateDirectoryMap(res); }, 50);
 }
@@ -4222,7 +4329,7 @@ function dirGoToPage(n) {
 }
 
 function renderDirPage() {
-  const res = dirFilteredResults;
+  const res = (_mapBoundsResults !== null) ? _mapBoundsResults : dirFilteredResults;
   const totalPages = Math.ceil(res.length / DIR_PAGE_SIZE);
   const page = dirCurrentPage;
   const start = (page - 1) * DIR_PAGE_SIZE;
@@ -4661,6 +4768,27 @@ function handleBookingSubmit(e, providerId) {
   const idx = App.providers.findIndex(p=>p.id===providerId);
   if (idx>-1) { App.providers[idx].requestCount=(App.providers[idx].requestCount||0)+1; saveProviders(); }
   pushNotification(providerId, 'New booking request from ' + customerName + ' — ' + data.serviceDate, booking.id);
+
+  // Email the trade company — fire-and-forget, doesn't block the UX
+  const prov = App.providers.find(p => p.id === providerId);
+  if (prov && prov.email) {
+    fetch('/api/send-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        companyName:   prov.companyName,
+        companyEmail:  prov.email,
+        tradeType:     prov.tradeType,
+        leadName:      customerName,
+        leadEmail:     customerEmail,
+        leadPhone:     data.customerPhone,
+        serviceDate:   data.serviceDate,
+        serviceTime:   time,
+        jobDescription: data.jobDescription,
+      })
+    }).catch(function(){});
+  }
+
   document.getElementById('bookingSuccess').style.display='block';
   document.getElementById('bookingForm').style.display='none';
   showToast('Booking request submitted!','success');

@@ -1,6 +1,12 @@
 {
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api/:path*" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/(.*)",       "destination": "/index.html" }
+  ],
+  "crons": [
+    {
+      "path":     "/api/scrape-companies",
+      "schedule": "0 6 * * *"
+    }
   ]
 }
