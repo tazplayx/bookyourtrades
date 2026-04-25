@@ -5,8 +5,7 @@
  * Environment variables (set in Vercel Dashboard):
  *   RESEND_API_KEY   — your Resend API key (https://resend.com)
  *
- * The FROM address must be a domain verified in Resend.
- * Default: leads@bookyourtrades.com
+ * FROM address: info@bookyourtrades.com (verified in Resend)
  *
  * POST /api/send-lead
  * Body (JSON):
@@ -137,7 +136,7 @@ module.exports = async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        from:     'BookYourTrades Leads <leads@bookyourtrades.com>',
+        from:     'BookYourTrades <info@bookyourtrades.com>',
         to:       [companyEmail],
         reply_to: leadEmail,
         subject:  `New Lead: ${leadName} is looking for a ${tradeType} contractor — BookYourTrades`,

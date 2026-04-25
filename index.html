@@ -5221,21 +5221,33 @@ function handleBookingSubmit(e, providerId) {
   // Email the trade company — fire-and-forget, doesn't block the UX
   const prov = App.providers.find(p => p.id === providerId);
   if (prov && prov.email) {
-    fetch('/api/send-lead', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        companyName:   prov.companyName,
-        companyEmail:  prov.email,
-        tradeType:     prov.tradeType,
-        leadName:      customerName,
-        leadEmail:     customerEmail,
-        leadPhone:     data.customerPhone,
-        serviceDate:   data.serviceDate,
-        serviceTime:   time,
-        jobDescription: data.jobDescription,
-      })
-    }).catch(function(){});
+    const leadPayload = {
+      companyName:    prov.companyName,
+      companyEmail:   prov.email,
+      tradeType:      prov.tradeType,
+      leadName:       customerName,
+      leadEmail:      customerEmail,
+      leadPhone:      data.customerPhone,
+      serviceDate:    data.serviceDate,
+      serviceTime:    time,
+      jobDescription: data.jobDescription,
+      city:           (prov.serviceAreas || [])[0] || '',
+    };
+    if (prov.claimed) {
+      // Claimed listing — send the full branded lead email
+      fetch('/api/send-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(leadPayload)
+      }).catch(function(){});
+    } else {
+      // Unclaimed / scraped listing — send outreach email inviting them to claim
+      fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'new_lead_unclaimed', data: leadPayload })
+      }).catch(function(){});
+    }
   }
 
   document.getElementById('bookingSuccess').style.display='block';
@@ -5653,14 +5665,19 @@ function handleRegister(e) {
       localStorage.setItem('to_seekers', JSON.stringify(App.seekers));
     }
 
-    // Fire-and-forget — send welcome email + admin alert
+    // Fire-and-forget — contractor welcome email + admin alert
     fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        type: 'welcome',
+        type: 'contractor_welcome',
         email: prov.email,
-        data: { name: prov.contactName, company: prov.companyName }
+        data: {
+          name:    prov.contactName,
+          company: prov.companyName,
+          trade:   prov.tradeType,
+          city:    (prov.serviceAreas || [])[0] || '',
+        }
       })
     }).catch(function(){});
     fetch('/api/send-email', {
