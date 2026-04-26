@@ -5080,7 +5080,8 @@ function renderDirPage() {
       + '</div></div>'
       + '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;">'
       + '<span class="badge badge-orange">' + p.tradeType + '</span>'
-      + '<span style="font-size:13px;color:var(--s400);">' + p.yearsInBusiness + '</span>'
+      + (p.websiteVerified ? '<span style="font-size:11px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.3);color:#6FE09A;border-radius:4px;padding:2px 7px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.05em;">&#10003; WEBSITE VERIFIED</span>' : '')
+      + (p.yearsInBusiness ? '<span style="font-size:13px;color:var(--s400);">' + p.yearsInBusiness + '</span>' : '')
       + '<span style="font-size:13px;color:var(--s400);">&#128205; ' + p.serviceAreas.join(', ') + '</span>'
       + '</div>'
       + '<div style="font-size:14px;color:var(--s300);line-height:1.65;margin-bottom:12px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">' + p.description + '</div>'
@@ -5214,6 +5215,7 @@ function renderProvider(id) {
                   ? '<span style="background:rgba(224,98,26,0.15);border:1px solid var(--o500);color:var(--o300);font-size:12px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;padding:4px 12px;border-radius:3px;">✦ Pro Member</span>'
                   : ''}
               <span class="provider-verified">&#10003; Verified</span>
+              ${p.websiteVerified ? '<span style="background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.35);color:#6FE09A;font-size:12px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 12px;border-radius:3px;">&#10003; Website Verified</span>' : ''}
               ${p.profileType==='individual' ? '<span style="background:rgba(59,130,246,0.15);border:1px solid #3B82F6;color:#93C5FD;font-size:12px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:4px 12px;border-radius:3px;">👤 Independent Tradesperson</span>' : ''}
             </div>
             <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">

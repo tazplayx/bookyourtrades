@@ -6,9 +6,11 @@
     { "source": "/(.*)",        "destination": "/index.html"  }
   ],
   "crons": [
-    { "path": "/api/scrape-all",      "schedule": "0 5 * * *" },
-    { "path": "/api/scrape-companies","schedule": "0 6 * * *" },
-    { "path": "/api/scrape-careers",  "schedule": "0 */4 * * *" },
-    { "path": "/api/careers",         "schedule": "0 7 * * *" }
+    { "path": "/api/scrape-all",              "schedule": "0 5 * * *"  },
+    { "path": "/api/scrape-google?batch=0",   "schedule": "30 5 * * *" },
+    { "path": "/api/scrape-google?batch=1",   "schedule": "0 6 * * *"  },
+    { "path": "/api/scrape-companies",        "schedule": "30 6 * * *" },
+    { "path": "/api/scrape-careers",          "schedule": "0 */4 * * *"},
+    { "path": "/api/careers",                 "schedule": "0 7 * * *"  }
   ]
 }

@@ -6,12 +6,13 @@
  * GET /api/scrape-all?cities=3   — limit to top N cities (default 8)
  *
  * Sources:
- *   1. Yellow Pages Canada (/api/scrape-yellowpages) — primary, has phones + emails
- *   2. OpenStreetMap via Overpass API               — secondary, has lat/lng
+ *   1. Google Places API + Website Enrichment (/api/scrape-google) — primary
+ *      Finds companies via Google Places, then visits each company's own
+ *      website to extract email, phone, description, and certifications.
+ *   2. Yellow Pages Canada (/api/scrape-yellowpages)                — secondary
+ *   3. OpenStreetMap via Overpass API                               — tertiary
  *
  * Edge-cached 24 h. A Vercel Cron hits this daily to keep cache warm.
- * On a Vercel Pro plan add to vercel.json crons:
- *   { "path": "/api/scrape-all", "schedule": "0 5 * * *" }
  */
 
 const BASE_URL = process.env.VERCEL_URL
@@ -155,6 +156,24 @@ async function fetchYP(city) {
   }
 }
 
+// ── Google Places + Website Enrichment scraper ────────────────────────────────
+async function fetchGoogle(batch) {
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 55000); // long-running enrichment
+  try {
+    const r = await fetch(`${BASE_URL}/api/scrape-google?batch=${batch}`, {
+      signal: ctrl.signal,
+    });
+    clearTimeout(timer);
+    if (!r.ok) return [];
+    const data = await r.json();
+    return data.companies || [];
+  } catch {
+    clearTimeout(timer);
+    return [];
+  }
+}
+
 // ── Handler ──────────────────────────────────────────────────────────────────
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -167,20 +186,29 @@ module.exports = async function handler(req, res) {
   const citiesToFetch = CITIES.slice(0, maxCities);
 
   // Run all scrapers concurrently
-  const [osmResult, ...ypResults] = await Promise.allSettled([
+  // Google is highest-quality (website-verified) so runs first and its entries win dedup.
+  const [googleBatch0, googleBatch1, osmResult, ...ypResults] = await Promise.allSettled([
+    fetchGoogle(0),
+    fetchGoogle(1),
     fetchOSM(),
     ...citiesToFetch.map(city => fetchYP(city)),
   ]);
 
   let companies = [
-    ...(osmResult.status === 'fulfilled' ? osmResult.value : []),
+    ...(googleBatch0.status === 'fulfilled' ? googleBatch0.value : []),
+    ...(googleBatch1.status === 'fulfilled' ? googleBatch1.value : []),
+    ...(osmResult.status === 'fulfilled'    ? osmResult.value    : []),
     ...ypResults.flatMap(r => r.status === 'fulfilled' ? r.value : []),
   ];
 
-  // Deduplicate — prefer entries with more contact info
-  // Sort by contact richness first so richer entries win dedup
+  // Deduplicate — prefer website-verified entries (Google source), then contact richness
   companies.sort((a, b) => {
-    const s = c => (c.phone ? 4 : 0) + (c.email ? 2 : 0) + (c.website ? 1 : 0);
+    const s = c =>
+      (c.websiteVerified ? 16 : 0) +
+      (c.source === 'Google Places' ? 8 : 0) +
+      (c.phone ? 4 : 0) +
+      (c.email ? 2 : 0) +
+      (c.website ? 1 : 0);
     return s(b) - s(a);
   });
 
@@ -203,6 +231,6 @@ module.exports = async function handler(req, res) {
     total:   companies.length,
     cities:  citiesToFetch,
     fetched: new Date().toISOString(),
-    sources: ['Yellow Pages Canada', 'OpenStreetMap'],
+    sources: ['Google Places + Website Enrichment', 'Yellow Pages Canada', 'OpenStreetMap'],
   });
 };
