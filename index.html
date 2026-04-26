@@ -1407,7 +1407,22 @@ textarea.form-control { resize: vertical; min-height: 100px; }
       </div>
     </div>
   </div>
-  <div class="container-wide" style="padding-top:32px;padding-bottom:60px;">
+  <div class="container-wide" style="padding-top:24px;padding-bottom:60px;">
+    <!-- Total count banner — shows scale before user filters -->
+    <div id="dirTotalBanner" style="background:linear-gradient(135deg,var(--n800),var(--n700));border:1px solid var(--n500);border-radius:8px;padding:18px 28px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div style="font-size:32px;">🏗️</div>
+        <div>
+          <div id="dirTotalCount" style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:26px;color:white;line-height:1.1;">Loading contractors…</div>
+          <div style="font-size:13px;color:var(--s400);margin-top:2px;">Across Canada — use the filters to narrow by trade, city, or rating</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button onclick="clearDirFilters()" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;background:var(--n600);border:1px solid var(--n400);color:var(--s300);padding:6px 16px;border-radius:3px;cursor:pointer;">&#10005; Clear Filters</button>
+        <a href="#" onclick="navigate('/register');return false;" class="btn btn-sm" style="font-size:13px;padding:6px 18px;text-decoration:none;">List Your Business →</a>
+      </div>
+    </div>
+
     <div class="dir-outer-layout" style="display:grid;grid-template-columns:1fr 440px;gap:28px;align-items:start;">
 
       <!-- LEFT: filter sidebar + listings -->
@@ -4155,35 +4170,33 @@ function _updatePageMeta(page, parts) {
 
 function updateNav() {
   const el = document.getElementById('navAuth');
-  if (App.currentUser) {
-    if (App.currentUser.role === 'client') {
-      el.innerHTML = `
-        <span style="font-size:13px;color:var(--s300);margin-right:4px;">Hi, ${(App.currentUser.name||'').split(' ')[0] || 'Client'}</span>
-        <a class="nav-link" onclick="navigate('/dashboard')">My Bookings</a>
-        <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
-      `;
-    } else {
-      const pid   = App.currentUser.providerId;
-      const unread = App.notifications.filter(n => n.providerId === pid && !n.read).length;
-      el.innerHTML = `
-        <div class="notif-bell" onclick="navigate('/dashboard')" title="Notifications">
-          &#128276;
-          <span class="notif-dot ${unread > 0 ? 'show' : ''}"></span>
-        </div>
-        <a class="nav-link" onclick="navigate('/dashboard')">Dashboard</a>
-        <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
-      `;
-    }
+  if (!App.currentUser) {
+    el.innerHTML = `
+      <a class="nav-link" style="font-weight:600;" onclick="navigate('/login')">Login</a>
+      <button class="btn btn-orange btn-sm" onclick="navigate('/register')">List Your Business</button>
+    `;
   } else if (App.currentUser.role === 'admin') {
     el.innerHTML = `
       <span style="font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.08em;">&#9889; ADMIN</span>
       <a class="nav-link" onclick="navigate('/admin')">Admin Panel</a>
       <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
     `;
-  } else {
+  } else if (App.currentUser.role === 'client') {
     el.innerHTML = `
-      <a class="nav-link" style="font-weight:600;" onclick="navigate('/login')">Login</a>
-      <button class="btn btn-orange btn-sm" onclick="navigate('/register')">List Your Business</button>
+      <span style="font-size:13px;color:var(--s300);margin-right:4px;">Hi, ${(App.currentUser.name||'').split(' ')[0] || 'Client'}</span>
+      <a class="nav-link" onclick="navigate('/dashboard')">My Bookings</a>
+      <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
+    `;
+  } else {
+    const pid   = App.currentUser.providerId;
+    const unread = App.notifications.filter(n => n.providerId === pid && !n.read).length;
+    el.innerHTML = `
+      <div class="notif-bell" onclick="navigate('/dashboard')" title="Notifications">
+        &#128276;
+        <span class="notif-dot ${unread > 0 ? 'show' : ''}"></span>
+      </div>
+      <a class="nav-link" onclick="navigate('/dashboard')">Dashboard</a>
+      <button class="btn btn-outline btn-sm" onclick="handleLogout()">Logout</button>
     `;
   }
 }
@@ -4681,6 +4694,21 @@ function mergeScrapedCompanies(companies, rerender) {
   });
   if (!newOnes.length) return;
   App.providers = [...App.providers, ...newOnes];
+  // Refresh trade filter checkboxes if new trade types were added
+  const fd = document.getElementById('tradeFilters');
+  if (fd && fd.querySelector('input')) {
+    const existing = new Set([...fd.querySelectorAll('input')].map(i => i.value));
+    const allTrades = [...new Set(App.providers.map(p => p.tradeType))].sort();
+    allTrades.forEach(t => {
+      if (!existing.has(t)) {
+        const lbl = document.createElement('label');
+        lbl.className = 'filter-option';
+        lbl.innerHTML = `<input type="checkbox" name="tradeFilter" value="${t}" onchange="filterDirectory()"> ${t}`;
+        fd.appendChild(lbl);
+      }
+    });
+  }
+  updateDirTotalBanner();
   if (!rerender) return;
   const dirPage = document.getElementById('page-directory');
   if (dirPage && dirPage.classList.contains('active')) {
@@ -4702,12 +4730,37 @@ function renderDirectory() {
       </label>
     `).join('');
   }
+  updateDirTotalBanner();
   filterDirectory();
 }
 
 const DIR_PAGE_SIZE = 10;
 let dirCurrentPage = 1;
 let dirFilteredResults = [];
+
+function clearDirFilters() {
+  const s = document.getElementById('dirSearch');
+  if (s) s.value = '';
+  const c = document.getElementById('dirCity');
+  if (c) c.value = '';
+  document.querySelectorAll('input[name="tradeFilter"]:checked').forEach(cb => cb.checked = false);
+  const r0 = document.querySelector('input[name="ratingFilter"][value="0"]');
+  if (r0) r0.checked = true;
+  const sd = document.getElementById('sortDir');
+  if (sd) sd.value = 'rating';
+  filterDirectory();
+}
+
+function updateDirTotalBanner() {
+  const el = document.getElementById('dirTotalCount');
+  if (!el) return;
+  const total = App.providers.filter(p => p.status !== 'pending_approval').length;
+  if (total === 0) {
+    el.textContent = 'Loading contractors…';
+  } else {
+    el.textContent = total.toLocaleString() + ' trade contractor' + (total !== 1 ? 's' : '') + ' across Canada';
+  }
+}
 
 function filterDirectory() {
   const q     = (document.getElementById('dirSearch')?.value||'').toLowerCase();
@@ -4760,11 +4813,17 @@ function renderDirPage() {
 
   const cnt = document.getElementById('dirCount');
   if (cnt) {
-    const showing = res.length === 0 ? 0 : Math.min(start + DIR_PAGE_SIZE, res.length);
-    cnt.textContent = res.length === 0
-      ? '0 CONTRACTORS FOUND'
-      : res.length + ' CONTRACTOR' + (res.length !== 1 ? 'S' : '') + ' FOUND'
-        + (totalPages > 1 ? ' \u2014 Page ' + page + ' of ' + totalPages : '');
+    const total = App.providers.filter(p => p.status !== 'pending_approval').length;
+    const filtered = dirFilteredResults.length;
+    const isFiltered = filtered < total;
+    if (res.length === 0) {
+      cnt.textContent = '0 CONTRACTORS FOUND' + (isFiltered ? ' — try clearing your filters' : '');
+    } else {
+      let label = res.length.toLocaleString() + ' CONTRACTOR' + (res.length !== 1 ? 'S' : '');
+      if (isFiltered) label += ' (filtered from ' + total.toLocaleString() + ' total)';
+      if (totalPages > 1) label += ' \u2014 Page ' + page + ' of ' + totalPages;
+      cnt.textContent = label;
+    }
   }
 
   const grid = document.getElementById('dirGrid');
@@ -5854,13 +5913,23 @@ function renderDashboard_OLD_REMOVED() {
             </div>
             <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
               <h3 style="font-size:20px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Service Areas</h3>
-              <div class="checkbox-grid">
-                ${['Toronto','Ottawa','Hamilton','Mississauga','London','Windsor','Brampton','Kitchener','Barrie','Sudbury','Thunder Bay','Oakville','Burlington','St. Catharines','Sarnia','Chatham'].map(city=>`
-                  <label class="checkbox-item">
-                    <input type="checkbox" name="serviceAreas" value="${city}" ${prov.serviceAreas.includes(city)?'checked':''}> ${city}
-                  </label>
-                `).join('')}
-              </div>
+              <p style="font-size:13px;color:var(--s400);margin-bottom:16px;">Select all cities/regions where you provide services:</p>
+              ${[
+                {label:'🏔️ BC', cities:['Vancouver','Surrey','Burnaby','Richmond','Kelowna','Victoria','Abbotsford','Kamloops']},
+                {label:'🛢️ Alberta', cities:['Calgary','Edmonton','Red Deer','Lethbridge','Fort McMurray','Grande Prairie']},
+                {label:'🌾 Saskatchewan', cities:['Regina','Saskatoon','Moose Jaw']},
+                {label:'🌻 Manitoba', cities:['Winnipeg','Brandon']},
+                {label:'🍁 Ontario', cities:['Toronto','Ottawa','Hamilton','Mississauga','London','Windsor','Brampton','Kitchener','Barrie','Sudbury','Thunder Bay','Oakville','Burlington','St. Catharines','Sarnia','Guelph','Cambridge','Waterloo','Kingston','Sault Ste. Marie','North Bay','Brantford','Niagara Falls','Oshawa','Markham','Vaughan']},
+                {label:'⚜️ Quebec', cities:['Montreal','Quebec City','Laval','Gatineau','Sherbrooke','Longueuil']},
+                {label:'🦞 Atlantic', cities:['Halifax','Moncton','Fredericton','Saint John','St. John\'s','Charlottetown']},
+              ].map(g=>`
+                <div style="margin-bottom:16px;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--s400);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">${g.label}</div>
+                  <div class="checkbox-grid">
+                    ${g.cities.map(city=>`<label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="${city}" ${prov.serviceAreas.includes(city)?'checked':''}> ${city}</label>`).join('')}
+                  </div>
+                </div>
+              `).join('')}
             </div>
             <button type="submit" class="btn btn-orange">Save Changes</button>
           </form>
@@ -6634,6 +6703,7 @@ function renderDashboard() {
         </button>
         <button class="tab-btn" onclick="switchTab('tab-reviews',this)">&#9733; Reviews</button>
         <button class="tab-btn" onclick="switchTab('tab-profile',this)">&#9881;&#65039; Profile</button>
+        <button class="tab-btn" onclick="switchTab('tab-reputation',this)">&#127942; Reputation &amp; XP</button>
         <button class="tab-btn" onclick="switchTab('tab-avail',this)">&#128336; Availability</button>
         <button class="tab-btn" onclick="switchTab('tab-jobs',this)">&#128203; Available Careers</button>
         <button class="tab-btn" onclick="switchTab('tab-post-job',this)">&#128226; Post a Job</button>
@@ -6734,13 +6804,13 @@ function renderDashboard() {
           <div id="profileSaveAlert"></div>
           <form onsubmit="handleProfileUpdate(event,'${prov.id}')">
             <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
-              <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Company Details</h3>
+              <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">${prov.profileType==='individual'?'Personal Details':'Company Details'}</h3>
               <div class="form-row">
-                <div class="form-group"><label class="form-label">Company Name</label><input class="form-control" type="text" name="companyName" value="${prov.companyName}" required /></div>
+                <div class="form-group"><label class="form-label">${prov.profileType==='individual'?'Your Full Name':'Company Name'}</label><input class="form-control" type="text" name="companyName" value="${prov.companyName}" required /></div>
                 <div class="form-group"><label class="form-label">Trade Type</label><select class="form-control" name="tradeType">${TRADE_TYPES.map(t=>`<option ${t===prov.tradeType?'selected':''}>${t}</option>`).join('')}</select></div>
               </div>
               <div class="form-row">
-                <div class="form-group"><label class="form-label">Contact Name</label><input class="form-control" type="text" name="contactName" value="${prov.contactName||''}" placeholder="Primary contact person" /></div>
+                <div class="form-group"><label class="form-label">${prov.profileType==='individual'?'Preferred Name':'Contact Name'}</label><input class="form-control" type="text" name="contactName" value="${prov.contactName||''}" placeholder="${prov.profileType==='individual'?'Your name':'Primary contact person'}" /></div>
                 <div class="form-group"><label class="form-label">Email Address</label><input class="form-control" type="email" name="email" value="${prov.email||''}" placeholder="info@yourcompany.ca" /></div>
               </div>
               <div class="form-row">
@@ -6761,11 +6831,23 @@ function renderDashboard() {
             </div>
             <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
               <h3 style="font-size:20px;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Service Areas</h3>
-              <div class="checkbox-grid">
-                ${['Toronto','Ottawa','Hamilton','Mississauga','London','Windsor','Brampton','Kitchener','Barrie','Sudbury','Thunder Bay','Oakville','Burlington','St. Catharines','Sarnia','Chatham'].map(city=>`
-                  <label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="${city}" ${prov.serviceAreas.includes(city)?'checked':''}> ${city}</label>
-                `).join('')}
-              </div>
+              <p style="font-size:13px;color:var(--s400);margin-bottom:16px;">Select all cities/regions where you provide services:</p>
+              ${[
+                {label:'🏔️ BC', cities:['Vancouver','Surrey','Burnaby','Richmond','Kelowna','Victoria','Abbotsford','Kamloops']},
+                {label:'🛢️ Alberta', cities:['Calgary','Edmonton','Red Deer','Lethbridge','Fort McMurray','Grande Prairie']},
+                {label:'🌾 Saskatchewan', cities:['Regina','Saskatoon','Moose Jaw']},
+                {label:'🌻 Manitoba', cities:['Winnipeg','Brandon']},
+                {label:'🍁 Ontario', cities:['Toronto','Ottawa','Hamilton','Mississauga','London','Windsor','Brampton','Kitchener','Barrie','Sudbury','Thunder Bay','Oakville','Burlington','St. Catharines','Sarnia','Guelph','Cambridge','Waterloo','Kingston','Sault Ste. Marie','North Bay','Brantford','Niagara Falls','Oshawa','Markham','Vaughan']},
+                {label:'⚜️ Quebec', cities:['Montreal','Quebec City','Laval','Gatineau','Sherbrooke','Longueuil']},
+                {label:'🦞 Atlantic', cities:['Halifax','Moncton','Fredericton','Saint John','St. John\'s','Charlottetown']},
+              ].map(g=>`
+                <div style="margin-bottom:16px;">
+                  <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--s400);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:8px;">${g.label}</div>
+                  <div class="checkbox-grid">
+                    ${g.cities.map(city=>`<label class="checkbox-item"><input type="checkbox" name="serviceAreas" value="${city}" ${prov.serviceAreas.includes(city)?'checked':''}> ${city}</label>`).join('')}
+                  </div>
+                </div>
+              `).join('')}
             </div>
             <button type="submit" class="btn btn-orange">Save Changes</button>
           </form>
@@ -6891,6 +6973,63 @@ function renderDashboard() {
 
           <!-- Existing job postings -->
           <div id="myJobsList" style="margin-top:32px;"></div>
+        </div>
+      </div>
+
+      <!-- Reputation & XP -->
+      <div id="tab-reputation" class="tab-content">
+        <div style="max-width:680px;">
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:28px;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:24px;">
+              ${levelBadgeHTML(prov,'lg')}
+              <div style="flex:1;">
+                <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;color:white;">Your Reputation Level</div>
+                <div style="font-size:13px;color:var(--s400);margin-top:4px;">Complete your profile and earn bookings to level up and stand out in search results.</div>
+              </div>
+            </div>
+            <div style="margin-bottom:20px;">
+              <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--s400);margin-bottom:8px;">
+                <span>XP Progress</span>
+                <span>${calculateXP(prov)} XP ${getNextLevel(calculateXP(prov))?'→ '+getNextLevel(calculateXP(prov)).min+' XP for '+getNextLevel(calculateXP(prov)).name:' — MAX LEVEL'}</span>
+              </div>
+              <div style="background:var(--n600);border-radius:20px;height:10px;overflow:hidden;">
+                <div style="height:100%;background:linear-gradient(90deg,var(--o600),var(--o400));width:${xpProgressPct(calculateXP(prov))}%;transition:width 0.6s ease;border-radius:20px;"></div>
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:24px;">
+              ${[
+                {label:'Profile Complete', pts:100, done:!!(prov.description && prov.phone && prov.email)},
+                {label:'Photo Uploaded', pts:50, done:!!(prov.photos && prov.photos.length>0)},
+                {label:'License Number', pts:75, done:!!prov.licenseNumber},
+                {label:'First Booking', pts:100, done:App.bookings.some(b=>b.providerId===prov.id)},
+                {label:'5-Star Review', pts:150, done:App.reviews.some(r=>r.providerId===prov.id&&r.rating===5)},
+                {label:'10 Completed Jobs', pts:200, done:App.bookings.filter(b=>b.providerId===prov.id&&b.status==='completed').length>=10},
+              ].map(item=>`
+                <div style="background:${item.done?'rgba(34,197,94,0.08)':'var(--n600)'};border:1px solid ${item.done?'rgba(34,197,94,0.3)':'var(--n400)'};border-radius:6px;padding:14px 16px;display:flex;align-items:center;gap:10px;">
+                  <div style="font-size:18px;">${item.done?'✅':'⬜'}</div>
+                  <div>
+                    <div style="font-size:13px;color:${item.done?'#6FE09A':'var(--s200)'};">${item.label}</div>
+                    <div style="font-size:11px;color:var(--s400);font-family:'Barlow Condensed',sans-serif;">+${item.pts} XP</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+            <div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:15px;letter-spacing:0.06em;text-transform:uppercase;color:var(--s300);margin-bottom:12px;">Achievements</div>
+              <div style="display:flex;flex-wrap:wrap;gap:8px;">
+                ${getAchievements(prov).map(a=>`<span style="background:rgba(224,98,26,0.15);border:1px solid rgba(224,98,26,0.35);border-radius:20px;padding:6px 14px;font-size:13px;color:var(--o300);display:flex;align-items:center;gap:6px;">${a.icon} ${a.label}</span>`).join('') || '<span style="font-size:13px;color:var(--s400);">Complete tasks above to earn your first achievement.</span>'}
+              </div>
+            </div>
+          </div>
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:24px;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:0.06em;text-transform:uppercase;color:var(--s300);margin-bottom:12px;">Why does reputation matter?</div>
+            <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px;font-size:14px;color:var(--s300);line-height:1.6;">
+              <li>🔝 Higher levels push your listing higher in search results</li>
+              <li>🏅 Achievement badges appear on your public profile card</li>
+              <li>⭐ Elite and Master level contractors get featured placement</li>
+              <li>📈 Levelling up increases client trust and booking rates</li>
+            </ul>
+          </div>
         </div>
       </div>
 
@@ -7524,34 +7663,54 @@ function renderClientDashboard() {
       <!-- Account -->
       <div id="cli-account" class="tab-content">
         <div style="max-width:520px;">
-          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;">
+          <div id="cliAccountAlert" style="margin-bottom:16px;"></div>
+          <form onsubmit="handleClientAccountUpdate(event)" style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:16px;">
             <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Account Details</h3>
-            <div style="display:flex;flex-direction:column;gap:12px;font-size:14px;">
-              <div style="display:flex;justify-content:space-between;">
-                <span style="color:var(--s400);">Name</span><span style="color:var(--s200);">${client.name||'—'}</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;">
-                <span style="color:var(--s400);">Company</span><span style="color:var(--s200);">${client.company||'—'}</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;">
-                <span style="color:var(--s400);">Email</span><span style="color:var(--s200);">${client.email}</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;">
-                <span style="color:var(--s400);">Phone</span><span style="color:var(--s200);">${client.phone||'—'}</span>
-              </div>
-              <div style="display:flex;justify-content:space-between;">
-                <span style="color:var(--s400);">Member Since</span><span style="color:var(--s200);">${new Date(client.createdAt||Date.now()).toLocaleDateString('en-CA',{year:'numeric',month:'long'})}</span>
-              </div>
+            <div class="form-group"><label class="form-label">Full Name</label><input class="form-control" name="name" value="${client.name||''}" placeholder="Your full name" required /></div>
+            <div class="form-group"><label class="form-label">Company / Organization</label><input class="form-control" name="company" value="${client.company||''}" placeholder="ABC Manufacturing Inc." /></div>
+            <div class="form-group"><label class="form-label">Phone</label><input class="form-control" type="tel" name="phone" value="${client.phone||''}" placeholder="(416) 555-0000" /></div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input class="form-control" value="${client.email}" disabled style="opacity:0.6;" />
+              <div style="font-size:12px;color:var(--s400);margin-top:4px;">Email cannot be changed. Contact support if needed.</div>
             </div>
-            <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--n500);">
-              <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="handleLogout()">Sign Out</button>
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:8px;">
+              <button type="submit" class="btn btn-orange">Save Changes</button>
+              <div style="font-size:12px;color:var(--s400);">Member since ${new Date(client.createdAt||Date.now()).toLocaleDateString('en-CA',{year:'numeric',month:'long'})}</div>
             </div>
+          </form>
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:20px;">
+            <div style="font-size:14px;font-weight:600;color:white;margin-bottom:12px;">Account Actions</div>
+            <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="handleLogout()">Sign Out</button>
           </div>
         </div>
       </div>
 
     </div>
   `;
+}
+
+/* ============================================================
+   CLIENT ACCOUNT UPDATE
+============================================================ */
+function handleClientAccountUpdate(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const alertEl = document.getElementById('cliAccountAlert');
+  // Update currentUser session
+  App.currentUser.name    = fd.get('name').trim();
+  App.currentUser.company = fd.get('company').trim();
+  App.currentUser.phone   = fd.get('phone').trim();
+  // Persist to clients store
+  const idx = App.clients.findIndex(c => c.id === App.currentUser.id || c.email === App.currentUser.email);
+  if (idx >= 0) {
+    App.clients[idx] = { ...App.clients[idx], name: App.currentUser.name, company: App.currentUser.company, phone: App.currentUser.phone };
+  }
+  saveClients();
+  sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
+  updateNav();
+  if (alertEl) alertEl.innerHTML = '<div class="alert alert-success">&#10003; Account details saved!</div>';
+  setTimeout(() => { if (alertEl) alertEl.innerHTML = ''; }, 3000);
 }
 
 /* ============================================================
