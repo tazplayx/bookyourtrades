@@ -245,7 +245,9 @@ async function fsqSearch(tradeObj, cityStr, apiKey) {
   try {
     const r = await fetch(url, {
       signal: ctrl.signal,
-      headers: { 'Authorization': `fsq3${apiKey}`, 'Accept': 'application/json' },
+      // Foursquare keys are returned as "fsq3XXXX..." — use as-is if already prefixed,
+      // otherwise prepend the required prefix
+      headers: { 'Authorization': apiKey.startsWith('fsq3') ? apiKey : `fsq3${apiKey}`, 'Accept': 'application/json' },
     });
     clearTimeout(t);
     if (!r.ok) {
