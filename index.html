@@ -634,6 +634,8 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   .dir-outer-layout { grid-template-columns: 1fr !important; }
   .dir-outer-layout > div:last-child { position: static !important; }
   #dirMapWrap { height: 340px !important; min-height: 340px !important; }
+  .jobs-outer-layout { grid-template-columns: 1fr !important; }
+  .jobs-sidebar { position: static !important; }
 }
 @media (max-width: 900px) {
   .dir-layout { grid-template-columns: 1fr !important; }
@@ -1991,6 +1993,29 @@ textarea.form-control { resize: vertical; min-height: 100px; }
     </div>
   </div>
 
+  <!-- PRO UPSELL BANNER — contractors browsing the RFQ page -->
+  <div style="background:linear-gradient(90deg,#1A1200 0%,#2C1F00 60%,#1A1200 100%);border-top:3px solid var(--o500);border-bottom:1px solid #3D2A00;">
+    <div class="container" style="padding:20px 0;">
+      <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:260px;">
+          <div style="font-size:30px;">&#9889;</div>
+          <div>
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:white;line-height:1.1;">Are you a trade contractor?</div>
+            <div style="font-size:13px;color:var(--s300);margin-top:2px;">Upgrade to <strong style="color:var(--o400);">Pro</strong> or <strong style="color:var(--o400);">Enterprise</strong> to access every RFQ — with full client contact details revealed.</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+          <div style="display:flex;gap:16px;flex-wrap:wrap;">
+            <span style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:800;">&#10003;</span> Unlimited lead access</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:800;">&#10003;</span> Client contact revealed</span>
+            <span style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:800;">&#10003;</span> Priority listing placement</span>
+          </div>
+          <button onclick="navigate('/pricing')" class="btn btn-orange" style="white-space:nowrap;padding:10px 22px;font-size:14px;">View Pro Plans &#8594;</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="container" style="padding-top:48px;padding-bottom:80px;">
     <div style="display:grid;grid-template-columns:1fr 320px;gap:40px;align-items:start;" class="dir-layout">
 
@@ -2113,9 +2138,26 @@ textarea.form-control { resize: vertical; min-height: 100px; }
             </div>
           </div>
         </div>
-        <div style="background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:20px;">
+        <div style="background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:20px;margin-bottom:16px;">
           <div style="font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;">100% Free</div>
           <div style="font-size:14px;color:var(--s300);line-height:1.7;">Posting a job is always free. BookYourTrades never charges clients a fee or commission.</div>
+        </div>
+
+        <!-- PRO UPSELL CARD -->
+        <div style="background:linear-gradient(135deg,#1A1200,#2C1F00);border:2px solid var(--o500);border-radius:10px;padding:22px;position:relative;overflow:hidden;">
+          <div style="position:absolute;top:-18px;right:-18px;width:80px;height:80px;background:rgba(224,98,26,0.10);border-radius:50%;"></div>
+          <div style="position:absolute;bottom:-28px;left:-20px;width:110px;height:110px;background:rgba(224,98,26,0.07);border-radius:50%;"></div>
+          <div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;margin-bottom:6px;">⚡ For Trade Contractors</div>
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:20px;color:white;line-height:1.2;margin-bottom:10px;">See Every RFQ Posted<br><span style="color:var(--o400);">Before Your Competitors</span></div>
+          <p style="font-size:13px;color:var(--s300);line-height:1.6;margin:0 0 14px;">Pro &amp; Enterprise members get full access to all client job requests — with contact info, budget, and project details revealed instantly.</p>
+          <ul style="list-style:none;padding:0;margin:0 0 18px;display:flex;flex-direction:column;gap:7px;">
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-size:15px;">✓</span> Unlimited RFQ access &amp; lead alerts</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-size:15px;">✓</span> Full client contact info revealed</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-size:15px;">✓</span> Priority placement in search results</li>
+            <li style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-size:15px;">✓</span> Featured badge on your listing</li>
+          </ul>
+          <button onclick="navigate('/pricing')" class="btn btn-orange" style="width:100%;justify-content:center;font-size:14px;padding:11px 20px;">Upgrade to Pro →</button>
+          <div style="text-align:center;margin-top:10px;font-size:12px;color:var(--s400);">Starting at <strong style="color:var(--o400);">$49/mo</strong> — cancel anytime</div>
         </div>
       </div>
     </div>
@@ -2460,39 +2502,140 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 ============================================================ -->
 <div id="page-jobs" class="page">
 
-  <div style="background:var(--n800);border-bottom:1px solid var(--n500);padding:48px 0 36px;">
-    <div class="container">
-      <div class="section-label">Trades Careers Across Canada</div>
-      <h1 style="font-size:42px;margin-bottom:10px;">Trades Careers &amp; Apprenticeships</h1>
-      <p style="color:var(--s300);font-size:16px;max-width:580px;">Positions posted by verified Canadian trade companies and sourced from major job boards. Filter by trade, city, or experience level.</p>
-      <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
-        <button class="btn btn-orange" onclick="navigate('/register')">Post a Career Opening &#8594;</button>
-        <button class="btn btn-navy" onclick="navigate('/trades-education')">&#127891; Get Into the Trades Guide</button>
+  <!-- Hero -->
+  <div style="background:linear-gradient(135deg,var(--n800) 0%,var(--n700) 100%);border-bottom:2px solid var(--o500);padding:40px 0 32px;">
+    <div class="container-wide">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:20px;">
+        <div>
+          <div class="section-label">Live Trades Careers Across Canada</div>
+          <h1 style="font-size:40px;margin-bottom:10px;">Trades Careers &amp; Apprenticeships</h1>
+          <p style="color:var(--s300);font-size:15px;max-width:560px;line-height:1.7;">Scraped daily from the Government of Canada Job Bank, Indeed Canada, and employer listings. Updated every 4 hours automatically.</p>
+          <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+            <button class="btn btn-orange btn-sm" onclick="navigate('/register')">Post a Career Opening &#8594;</button>
+            <button class="btn btn-navy btn-sm" onclick="navigate('/trades-education')">&#127891; Trades Career Guide</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:16px;flex-wrap:wrap;">
+          <div id="jobsTotalStat" style="text-align:center;background:rgba(224,98,26,0.12);border:1px solid rgba(224,98,26,0.3);border-radius:8px;padding:14px 22px;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:32px;color:var(--o400);" id="jobsTotalNum">…</div>
+            <div style="font-size:12px;color:var(--s400);">Live Positions</div>
+          </div>
+          <div id="jobsSourceStat" style="text-align:center;background:var(--n600);border:1px solid var(--n400);border-radius:8px;padding:14px 22px;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:32px;color:white;" id="jobsSourceNum">4</div>
+            <div style="font-size:12px;color:var(--s400);">Data Sources</div>
+          </div>
+        </div>
       </div>
+      <!-- Source attribution bar -->
+      <div id="jobsSourceBar" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;"></div>
     </div>
   </div>
 
-  <!-- Filter bar -->
-  <div style="background:var(--n700);border-bottom:1px solid var(--n500);padding:16px 0;">
-    <div class="container" style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-      <select id="jobFilterTrade" class="form-control" style="max-width:200px;background:var(--n600);border-color:var(--n500);color:white;" onchange="renderJobs()">
-        <option value="">All Trades</option>
-        <option>Electrical</option><option>Plumbing</option><option>HVAC</option><option>Roofing</option>
-        <option>Welding &amp; Fabrication</option><option>Millwright</option><option>Carpentry</option>
-        <option>General Contracting</option><option>Sheet Metal</option><option>Pipefitting</option>
-      </select>
-      <select id="jobFilterType" class="form-control" style="max-width:200px;background:var(--n600);border-color:var(--n500);color:white;" onchange="renderJobs()">
-        <option value="">All Types</option>
-        <option>Apprenticeship</option><option>Full-time</option><option>Part-time</option><option>Contract / Subcontract</option><option>Summer / Co-op</option>
-      </select>
-      <input id="jobFilterCity" class="form-control" style="max-width:200px;background:var(--n600);border-color:var(--n500);color:white;" placeholder="City..." oninput="renderJobs()" />
-    </div>
-  </div>
+  <!-- Main layout: sidebar filters + job grid -->
+  <div class="container-wide" style="padding-top:28px;padding-bottom:80px;">
+    <div style="display:grid;grid-template-columns:240px 1fr;gap:28px;align-items:start;" class="jobs-outer-layout">
 
-  <div class="section-pale" style="padding:40px 0 80px;">
-    <div class="container">
-      <div id="jobsGrid" style="display:flex;flex-direction:column;gap:16px;"></div>
-      <div id="jobsStatus" style="text-align:center;padding:60px 0;color:var(--lz-muted);"></div>
+      <!-- Sidebar filters -->
+      <div style="position:sticky;top:72px;" class="jobs-sidebar">
+        <div style="background:var(--n800);border:1px solid var(--n600);border-radius:8px;overflow:hidden;">
+          <div style="background:var(--n900);border-bottom:1px solid var(--n600);padding:12px 16px;">
+            <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;color:var(--s300);">Filter Positions</div>
+          </div>
+          <div style="padding:16px;">
+
+            <div style="margin-bottom:18px;">
+              <div class="filter-title" style="margin-bottom:8px;">🔍 Keyword</div>
+              <input id="jobFilterKeyword" class="form-control" style="font-size:13px;" placeholder="Job title, company..." oninput="filterJobs()" />
+            </div>
+
+            <div style="margin-bottom:18px;">
+              <div class="filter-title" style="margin-bottom:8px;">⚒️ Trade</div>
+              <select id="jobFilterTrade" class="form-control" style="font-size:13px;" onchange="filterJobs()">
+                <option value="">All Trades</option>
+                <option>Electrical</option>
+                <option>Plumbing</option>
+                <option>HVAC</option>
+                <option>Roofing</option>
+                <option>Welding &amp; Fabrication</option>
+                <option>Millwright</option>
+                <option>Carpentry</option>
+                <option>General Contracting</option>
+                <option>Sheet Metal</option>
+                <option>Pipefitting</option>
+                <option>Concrete &amp; Masonry</option>
+                <option>Refrigeration</option>
+                <option>Painting &amp; Coating</option>
+                <option>Ironworker</option>
+              </select>
+            </div>
+
+            <div style="margin-bottom:18px;">
+              <div class="filter-title" style="margin-bottom:8px;">🍁 Province</div>
+              <select id="jobFilterProv" class="form-control" style="font-size:13px;" onchange="filterJobs()">
+                <option value="">All Provinces</option>
+                <option value="BC">British Columbia</option>
+                <option value="AB">Alberta</option>
+                <option value="SK">Saskatchewan</option>
+                <option value="MB">Manitoba</option>
+                <option value="ON">Ontario</option>
+                <option value="QC">Quebec</option>
+                <option value="NS">Nova Scotia</option>
+                <option value="NB">New Brunswick</option>
+                <option value="NL">Newfoundland</option>
+                <option value="PE">PEI</option>
+              </select>
+            </div>
+
+            <div style="margin-bottom:18px;">
+              <div class="filter-title" style="margin-bottom:8px;">📋 Job Type</div>
+              <div id="jobTypeFilters">
+                <label class="filter-option"><input type="radio" name="jobType" value="" checked onchange="filterJobs()"> All Types</label>
+                <label class="filter-option"><input type="radio" name="jobType" value="Apprenticeship" onchange="filterJobs()"> Apprenticeship</label>
+                <label class="filter-option"><input type="radio" name="jobType" value="Full-time" onchange="filterJobs()"> Full-time</label>
+                <label class="filter-option"><input type="radio" name="jobType" value="Part-time" onchange="filterJobs()"> Part-time</label>
+                <label class="filter-option"><input type="radio" name="jobType" value="Contract" onchange="filterJobs()"> Contract</label>
+              </div>
+            </div>
+
+            <div style="margin-bottom:18px;">
+              <div class="filter-title" style="margin-bottom:8px;">🎓 Experience Level</div>
+              <div>
+                <label class="filter-option"><input type="radio" name="jobExp" value="" checked onchange="filterJobs()"> Any Level</label>
+                <label class="filter-option"><input type="radio" name="jobExp" value="Apprenticeship / Entry Level" onchange="filterJobs()"> Apprentice / Entry</label>
+                <label class="filter-option"><input type="radio" name="jobExp" value="Journeyman / Red Seal" onchange="filterJobs()"> Journeyman / Red Seal</label>
+                <label class="filter-option"><input type="radio" name="jobExp" value="Senior / Supervisor" onchange="filterJobs()"> Senior / Supervisor</label>
+              </div>
+            </div>
+
+            <div style="margin-bottom:18px;">
+              <div class="filter-title" style="margin-bottom:8px;">📡 Source</div>
+              <div>
+                <label class="filter-option"><input type="radio" name="jobSource" value="" checked onchange="filterJobs()"> All Sources</label>
+                <label class="filter-option"><input type="radio" name="jobSource" value="Job Bank Canada" onchange="filterJobs()"> 🍁 Job Bank Canada</label>
+                <label class="filter-option"><input type="radio" name="jobSource" value="Indeed Canada" onchange="filterJobs()"> 📋 Indeed Canada</label>
+                <label class="filter-option"><input type="radio" name="jobSource" value="Job Bank — BC" onchange="filterJobs()"> 🏔️ WorkBC</label>
+                <label class="filter-option"><input type="radio" name="jobSource" value="Job Bank — Alberta" onchange="filterJobs()"> 🛢️ Alberta Jobs</label>
+                <label class="filter-option"><input type="radio" name="jobSource" value="Platform" onchange="filterJobs()"> ✅ Platform Listings</label>
+              </div>
+            </div>
+
+            <button onclick="clearJobFilters()" style="width:100%;font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:12px;letter-spacing:0.06em;text-transform:uppercase;background:var(--n600);border:1px solid var(--n400);color:var(--s300);padding:8px;border-radius:3px;cursor:pointer;">&#10005; Clear All Filters</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: results -->
+      <div>
+        <!-- Count + last updated -->
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:10px;">
+          <div id="jobsCount" style="font-family:'Barlow Condensed',sans-serif;font-weight:600;color:var(--s300);font-size:15px;letter-spacing:0.05em;"></div>
+          <div id="jobsLastUpdated" style="font-size:12px;color:var(--s500);"></div>
+        </div>
+        <div id="jobsGrid" style="display:flex;flex-direction:column;gap:14px;"></div>
+        <div id="jobsStatus" style="text-align:center;padding:60px 0;color:var(--s400);"></div>
+        <div id="jobsPagination" style="display:none;align-items:center;justify-content:center;gap:8px;margin-top:32px;flex-wrap:wrap;"></div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -3378,7 +3521,84 @@ const SEED_PROVIDERS = [
     serviceAreas:['Moncton','Fredericton','Saint John','Amherst'],
     rating:0, reviewCount:0, certifications:['Master Plumber','NB License','PHCC Member'],
     featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research'
-  }
+  },
+
+  /* ── ELECTRICAL ─────────────────────────────────────────────── */
+  { id:'el1', companyName:'Acuity Electrical Services', tradeType:'Electrical', licenseNumber:'ESA 7031224', yearsInBusiness:'6-10 years', description:'Commercial and industrial electrical contractor based in Calgary. Specializing in oil & gas facility wiring, commercial tenant improvements, and solar PV installations across southern Alberta.', contactName:'Operations', email:'info@acuityelectrical.ca', phone:'(403) 879-2200', website:'https://acuityelectrical.ca', serviceAreas:['Calgary','Lethbridge','Red Deer'], rating:0, reviewCount:0, certifications:['Red Seal Electrician','ESA Licensed','IBEW 529'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Calgary', province:'AB' },
+  { id:'el2', companyName:'Pacific Rim Electrical Contractors', tradeType:'Electrical', licenseNumber:'BC Electrical #EL-77341', yearsInBusiness:'11-20 years', description:'Vancouver-based commercial electrical contractor serving the lower mainland and Vancouver Island. Data centre power, hospital-grade wiring, transit infrastructure, and EV charging station installation.', contactName:'Business Development', email:'info@pacificrimelectrical.ca', phone:'(604) 872-4455', website:'', serviceAreas:['Vancouver','Burnaby','Surrey','Richmond','Victoria'], rating:0, reviewCount:0, certifications:['IBEW Local 213','Red Seal','BC Electrical Safety'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Vancouver', province:'BC' },
+  { id:'el3', companyName:'Voltage Commercial Electric', tradeType:'Electrical', licenseNumber:'ON-ESA-0443210', yearsInBusiness:'3-5 years', description:'GTA-based electrical contractor focused on new commercial construction and retail tenant fit-outs. Fast turnaround for landlords and property managers across Toronto, Mississauga and Brampton.', contactName:'Estimating', email:'estimates@voltagecommercial.ca', phone:'(905) 564-8800', website:'', serviceAreas:['Toronto','Mississauga','Brampton','Vaughan','Oakville'], rating:0, reviewCount:0, certifications:['ESA Licensed','ECRA Certified'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Mississauga', province:'ON' },
+  { id:'el4', companyName:'Prairie Volt Electric Inc.', tradeType:'Electrical', licenseNumber:'SK-EL-82341', yearsInBusiness:'6-10 years', description:'Regina and Saskatoon commercial electricians specializing in agricultural facility wiring, grain handling systems, potash mine electrical, and industrial automation panels.', contactName:'Office', email:'info@prairievolt.ca', phone:'(306) 757-9900', website:'', serviceAreas:['Regina','Saskatoon','Moose Jaw'], rating:0, reviewCount:0, certifications:['Red Seal Electrician','IBEW Local 2038'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Regina', province:'SK' },
+  { id:'el5', companyName:'Winnipeg Electrical Group', tradeType:'Electrical', licenseNumber:'MB-EL-11201', yearsInBusiness:'20+ years', description:'Manitoba\'s largest independent commercial electrical contractor. Hospital, school, transit, and heavy industrial projects. CBRN facility clearance. Design-build electrical systems for complex government builds.', contactName:'Main Office', email:'', phone:'(204) 786-1500', website:'', serviceAreas:['Winnipeg','Brandon','Portage la Prairie'], rating:0, reviewCount:0, certifications:['IBEW Local 2085','Red Seal','ISO 9001'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Winnipeg', province:'MB' },
+  { id:'el6', companyName:'Gauthier Électrique Inc.', tradeType:'Electrical', licenseNumber:'QC-RBQ-1234567', yearsInBusiness:'11-20 years', description:'Montréal commercial and industrial electrical contractor. Certified for high-voltage distribution, data centre UPS systems, and hydroelectric facility wiring across Quebec. Bilingual team.', contactName:'Bureau Montréal', email:'info@gauthierelectrique.ca', phone:'(514) 526-8800', website:'', serviceAreas:['Montreal','Laval','Gatineau','Quebec City'], rating:0, reviewCount:0, certifications:['RBQ License','CMEQ Member','Red Seal'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Montreal', province:'QC' },
+
+  /* ── PLUMBING ───────────────────────────────────────────────── */
+  { id:'pl1', companyName:'Cascade Plumbing & Mechanical', tradeType:'Plumbing', licenseNumber:'BC Plumber #PL-BC-44321', yearsInBusiness:'11-20 years', description:'Surrey-based commercial plumbing and fire suppression contractor. High-rise mechanical rough-in, medical gas systems, process piping for food manufacturing facilities, and backflow prevention programs.', contactName:'Office', email:'info@cascadeplumbing.ca', phone:'(604) 591-3300', website:'', serviceAreas:['Surrey','Vancouver','Burnaby','Abbotsford','Langley'], rating:0, reviewCount:0, certifications:['Red Seal Plumber','BC Master Plumber','ASPE Member'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Surrey', province:'BC' },
+  { id:'pl2', companyName:'StoneCreek Plumbing Co.', tradeType:'Plumbing', licenseNumber:'AB-MP-67821', yearsInBusiness:'6-10 years', description:'Edmonton commercial plumbing contractor. New construction rough-in, hydronics, natural gas piping, steam systems for industrial plants, and SAGD facility water management plumbing.', contactName:'Estimating', email:'estimates@stonecreekplumbing.ca', phone:'(780) 454-5500', website:'', serviceAreas:['Edmonton','Fort McMurray','Red Deer'], rating:0, reviewCount:0, certifications:['Master Plumber AB','Red Seal','BCIN'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Edmonton', province:'AB' },
+  { id:'pl3', companyName:'Hamilton Mechanical Systems Ltd.', tradeType:'Plumbing', licenseNumber:'ON-MP-332211', yearsInBusiness:'20+ years', description:'Full-service mechanical contractor based in Hamilton serving the Golden Horseshoe. Process piping, HVAC hydronic systems, domestic water distribution for healthcare and education projects up to $20M.', contactName:'Business Development', email:'info@hamiltonmechanical.ca', phone:'(905) 529-8855', website:'', serviceAreas:['Hamilton','Burlington','Oakville','Brantford','St. Catharines'], rating:0, reviewCount:0, certifications:['Master Plumber ON','MCAC Member','WSIB Clearance'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Hamilton', province:'ON' },
+  { id:'pl4', companyName:'Tremblay Mécanique Inc.', tradeType:'Plumbing', licenseNumber:'QC-RBQ-MECA-77321', yearsInBusiness:'11-20 years', description:'Quebec City commercial and institutional plumbing and HVAC mechanical contractor. Hospital mechanical systems, arena arena ice plant piping, government facility maintenance, and natural gas distribution.', contactName:'Estimation', email:'', phone:'(418) 682-4400', website:'', serviceAreas:['Quebec City','Sherbrooke','Saguenay','Trois-Rivières'], rating:0, reviewCount:0, certifications:['Master Plumber QC','RBQ Licensed','CMMTQ Member'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Quebec City', province:'QC' },
+
+  /* ── HVAC ───────────────────────────────────────────────────── */
+  { id:'hv1', companyName:'Arctic Air HVAC Solutions', tradeType:'HVAC', licenseNumber:'AB-HVAC-55219', yearsInBusiness:'6-10 years', description:'Calgary HVAC contractor specializing in commercial rooftop unit installation, industrial process cooling, and oil-sands camp HVAC systems. TECA certified. Emergency 24/7 service.', contactName:'Dispatch', email:'service@arcticairhvac.ca', phone:'(403) 291-7700', website:'https://arcticairhvac.ca', serviceAreas:['Calgary','Edmonton','Red Deer','Fort McMurray'], rating:0, reviewCount:0, certifications:['TECA Certified','Red Seal HVAC','RSES Member'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Calgary', province:'AB' },
+  { id:'hv2', companyName:'Pacific Climate Control Ltd.', tradeType:'HVAC', licenseNumber:'BC-GC-HVAC-7841', yearsInBusiness:'11-20 years', description:'Greater Vancouver commercial HVAC and refrigeration contractor. Data centre precision cooling, VRF multi-split systems, central plant chiller installation, and building automation system integration.', contactName:'Sales', email:'info@pacificclimate.ca', phone:'(604) 437-2200', website:'', serviceAreas:['Vancouver','Burnaby','Richmond','Surrey','Kelowna'], rating:0, reviewCount:0, certifications:['HRAI Member','RSES Certified','Red Seal Refrigeration'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Vancouver', province:'BC' },
+  { id:'hv3', companyName:'Great Lakes Mechanical Corp.', tradeType:'HVAC', licenseNumber:'ON-HVAC-88430', yearsInBusiness:'20+ years', description:'Toronto ICI mechanical contractor. Healthcare HVAC, pharmaceutical cleanroom HVAC, transit station ventilation, and energy retrofit projects across the Greater Toronto Area and southern Ontario.', contactName:'Project Development', email:'projects@greatlakesmech.ca', phone:'(416) 742-8800', website:'', serviceAreas:['Toronto','Mississauga','Brampton','Ottawa','Hamilton'], rating:0, reviewCount:0, certifications:['MCAC Member','SMACNA Certified','LEED AP','TSSA Licensed'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Toronto', province:'ON' },
+  { id:'hv4', companyName:'Prairie Comfort Systems', tradeType:'HVAC', licenseNumber:'SK-HVAC-22110', yearsInBusiness:'6-10 years', description:'Saskatoon commercial HVAC contractor. Prairie climate specialists with extensive experience in extreme cold weather systems, grain elevator ventilation, and potash processing facility HVAC.', contactName:'Office', email:'info@prairiecomfort.ca', phone:'(306) 934-4400', website:'', serviceAreas:['Saskatoon','Regina','Moose Jaw','Prince Albert'], rating:0, reviewCount:0, certifications:['HRAI Member','Red Seal HVAC','TECA'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Saskatoon', province:'SK' },
+
+  /* ── ROOFING ────────────────────────────────────────────────── */
+  { id:'ro1', companyName:'Summit Roofing Inc.', tradeType:'Roofing', licenseNumber:'AB-ROOFER-6631', yearsInBusiness:'11-20 years', description:'Calgary commercial roofing contractor. TPO, EPDM, and modified bitumen flat roofing for industrial and institutional buildings. Also specializes in standing-seam metal roofing for agricultural and commercial applications.', contactName:'Estimating', email:'info@summitroofing.ca', phone:'(403) 720-5500', website:'', serviceAreas:['Calgary','Airdrie','Okotoks','Red Deer','Lethbridge'], rating:0, reviewCount:0, certifications:['CRC Member','GAF Certified','NRCA Member'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Calgary', province:'AB' },
+  { id:'ro2', companyName:'West Coast Roofing Systems', tradeType:'Roofing', licenseNumber:'BC-ROOF-44110', yearsInBusiness:'20+ years', description:'Vancouver Island and Lower Mainland commercial roofing contractor. Green roof assemblies, photovoltaic-integrated roofing, and heavy-duty industrial roofing with marine-grade materials for high-rainfall coastal environments.', contactName:'Business Development', email:'estimating@westcoastroofing.ca', phone:'(250) 391-1100', website:'https://westcoastroofing.ca', serviceAreas:['Victoria','Vancouver','Nanaimo','Kelowna','Abbotsford'], rating:0, reviewCount:0, certifications:['CRC Member','RCABC Licensed','NRCA'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Victoria', province:'BC' },
+  { id:'ro3', companyName:'Ontario Flat Roofing Ltd.', tradeType:'Roofing', licenseNumber:'ON-ROOF-88210', yearsInBusiness:'11-20 years', description:'GTA and surrounding Ontario commercial roofing. Specialize in roof asset management programs, emergency leak response, and full replacement of multi-unit residential and industrial flat roofing systems.', contactName:'Estimating', email:'', phone:'(416) 532-3300', website:'', serviceAreas:['Toronto','Mississauga','Brampton','Hamilton','London'], rating:0, reviewCount:0, certifications:['ONRCA Member','CRC Certified','Carlisle Authorized'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Toronto', province:'ON' },
+  { id:'ro4', companyName:'Thibodeau Toitures Commerciales', tradeType:'Roofing', licenseNumber:'QC-TOITURE-5521', yearsInBusiness:'11-20 years', description:'Montréal commercial roofing contractor. Industrial facility reroofing, heritage building restoration roofing, and multi-story condominium flat roofing with thermal imaging inspections.', contactName:'Bureau', email:'info@thibodeau-toitures.ca', phone:'(514) 355-4400', website:'', serviceAreas:['Montreal','Laval','Longueuil','Sherbrooke'], rating:0, reviewCount:0, certifications:['CDRQ Member','NRCA','CRC Certified'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Montreal', province:'QC' },
+
+  /* ── WELDING & FABRICATION ──────────────────────────────────── */
+  { id:'wf1', companyName:'North Star Welding & Fabrication', tradeType:'Welding & Fabrication', licenseNumber:'CWB-ON-77321', yearsInBusiness:'11-20 years', description:'Hamilton structural and miscellaneous steel fabrication shop. CWB Division 1 certified. Fabricates structural beams, staircases, platforms, and custom industrial equipment for mining, power generation, and heavy manufacturing.', contactName:'Shop Office', email:'info@northstarwelding.ca', phone:'(905) 522-7700', website:'', serviceAreas:['Hamilton','Burlington','Brantford','Toronto'], rating:0, reviewCount:0, certifications:['CWB W47.1 Div.1','Red Seal Welder','ISO 3834'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Hamilton', province:'ON' },
+  { id:'wf2', companyName:'Oilfield Fab & Welding Ltd.', tradeType:'Welding & Fabrication', licenseNumber:'CWB-AB-44110', yearsInBusiness:'6-10 years', description:'Fort McMurray-based pressure vessel and process piping fabrication. ASME Section VIII shop. Serving oil sands upgraders, refineries, and pipeline terminals with certified pressure welding and NDT services.', contactName:'Office', email:'info@oilfieldfab.ca', phone:'(780) 791-6600', website:'', serviceAreas:['Fort McMurray','Edmonton','Grande Prairie'], rating:0, reviewCount:0, certifications:['CWB W47.1','ASME Section VIII','NDT Level II','ABSA Registered'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Fort McMurray', province:'AB' },
+  { id:'wf3', companyName:'Pacific Coast Metal Fabricators', tradeType:'Welding & Fabrication', licenseNumber:'CWB-BC-88221', yearsInBusiness:'20+ years', description:'Burnaby fabrication shop serving marine, mining, and construction sectors across BC. Structural steel, aluminum marine components, and custom machine guards. CWB W47.1 and W59 certified for complex weld procedures.', contactName:'Sales', email:'sales@pacificcoastfab.ca', phone:'(604) 299-8800', website:'', serviceAreas:['Burnaby','Vancouver','Surrey','Kelowna','Prince George'], rating:0, reviewCount:0, certifications:['CWB W47.1','CWB W59','Red Seal Welder','BCMSA Member'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Burnaby', province:'BC' },
+  { id:'wf4', companyName:'Prairie Iron Works Inc.', tradeType:'Welding & Fabrication', licenseNumber:'CWB-SK-33210', yearsInBusiness:'6-10 years', description:'Saskatoon fabrication shop serving agriculture, potash mining, and grain handling sectors. Custom augers, elevator legs, hoppers, conveyor components, and trailer chassis fabrication.', contactName:'Shop', email:'info@prairieironworks.ca', phone:'(306) 242-5500', website:'', serviceAreas:['Saskatoon','Regina','Moose Jaw'], rating:0, reviewCount:0, certifications:['CWB Certified','Red Seal Welder'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Saskatoon', province:'SK' },
+
+  /* ── MILLWRIGHT ─────────────────────────────────────────────── */
+  { id:'mw1', companyName:'Precision Millwright Services', tradeType:'Millwright', licenseNumber:'ON-MW-88421', yearsInBusiness:'11-20 years', description:'Windsor and southwestern Ontario industrial millwright contractor. Equipment installation, precision alignment, conveyor system maintenance, gearbox overhaul, and planned maintenance programs for automotive manufacturers and food processors.', contactName:'Service', email:'info@precisionmillwright.ca', phone:'(519) 966-4400', website:'', serviceAreas:['Windsor','London','Sarnia','Chatham'], rating:0, reviewCount:0, certifications:['Red Seal Millwright','IAPA Member','OSHA 30'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Windsor', province:'ON' },
+  { id:'mw2', companyName:'Titan Industrial Millwrights', tradeType:'Millwright', licenseNumber:'AB-MW-55109', yearsInBusiness:'6-10 years', description:'Edmonton millwright contractor serving oil and gas, pulp, and petrochemical sectors. Pump and compressor overhaul, rotating equipment alignment, turbine maintenance, and shutdown planning.', contactName:'Dispatch', email:'dispatch@titanmillwright.ca', phone:'(780) 463-8800', website:'', serviceAreas:['Edmonton','Fort McMurray','Red Deer','Grande Prairie'], rating:0, reviewCount:0, certifications:['Red Seal Millwright','NAIT Alumni','Rigger Level 3'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Edmonton', province:'AB' },
+  { id:'mw3', companyName:'Coastal Millwright & Rigging', tradeType:'Millwright', licenseNumber:'BC-MW-66310', yearsInBusiness:'11-20 years', description:'BC pulp, paper, and mining millwright specialist. Conveyor installations, dryer drum overhauls, winder rebuilds, and heavy rigging for sawmill equipment replacement throughout interior and coastal BC.', contactName:'Office', email:'info@coastalmillwright.ca', phone:'(250) 563-7700', website:'', serviceAreas:['Prince George','Kamloops','Kelowna','Vancouver'], rating:0, reviewCount:0, certifications:['Red Seal Millwright','BCMSA','Crane Operator License'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Prince George', province:'BC' },
+
+  /* ── PIPEFITTING ────────────────────────────────────────────── */
+  { id:'pf1', companyName:'Meridian Pipefitting Ltd.', tradeType:'Pipefitting', licenseNumber:'AB-STEAM-44210', yearsInBusiness:'11-20 years', description:'Calgary process piping contractor. Certified for ABSA-registered pressure piping work on oil refineries, natural gas compression facilities, and heavy oil upgraders. High-alloy and exotic material experience.', contactName:'Estimating', email:'estimating@meridianpipefitting.ca', phone:'(403) 279-6600', website:'', serviceAreas:['Calgary','Edmonton','Fort McMurray','Lloydminster'], rating:0, reviewCount:0, certifications:['Red Seal Steamfitter','ABSA Registered','CWB Welder','UA Local 488'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Calgary', province:'AB' },
+  { id:'pf2', companyName:'Superior Steamfitters Inc.', tradeType:'Pipefitting', licenseNumber:'ON-TSSA-55310', yearsInBusiness:'20+ years', description:'Toronto industrial and commercial pipefitting. Steam systems for hospitals, pharmaceutical plants, and food processing. TSSA authorized inspection organization. Hydronic heating and cooling piping for large ICI projects.', contactName:'Business Development', email:'', phone:'(416) 798-5500', website:'', serviceAreas:['Toronto','Mississauga','Hamilton','Brampton','Ottawa'], rating:0, reviewCount:0, certifications:['TSSA Authorized','Red Seal Steamfitter','UA Local 46','ASME B31.3'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Toronto', province:'ON' },
+  { id:'pf3', companyName:'BC Pipefitters & Steamfitters', tradeType:'Pipefitting', licenseNumber:'BC-PIPE-77311', yearsInBusiness:'11-20 years', description:'Vancouver commercial and industrial pipefitting and mechanical insulation. LNG facility piping, hydroelectric plant penstock work, and refinery shutdown maintenance. BC Safety Authority registered for pressure piping.', contactName:'Office', email:'info@bcpipefitters.ca', phone:'(604) 444-7700', website:'', serviceAreas:['Vancouver','Burnaby','Surrey','Prince George','Kitimat'], rating:0, reviewCount:0, certifications:['Red Seal Steamfitter','BCSA Registered','UA Local 324','ISO 15614'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Vancouver', province:'BC' },
+
+  /* ── CONCRETE & MASONRY ─────────────────────────────────────── */
+  { id:'cm1', companyName:'Atlas Concrete & Forming', tradeType:'Concrete & Masonry', licenseNumber:'ON-CONCRETE-3321', yearsInBusiness:'11-20 years', description:'Toronto structural concrete contractor. Highrise forming, post-tension slab systems, precast installation, and infrastructure concrete for bridges and transit structures. Large formwork inventory for fast-cycle scheduling.', contactName:'Estimating', email:'info@atlasconcrete.ca', phone:'(416) 638-6600', website:'', serviceAreas:['Toronto','Mississauga','Brampton','Hamilton','Ottawa'], rating:0, reviewCount:0, certifications:['ACI Certified','Gold Seal','CCA Member','IHSA BCSA'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Toronto', province:'ON' },
+  { id:'cm2', companyName:'Westside Masonry Inc.', tradeType:'Concrete & Masonry', licenseNumber:'AB-MASON-88110', yearsInBusiness:'6-10 years', description:'Calgary commercial masonry contractor. Ground-face concrete block, brick veneer, natural stone cladding, and architectural masonry for industrial and institutional buildings across Alberta.', contactName:'Estimating', email:'info@westsidemasonry.ca', phone:'(403) 246-4400', website:'', serviceAreas:['Calgary','Edmonton','Lethbridge','Red Deer'], rating:0, reviewCount:0, certifications:['CAM Member','CMBA Certified','Red Seal Mason'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Calgary', province:'AB' },
+  { id:'cm3', companyName:'Pacific Foundation & Concrete', tradeType:'Concrete & Masonry', licenseNumber:'BC-CONC-44210', yearsInBusiness:'20+ years', description:'Surrey concrete and foundation contractor. Deep excavation shoring, caisson drilling, commercial slab-on-grade, and post-tension parking structure construction throughout the Lower Mainland.', contactName:'Office', email:'info@pacificfoundation.ca', phone:'(604) 596-3300', website:'', serviceAreas:['Surrey','Vancouver','Burnaby','Abbotsford','Langley'], rating:0, reviewCount:0, certifications:['ACI Certified','CSCT Member','CCA Gold Seal'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Surrey', province:'BC' },
+  { id:'cm4', companyName:'Prairie Block & Stone Ltd.', tradeType:'Concrete & Masonry', licenseNumber:'SK-MASON-55110', yearsInBusiness:'6-10 years', description:'Saskatchewan commercial masonry. Agricultural and rural facility concrete block, grain bin foundations, commercial brick, and exterior stone cladding for retail and institutional clients.', contactName:'Office', email:'info@prairiestone.ca', phone:'(306) 545-7700', website:'', serviceAreas:['Regina','Saskatoon','Moose Jaw','Swift Current'], rating:0, reviewCount:0, certifications:['Red Seal Mason','CSCT Member'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Regina', province:'SK' },
+
+  /* ── PAINTING & COATING ─────────────────────────────────────── */
+  { id:'pc1', companyName:'ProCoat Industrial Painting', tradeType:'Painting & Coating', licenseNumber:'AB-IPC-6621', yearsInBusiness:'6-10 years', description:'Edmonton industrial coating contractor. Epoxy flooring, corrosion-protective coatings for petrochemical tanks and vessels, thermal spray coatings, and abrasive blasting to SSPC standards.', contactName:'Estimating', email:'info@procoatpainting.ca', phone:'(780) 471-6600', website:'', serviceAreas:['Edmonton','Calgary','Fort McMurray','Red Deer'], rating:0, reviewCount:0, certifications:['NACE Level 3 CIP','SSPC Certified','Red Seal Painter'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Edmonton', province:'AB' },
+  { id:'pc2', companyName:'Métro Peinture Commerciale', tradeType:'Painting & Coating', licenseNumber:'QC-PEINTRE-88210', yearsInBusiness:'11-20 years', description:'Montréal commercial and institutional painting contractor. New construction drywall finishing and painting, heritage building restoration, and hospital HIQA-compliant coatings. Bilingual team with LEED-friendly low-VOC product lines.', contactName:'Estimation', email:'info@metropeinture.ca', phone:'(514) 932-4400', website:'', serviceAreas:['Montreal','Laval','Longueuil','Gatineau'], rating:0, reviewCount:0, certifications:['Red Seal Painter','PDCA Member','LEED AP'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Montreal', province:'QC' },
+  { id:'pc3', companyName:'Pacific Spray Coatings Ltd.', tradeType:'Painting & Coating', licenseNumber:'BC-COAT-33210', yearsInBusiness:'6-10 years', description:'Vancouver industrial spray painting and fireproofing contractor. Intumescent fire protection coatings for structural steel, urethane lining for water and waste management facilities, and epoxy flooring for food-grade environments.', contactName:'Office', email:'info@pacificspraycoatings.ca', phone:'(604) 420-3300', website:'', serviceAreas:['Vancouver','Surrey','Burnaby','Richmond','Abbotsford'], rating:0, reviewCount:0, certifications:['NACE CIP','Red Seal Painter','SSPC QP1','BC Firestopping'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Vancouver', province:'BC' },
+  { id:'pc4', companyName:'Great Lakes Coatings Inc.', tradeType:'Painting & Coating', licenseNumber:'ON-COAT-44210', yearsInBusiness:'11-20 years', description:'Ontario industrial maintenance painting contractor. Tank farm coatings, bridge repainting, wastewater treatment plant lining, and large-scale commercial repaints. NACE and SSPC certified inspectors on staff.', contactName:'Business Development', email:'info@greatlakescoatings.ca', phone:'(905) 643-5500', website:'', serviceAreas:['Hamilton','Toronto','Brampton','Brantford','Niagara Falls'], rating:0, reviewCount:0, certifications:['NACE Level 2','SSPC QP1','Red Seal Painter'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Hamilton', province:'ON' },
+
+  /* ── REFRIGERATION ──────────────────────────────────────────── */
+  { id:'rf1', companyName:'Cold Logic Refrigeration Inc.', tradeType:'Refrigeration', licenseNumber:'AB-REFRIG-55210', yearsInBusiness:'6-10 years', description:'Calgary commercial refrigeration contractor. Grocery store rack systems, cold storage walk-in coolers, blast freezer installation, and food distribution centre refrigerated dock door systems.', contactName:'Service', email:'service@coldlogic.ca', phone:'(403) 475-5500', website:'', serviceAreas:['Calgary','Edmonton','Red Deer','Lethbridge'], rating:0, reviewCount:0, certifications:['Red Seal Refrigeration','RSES Member','HRAI Member','ODP F-Gas'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Calgary', province:'AB' },
+  { id:'rf2', companyName:'Arctic Systems Refrigeration', tradeType:'Refrigeration', licenseNumber:'BC-REFRIG-88210', yearsInBusiness:'11-20 years', description:'Vancouver and Lower Mainland commercial refrigeration specialist. Natural refrigerant CO2 and ammonia systems for food retail, ice arena plant maintenance, and pharmaceutical cold chain storage.', contactName:'Service Manager', email:'info@arcticsystems.ca', phone:'(604) 527-7700', website:'', serviceAreas:['Vancouver','Surrey','Burnaby','Langley','Victoria'], rating:0, reviewCount:0, certifications:['Red Seal Refrigeration','TRAC Certified','RSES Member','ODP Licensed'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Vancouver', province:'BC' },
+  { id:'rf3', companyName:'Ontario Cold Systems Ltd.', tradeType:'Refrigeration', licenseNumber:'ON-TSSA-REFRIG-33210', yearsInBusiness:'20+ years', description:'Toronto commercial and industrial refrigeration. Ammonia and Freon system design-build, arena refrigeration plant overhauls, pharmaceutical vault refrigeration, and 24/7 emergency refrigeration repair across the GTA.', contactName:'Service', email:'', phone:'(416) 767-4400', website:'', serviceAreas:['Toronto','Mississauga','Brampton','Hamilton','Oakville'], rating:0, reviewCount:0, certifications:['TSSA Authorized','Red Seal Refrigeration','RSES Certified','HRAI'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Toronto', province:'ON' },
+
+  /* ── CARPENTRY ──────────────────────────────────────────────── */
+  { id:'ca1', companyName:'Ironwood Millwork & Carpentry', tradeType:'Carpentry', licenseNumber:'ON-CARP-55210', yearsInBusiness:'6-10 years', description:'Ottawa commercial carpentry and millwork contractor. Custom cabinetry, architectural millwork, commercial storefront framing, and acoustic ceiling systems for office, hospitality, and healthcare interiors.', contactName:'Estimating', email:'info@ironwoodmillwork.ca', phone:'(613) 748-5500', website:'', serviceAreas:['Ottawa','Gatineau','Kingston','Barrie'], rating:0, reviewCount:0, certifications:['Red Seal Carpenter','CMBA Member','LEED AP'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Ottawa', province:'ON' },
+  { id:'ca2', companyName:'Coastal Framing & Carpentry', tradeType:'Carpentry', licenseNumber:'BC-CARP-44110', yearsInBusiness:'11-20 years', description:'Greater Vancouver commercial framing and rough carpentry contractor. Wood-frame multi-unit residential up to 6 storeys, light-frame commercial, and mass timber (CLT/GLB) construction. UBC advanced framing certified.', contactName:'Office', email:'info@coastalframing.ca', phone:'(604) 549-6600', website:'', serviceAreas:['Vancouver','Burnaby','Surrey','Abbotsford','Kelowna'], rating:0, reviewCount:0, certifications:['Red Seal Carpenter','BCCA Member','Mass Timber Institute'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Burnaby', province:'BC' },
+  { id:'ca3', companyName:'Prairie Woodcraft Interiors', tradeType:'Carpentry', licenseNumber:'AB-CARP-77210', yearsInBusiness:'3-5 years', description:'Edmonton interior carpentry and fit-out contractor. Commercial tenant improvements, hotel room packages, acoustic wall systems, and furniture installation. Fast turnaround on retail rollout programs.', contactName:'Sales', email:'info@prairiewoodcraft.ca', phone:'(780) 478-5500', website:'', serviceAreas:['Edmonton','Calgary','Red Deer','Fort McMurray'], rating:0, reviewCount:0, certifications:['Red Seal Carpenter','BCCA Member'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Edmonton', province:'AB' },
+
+  /* ── GENERAL CONTRACTING (additional) ──────────────────────── */
+  { id:'gc1', companyName:'Landmark Structures Western', tradeType:'General Contracting', licenseNumber:'AB-GC-LANDMARK', yearsInBusiness:'20+ years', description:'Calgary-based ICI general contractor with a strong track record in oil & gas facility construction, recreational and civic facilities, and complex industrial builds across Alberta and BC.', contactName:'Business Development', email:'info@landmarkstructures.ca', phone:'(403) 255-8800', website:'', serviceAreas:['Calgary','Edmonton','Fort McMurray','Grande Prairie','Kelowna'], rating:0, reviewCount:0, certifications:['Gold Seal Certified','ISO 9001','CCA Member','ACSA COR'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Calgary', province:'AB' },
+  { id:'gc2', companyName:'Heathwood Construction Ltd.', tradeType:'General Contracting', licenseNumber:'BC-GC-HEATHWOOD', yearsInBusiness:'11-20 years', description:'Vancouver Island institutional and healthcare general contractor. Hospital expansions, long-term care facilities, and school construction across Vancouver Island and the Gulf Islands.', contactName:'Project Development', email:'info@heathwoodconstruction.ca', phone:'(250) 479-3300', website:'', serviceAreas:['Victoria','Nanaimo','Duncan','Courtenay','Campbell River'], rating:0, reviewCount:0, certifications:['Gold Seal','BCCA Member','LEED BD+C AP'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Victoria', province:'BC' },
+  { id:'gc3', companyName:'Frontier Construction Group', tradeType:'General Contracting', licenseNumber:'SK-GC-FRONTIER', yearsInBusiness:'11-20 years', description:'Regina and Saskatoon ICI general contractor. Potash mine surface facility construction, agricultural processing plants, government institutional builds, and First Nations community projects.', contactName:'Business Development', email:'info@frontierconstructiongroup.ca', phone:'(306) 352-7700', website:'', serviceAreas:['Regina','Saskatoon','Moose Jaw','Prince Albert','North Battleford'], rating:0, reviewCount:0, certifications:['Gold Seal','SaskBuilds COR','CCA Member'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Regina', province:'SK' },
+  { id:'gc4', companyName:'Bouchard Entrepreneurs Généraux', tradeType:'General Contracting', licenseNumber:'QC-EG-RBQ-9988110', yearsInBusiness:'20+ years', description:'Montréal ICI general contractor. Major healthcare, educational, and industrial construction in Quebec. Experienced with RQIH-accredited hospital construction, LEED Gold certification, and bilingual project delivery.', contactName:'Développement des affaires', email:'info@bouchardreg.ca', phone:'(514) 739-6600', website:'', serviceAreas:['Montreal','Laval','Gatineau','Quebec City','Sherbrooke'], rating:0, reviewCount:0, certifications:['RBQ License','CCQ Member','Gold Seal','LEED AP BD+C'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Montreal', province:'QC' },
+  { id:'gc5', companyName:'Ironwood Construction Inc.', tradeType:'General Contracting', licenseNumber:'MB-GC-IW-5521', yearsInBusiness:'11-20 years', description:'Winnipeg commercial general contractor. Manitoba Hydro facility upgrades, Indigenous community housing and commercial projects, government tender work across Manitoba and northwestern Ontario.', contactName:'Business Development', email:'', phone:'(204) 944-8800', website:'', serviceAreas:['Winnipeg','Brandon','Thompson','Kenora'], rating:0, reviewCount:0, certifications:['Gold Seal','CCA Member','SAFE Work MB COR'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Winnipeg', province:'MB' },
+  { id:'gc6', companyName:'Atlantic Build Corp', tradeType:'General Contracting', licenseNumber:'NS-GC-ABCORP-7721', yearsInBusiness:'11-20 years', description:'Halifax ICI general contractor specializing in Department of National Defence base infrastructure, healthcare facilities, and port and marine facility construction across Atlantic Canada.', contactName:'Estimating', email:'info@atlanticbuildcorp.ca', phone:'(902) 455-3300', website:'', serviceAreas:['Halifax','Dartmouth','Sydney','Moncton','Fredericton'], rating:0, reviewCount:0, certifications:['Gold Seal','CBCA Member','NATO Security Clearance'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Halifax', province:'NS' },
+
+  /* ── SHEET METAL ────────────────────────────────────────────── */
+  { id:'sm1', companyName:'Precision Sheet Metal Inc.', tradeType:'Sheet Metal', licenseNumber:'ON-SM-44210', yearsInBusiness:'11-20 years', description:'Toronto commercial sheet metal contractor. Custom ductwork fabrication, kitchen exhaust and makeup air systems, laboratory fume hood exhaust, and architectural metal cladding. SMACNA certified fabrication shop.', contactName:'Estimating', email:'info@precisionsheetmetal.ca', phone:'(416) 675-5500', website:'', serviceAreas:['Toronto','Mississauga','Brampton','Hamilton','Oakville'], rating:0, reviewCount:0, certifications:['SMACNA Certified','Red Seal Sheet Metal Worker','UA Local 473'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Toronto', province:'ON' },
+  { id:'sm2', companyName:'Pacific Sheet Metal & Roofing', tradeType:'Sheet Metal', licenseNumber:'BC-SM-77310', yearsInBusiness:'20+ years', description:'Vancouver commercial sheet metal contractor. HVAC ductwork, architectural metal wall panels, metal roofing for commercial and industrial buildings, and stainless steel custom fabrication for food processing facilities.', contactName:'Office', email:'info@pacificsheetmetal.ca', phone:'(604) 872-7700', website:'', serviceAreas:['Vancouver','Burnaby','Surrey','Richmond','Victoria'], rating:0, reviewCount:0, certifications:['SMACNA Certified','Red Seal Sheet Metal Worker','BCMSA'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Vancouver', province:'BC' },
+  { id:'sm3', companyName:'Alberta Industrial Sheet Metal', tradeType:'Sheet Metal', licenseNumber:'AB-SM-33110', yearsInBusiness:'6-10 years', description:'Edmonton industrial sheet metal and custom HVAC fabrication. Process ventilation for mining and petrochemical facilities, stainless and acid-resistant ductwork for chemical plants, and corrosion-resistant exhaust systems.', contactName:'Fabrication Office', email:'fab@albertaindustrialsheetmetal.ca', phone:'(780) 455-6600', website:'', serviceAreas:['Edmonton','Calgary','Fort McMurray','Lloydminster'], rating:0, reviewCount:0, certifications:['SMACNA','Red Seal Sheet Metal Worker','CWB Welder'], featured:false, claimed:false, requestCount:0, logoData:null, password:'', source:'industry-research', city:'Edmonton', province:'AB' },
 
 ];
 
@@ -3573,7 +3793,7 @@ let _stripePaymentElement = null;
 /* ============================================================
    STORAGE
 ============================================================ */
-const SEED_VERSION = '2026-04-23-v3'; // Canada-wide expansion — removes fake data, adds national companies
+const SEED_VERSION = '2026-04-25-v1'; // Canada-wide expansion — all trades, all provinces, ~94 companies
 
 const TRADE_TYPES = [
   'Boilermaker','Carpentry','Cleaning & Janitorial','Concrete & Masonry',
@@ -6879,14 +7099,68 @@ function renderDashboard() {
         </div>
       </div>
 
-      <!-- Available Careers -->
+      <!-- Available Careers / RFQs — Pro & Enterprise only -->
       <div id="tab-jobs" class="tab-content">
         ${(function() {
+          const isPro = prov.plan === 'pro' || prov.plan === 'enterprise';
           const matchingJobs = (App.rfqs || []).filter(r => r.status === 'open' && r.tradeType === prov.tradeType);
-          if (matchingJobs.length === 0) {
-            return '<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">&#128203;</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;margin-bottom:8px;">No open job requests yet</div><div style="font-size:14px;">When clients post job requests matching your trade (' + prov.tradeType + '), they\'ll appear here.</div></div>';
+
+          // ── Upsell banner (always visible at top) ───────────────────────────
+          const upsellBanner = '<div style="background:linear-gradient(135deg,#1A1200,#2C1F00);border:2px solid var(--o500);border-radius:12px;padding:28px 28px 24px;margin-bottom:28px;position:relative;overflow:hidden;">'
+            + '<div style="position:absolute;top:-24px;right:-24px;width:120px;height:120px;background:rgba(224,98,26,0.08);border-radius:50%;"></div>'
+            + '<div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">'
+            + '<div style="font-size:40px;line-height:1;">&#128081;</div>'
+            + '<div style="flex:1;min-width:220px;">'
+            + '<div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--o400);font-family:\'Barlow Condensed\',sans-serif;font-weight:700;margin-bottom:4px;">&#9889; Pro &amp; Enterprise Exclusive</div>'
+            + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:24px;color:white;line-height:1.2;margin-bottom:8px;">Access All Client RFQs &amp; Job Requests</div>'
+            + '<p style="font-size:14px;color:var(--s300);line-height:1.6;margin:0 0 16px;">Upgrade to <strong style="color:var(--o400);">Pro</strong> or <strong style="color:var(--o400);">Enterprise</strong> to see every job request posted by clients — including full contact info, project budgets, and timelines. Free plan members see a preview only.</p>'
+            + '<div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;">'
+            + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Unlimited RFQ access</div>'
+            + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Full client contact details</div>'
+            + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Instant lead alerts</div>'
+            + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Featured placement in directory</div>'
+            + '</div>'
+            + '<button onclick="navigate(\'/pricing\')" class="btn btn-orange" style="font-size:15px;padding:12px 28px;">Upgrade to Pro — from $49/mo &#8594;</button>'
+            + '</div></div></div>';
+
+          if (!isPro) {
+            // Show upsell + blurred preview of first 3
+            const preview = matchingJobs.slice(0, 3);
+            const previewHtml = preview.length === 0
+              ? '<div style="text-align:center;padding:40px;color:var(--s400);font-size:14px;">No open job requests yet — check back soon.</div>'
+              : '<div style="position:relative;">'
+                + '<div style="filter:blur(4px);pointer-events:none;user-select:none;display:flex;flex-direction:column;gap:12px;">'
+                + preview.map(function(job) {
+                    return '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:20px 24px;">'
+                      + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:18px;color:white;margin-bottom:6px;">' + (job.title || 'Job Request') + '</div>'
+                      + '<div style="display:flex;gap:14px;font-size:13px;color:var(--s400);">'
+                      + '<span>&#128205; ' + (job.city || '—') + '</span>'
+                      + (job.budget ? '<span>&#128178; ' + job.budget + '</span>' : '')
+                      + '</div></div>';
+                  }).join('')
+                + '</div>'
+                + '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(11,25,41,0.55);border-radius:8px;">'
+                + '<div style="text-align:center;">'
+                + '<div style="font-size:28px;margin-bottom:8px;">&#128274;</div>'
+                + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:18px;color:white;margin-bottom:6px;">' + matchingJobs.length + ' job request' + (matchingJobs.length!==1?'s':'') + ' hidden</div>'
+                + '<div style="font-size:13px;color:var(--s300);margin-bottom:14px;">Upgrade to Pro to unlock full access</div>'
+                + '<button onclick="navigate(\'/pricing\')" class="btn btn-orange btn-sm">Upgrade to Pro &#8594;</button>'
+                + '</div></div></div>';
+            return upsellBanner + previewHtml;
           }
-          return '<div style="margin-bottom:16px;font-size:14px;color:var(--s300);">' + matchingJobs.length + ' open job request' + (matchingJobs.length!==1?'s':'') + ' matching your trade: <strong style="color:var(--o400);">' + prov.tradeType + '</strong></div>'
+
+          // Pro/Enterprise — full access
+          if (matchingJobs.length === 0) {
+            return '<div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:12px;">'
+              + '<span style="font-size:18px;">&#9989;</span>'
+              + '<span style="font-size:14px;color:var(--s300);">Full RFQ access active on your <strong style="color:var(--o400);">' + (prov.plan==='enterprise'?'Enterprise':'Pro') + '</strong> plan. No matching job requests yet — check back soon.</span>'
+              + '</div>'
+              + '<div style="text-align:center;padding:40px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">&#128203;</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;margin-bottom:8px;">No open job requests yet</div><div style="font-size:14px;">When clients post job requests matching your trade (' + prov.tradeType + '), they\'ll appear here.</div></div>';
+          }
+          return '<div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">'
+            + '<span style="font-size:16px;">&#9989;</span>'
+            + '<span style="font-size:14px;color:var(--s300);">Full RFQ access active — <strong style="color:var(--o400);">' + matchingJobs.length + ' open job request' + (matchingJobs.length!==1?'s':'') + '</strong> matching your trade: <strong style="color:white;">' + prov.tradeType + '</strong></span>'
+            + '</div>'
             + '<div style="display:flex;flex-direction:column;gap:12px;">'
             + matchingJobs.map(function(job) {
                 return '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:20px 24px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">'
@@ -6900,7 +7174,10 @@ function renderDashboard() {
                   + '</div>'
                   + (job.jobDescription ? '<div style="font-size:14px;color:var(--s300);line-height:1.6;">' + job.jobDescription + '</div>' : '')
                   + '</div>'
-                  + '<div style="flex-shrink:0;"><button class="btn btn-orange btn-sm" onclick="navigate(\'/rfq\')">Contact Client &#8594;</button></div>'
+                  + '<div style="flex-shrink:0;display:flex;flex-direction:column;gap:8px;">'
+                  + '<a href="mailto:' + (job.contactEmail||'') + '" class="btn btn-orange btn-sm">Contact Client &#8594;</a>'
+                  + (job.contactPhone ? '<a href="tel:' + job.contactPhone + '" class="btn btn-outline btn-sm" style="font-size:12px;">&#128222; ' + job.contactPhone + '</a>' : '')
+                  + '</div>'
                   + '</div>';
               }).join('')
             + '</div>';
@@ -7438,93 +7715,288 @@ function renderMyJobs() {
 }
 
 /* ============================================================
-   JOBS BOARD
+   JOBS BOARD — multi-source, filterable, paginated
 ============================================================ */
-let _liveJobs = [];  // cache of jobs from /api/careers
+const JOBS_PAGE_SIZE  = 20;
+const JOBS_CACHE_KEY  = 'byt_jobs_cache_v3';
+const JOBS_CACHE_TTL  = 4 * 60 * 60 * 1000; // 4 hours
+
+let _liveJobs         = [];   // all scraped + platform jobs combined
+let _jobsFiltered     = [];   // after current filter state
+let _jobsCurrentPage  = 1;
+let _jobsFetchedAt    = null;
 
 async function loadLiveJobs() {
-  const grid   = document.getElementById('jobsGrid');
-  const status = document.getElementById('jobsStatus');
-  if (!grid) return;
-  if (status) status.innerHTML = '<div style="color:var(--lz-muted);padding:20px 0;">Loading live job postings across Canada…</div>';
-  grid.innerHTML = '';
+  if (!document.getElementById('jobsGrid')) return;
+  _setJobsLoading(true);
+
+  // Try localStorage cache first
   try {
-    const r = await fetch('/api/careers');
-    if (r.ok) {
-      const data = await r.json();
-      _liveJobs = data.jobs || [];
+    const cached = JSON.parse(localStorage.getItem(JOBS_CACHE_KEY) || 'null');
+    if (cached && cached.jobs && Date.now() - cached.ts < JOBS_CACHE_TTL) {
+      _liveJobs = cached.jobs;
+      _jobsFetchedAt = new Date(cached.ts);
+      _setJobsLoading(false);
+      _updateJobsSourceBar(cached.sources || {});
+      filterJobs();
+      // Refresh in background if >2h old
+      if (Date.now() - cached.ts > 2 * 60 * 60 * 1000) _fetchJobs(true);
+      return;
     }
-  } catch(e) { _liveJobs = []; }
-  renderJobs();
+  } catch(e) {}
+
+  await _fetchJobs(false);
 }
 
-function renderJobs() {
+async function _fetchJobs(background) {
+  // Primary: comprehensive multi-source scraper
+  try {
+    const r = await fetch('/api/scrape-careers');
+    if (r.ok) {
+      const data = await r.json();
+      const scraped = data.jobs || [];
+      _liveJobs = scraped;
+      _jobsFetchedAt = new Date(data.fetched || Date.now());
+      _updateJobsSourceBar(data.sources || {});
+      const totalNum = document.getElementById('jobsTotalNum');
+      if (totalNum) totalNum.textContent = scraped.length.toLocaleString() + '+';
+      try {
+        localStorage.setItem(JOBS_CACHE_KEY, JSON.stringify({ jobs: scraped, sources: data.sources || {}, ts: Date.now() }));
+      } catch(e) {}
+      if (!background) { _setJobsLoading(false); filterJobs(); }
+      return;
+    }
+  } catch(e) {}
+
+  // Fallback: original /api/careers (Indeed-only)
+  try {
+    const r2 = await fetch('/api/careers');
+    if (r2.ok) {
+      const data2 = await r2.json();
+      _liveJobs = (data2.jobs || []).map(function(j) {
+        return Object.assign({ source: 'Indeed Canada', sourceBadge: '📋', experience: 'Experienced', province: '' }, j);
+      });
+    }
+  } catch(e) { _liveJobs = []; }
+
+  _setJobsLoading(false);
+  filterJobs();
+}
+
+function _setJobsLoading(on) {
+  const status = document.getElementById('jobsStatus');
+  const grid   = document.getElementById('jobsGrid');
+  if (on) {
+    if (grid)   grid.innerHTML = '';
+    if (status) status.innerHTML =
+      '<div style="display:inline-flex;align-items:center;gap:10px;color:var(--s400);padding:30px;">'
+      + '<div style="width:18px;height:18px;border:2px solid var(--o500);border-top-color:transparent;border-radius:50%;animation:spin 0.7s linear infinite;"></div>'
+      + ' Loading live trades jobs from Job Bank Canada, Indeed &amp; more…</div>';
+  }
+}
+
+function _updateJobsSourceBar(sources) {
+  const bar = document.getElementById('jobsSourceBar');
+  if (!bar || !sources) return;
+  const colors = {
+    'Job Bank Canada':    { bg:'rgba(34,197,94,0.12)',  border:'rgba(34,197,94,0.3)',  text:'#6FE09A' },
+    'Job Bank — BC':      { bg:'rgba(59,130,246,0.12)', border:'rgba(59,130,246,0.3)', text:'#93C5FD' },
+    'Job Bank — Alberta': { bg:'rgba(251,191,36,0.12)', border:'rgba(251,191,36,0.3)', text:'#FCD34D' },
+    'Indeed Canada':      { bg:'rgba(224,98,26,0.12)',  border:'rgba(224,98,26,0.3)',  text:'#F07030' },
+    'Platform':           { bg:'rgba(16,185,129,0.12)', border:'rgba(16,185,129,0.3)', text:'#34D399' },
+  };
+  bar.innerHTML = Object.entries(sources).map(function([src, cnt]) {
+    const c = colors[src] || { bg:'rgba(100,116,139,0.12)', border:'rgba(100,116,139,0.3)', text:'var(--s300)' };
+    return '<div style="background:' + c.bg + ';border:1px solid ' + c.border + ';border-radius:4px;padding:4px 12px;font-size:12px;color:' + c.text + ';font-family:\'Barlow Condensed\',sans-serif;font-weight:600;">'
+      + src + ' <span style="opacity:0.7;">(' + cnt + ')</span></div>';
+  }).join('');
+}
+
+function filterJobs() {
+  const keyword  = (document.getElementById('jobFilterKeyword')?.value || '').toLowerCase().trim();
+  const trade    = (document.getElementById('jobFilterTrade')?.value  || '').toLowerCase();
+  const prov     = (document.getElementById('jobFilterProv')?.value   || '').toUpperCase();
+  const type     = document.querySelector('input[name="jobType"]:checked')?.value || '';
+  const exp      = document.querySelector('input[name="jobExp"]:checked')?.value  || '';
+  const source   = document.querySelector('input[name="jobSource"]:checked')?.value || '';
+
+  // Platform jobs from App.jobPostings
+  const platform = (App.jobPostings || [])
+    .filter(function(j) { return j.status !== 'closed'; })
+    .map(function(j) {
+      const pv = App.providers.find(function(p) { return p.id === j.providerId; });
+      return Object.assign({}, j, {
+        isLive: false, source: 'Platform', sourceBadge: '✅',
+        company: pv ? pv.companyName : (j.company || 'Platform Employer'),
+        experience: j.experience || 'Experienced',
+        province: j.province || '',
+        icon: j.icon || '🔨',
+      });
+    }).slice().reverse();
+
+  const all = [...platform, ..._liveJobs.map(function(j) { return Object.assign({}, j, { isLive: true }); })];
+
+  _jobsFiltered = all.filter(function(j) {
+    if (keyword && !(j.title + ' ' + (j.company||'') + ' ' + (j.description||'')).toLowerCase().includes(keyword)) return false;
+    if (trade   && !(j.trade||'').toLowerCase().includes(trade))    return false;
+    if (prov    && j.province !== prov)                             return false;
+    if (type    && !(j.type||'').includes(type))                    return false;
+    if (exp     && j.experience !== exp)                            return false;
+    if (source === 'Platform' && j.isLive)                          return false;
+    if (source && source !== 'Platform' && j.source !== source)     return false;
+    return true;
+  });
+
+  _jobsCurrentPage = 1;
+  renderJobsPage();
+}
+
+function jobsGoToPage(n) {
+  const total = Math.ceil(_jobsFiltered.length / JOBS_PAGE_SIZE);
+  if (n < 1 || n > total) return;
+  _jobsCurrentPage = n;
+  renderJobsPage();
+  const grid = document.getElementById('jobsGrid');
+  if (grid) grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderJobsPage() {
   const grid   = document.getElementById('jobsGrid');
   const status = document.getElementById('jobsStatus');
+  const countEl = document.getElementById('jobsCount');
+  const lastUpd  = document.getElementById('jobsLastUpdated');
+  const totalNumEl = document.getElementById('jobsTotalNum');
   if (!grid) return;
 
-  const tradeFilter = (document.getElementById('jobFilterTrade')?.value || '').toLowerCase();
-  const typeFilter  = (document.getElementById('jobFilterType')?.value || '').toLowerCase();
-  const cityFilter  = (document.getElementById('jobFilterCity')?.value || '').toLowerCase().trim();
+  const total      = _jobsFiltered.length;
+  const totalPages = Math.ceil(total / JOBS_PAGE_SIZE);
+  const page       = _jobsCurrentPage;
+  const start      = (page - 1) * JOBS_PAGE_SIZE;
+  const items      = _jobsFiltered.slice(start, start + JOBS_PAGE_SIZE);
 
-  // Merge platform-posted jobs + live jobs from API
-  const platformJobs = (App.jobPostings || []).filter(function(j) {
-    if (j.status === 'closed') return false;
-    if (tradeFilter && !j.trade.toLowerCase().includes(tradeFilter)) return false;
-    if (typeFilter  && !j.type.toLowerCase().includes(typeFilter))  return false;
-    if (cityFilter  && !(j.city||'').toLowerCase().includes(cityFilter)) return false;
-    return true;
-  }).map(function(j) { return Object.assign({}, j, { isLive: false }); }).slice().reverse();
+  // All-time total
+  const allTotal = (App.jobPostings || []).filter(function(j){ return j.status !== 'closed'; }).length + _liveJobs.length;
+  if (totalNumEl) totalNumEl.textContent = allTotal.toLocaleString() + '+';
 
-  const liveFiltered = _liveJobs.filter(function(j) {
-    if (tradeFilter && !j.trade.toLowerCase().includes(tradeFilter)) return false;
-    if (typeFilter  && !j.type.toLowerCase().includes(typeFilter))  return false;
-    if (cityFilter  && !j.location.toLowerCase().includes(cityFilter)) return false;
-    return true;
-  }).map(function(j) { return Object.assign({}, j, { isLive: true }); });
+  // Count label
+  if (countEl) {
+    if (total === 0) {
+      countEl.textContent = '0 positions found';
+    } else {
+      let lbl = total.toLocaleString() + ' POSITION' + (total !== 1 ? 'S' : '') + ' FOUND';
+      if (total < allTotal) lbl += ' (filtered from ' + allTotal.toLocaleString() + ' total)';
+      if (totalPages > 1)   lbl += ' — Page ' + page + ' of ' + totalPages;
+      countEl.textContent = lbl;
+    }
+  }
 
-  const jobs = [...platformJobs, ...liveFiltered];
+  if (lastUpd && _jobsFetchedAt) {
+    lastUpd.textContent = 'Updated ' + _jobsFetchedAt.toLocaleTimeString('en-CA', { hour:'2-digit', minute:'2-digit' }) + ' · ' + _jobsFetchedAt.toLocaleDateString('en-CA', { month:'short', day:'numeric' });
+  }
 
-  if (jobs.length === 0) {
+  if (total === 0) {
     grid.innerHTML = '';
-    if (status) status.innerHTML = '<div style="font-size:40px;margin-bottom:12px;">📋</div>'
-      + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;margin-bottom:8px;color:var(--lz-text);">No matching job postings</div>'
-      + '<div style="font-size:14px;margin-bottom:24px;">Try adjusting your filters or check back soon for new openings.</div>'
-      + '<button class="btn btn-orange" onclick="navigate(\'/register\')">Post a Career Opening →</button>';
+    if (status) status.innerHTML =
+      '<div style="font-size:40px;margin-bottom:12px;">📋</div>'
+      + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;margin-bottom:8px;">No matching positions</div>'
+      + '<div style="font-size:14px;margin-bottom:24px;">Try clearing your filters or check back as new jobs are scraped daily.</div>'
+      + '<button class="btn btn-orange" onclick="clearJobFilters()">Clear Filters</button>';
+    const pag = document.getElementById('jobsPagination');
+    if (pag) pag.style.display = 'none';
     return;
   }
 
   if (status) status.innerHTML = '';
-  grid.innerHTML = jobs.map(function(j) {
-    const prov = App.providers.find(function(p) { return p.id === j.providerId; });
-    const posted = (j.displayDate || (j.createdAt ? new Date(j.createdAt).toLocaleDateString('en-CA', {month:'short',day:'numeric',year:'numeric'}) : 'Recently'));
-    const companyName = prov ? prov.companyName : (j.company || j.companyName || 'Trade Employer');
-    const location = j.location || j.city || 'Canada';
-    const sourceTag = j.isLive
-      ? '<span style="font-size:11px;color:var(--lz-muted);border:1px solid var(--lz-border);padding:2px 8px;border-radius:2px;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:0.06em;">Via ' + j.source + '</span>'
-      : '<span style="font-size:11px;color:#166534;background:#DCFCE7;padding:2px 8px;border-radius:2px;font-family:\'Barlow Condensed\',sans-serif;letter-spacing:0.06em;">Platform Listing</span>';
-    const action = j.isLive
-      ? '<a href="' + j.link + '" target="_blank" rel="noopener" class="btn btn-orange btn-sm">View &amp; Apply on ' + j.source + ' &#8594;</a>'
-      : '<button class="btn btn-orange btn-sm" onclick="showApplyModal(\'' + (prov ? prov.id : j.providerId) + '\',\'' + companyName.replace(/'/g,'') + '\')">Apply Now &#8594;</button>';
-    return '<div class="lz-card" style="padding:24px;display:flex;gap:20px;align-items:flex-start;">'
-      + '<div style="font-size:36px;flex-shrink:0;">' + (j.icon || '🔨') + '</div>'
+  grid.innerHTML = items.map(function(j) {
+    const posted  = j.displayDate || (j.createdAt ? new Date(j.createdAt).toLocaleDateString('en-CA', { month:'short', day:'numeric', year:'numeric' }) : 'Recently');
+    const company = j.company || j.companyName || 'Trade Employer';
+    const loc     = j.location || (j.city ? j.city + (j.province ? ', ' + j.province : '') : '') || 'Canada';
+
+    // Source badge styling
+    const srcColors = {
+      'Job Bank Canada':    'background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.35);color:#6FE09A;',
+      'Job Bank — BC':      'background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.35);color:#93C5FD;',
+      'Job Bank — Alberta': 'background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.35);color:#FCD34D;',
+      'Indeed Canada':      'background:rgba(224,98,26,0.12);border:1px solid rgba(224,98,26,0.3);color:#F07030;',
+      'Platform':           'background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:#34D399;',
+    };
+    const srcStyle = srcColors[j.source] || 'background:var(--n600);border:1px solid var(--n400);color:var(--s300);';
+    const srcTag   = '<span style="' + srcStyle + 'font-size:11px;padding:3px 9px;border-radius:3px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.06em;white-space:nowrap;">'
+      + (j.sourceBadge || '') + ' ' + (j.source || 'Source') + '</span>';
+
+    const expStyle = {
+      'Apprenticeship / Entry Level': 'background:rgba(59,130,246,0.15);border:1px solid rgba(59,130,246,0.3);color:#93C5FD;',
+      'Journeyman / Red Seal':        'background:rgba(251,191,36,0.15);border:1px solid rgba(251,191,36,0.3);color:#FCD34D;',
+      'Senior / Supervisor':          'background:rgba(168,85,247,0.15);border:1px solid rgba(168,85,247,0.3);color:#C084FC;',
+    }[j.experience] || 'background:var(--n600);border:1px solid var(--n400);color:var(--s300);';
+    const expTag = j.experience
+      ? '<span style="' + expStyle + 'font-size:11px;padding:3px 9px;border-radius:3px;font-family:\'Barlow Condensed\',sans-serif;font-weight:600;">' + j.experience + '</span>'
+      : '';
+
+    const action = j.isLive && j.link
+      ? '<a href="' + j.link + '" target="_blank" rel="noopener noreferrer" class="btn btn-orange btn-sm">Apply via ' + (j.source || 'Job Board') + ' &#8594;</a>'
+      : '<button class="btn btn-orange btn-sm" onclick="showApplyModal(\'' + (j.providerId||'') + '\',\'' + company.replace(/'/g, '') + '\')">Apply Now &#8594;</button>';
+
+    return '<div class="provider-card" style="padding:20px 24px;">'
+      + '<div style="display:flex;gap:16px;align-items:flex-start;">'
+      + '<div style="font-size:34px;flex-shrink:0;margin-top:2px;">' + (j.icon || '🔨') + '</div>'
       + '<div style="flex:1;min-width:0;">'
-      + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:6px;">'
-      + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:20px;color:var(--lz-text);">' + j.title + '</div>'
-      + '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">' + sourceTag + '<span class="badge badge-orange">' + (j.type || 'Full-time') + '</span></div>'
+      + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:8px;">'
+      + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:20px;color:white;line-height:1.2;">' + j.title + '</div>'
+      + '<div style="display:flex;gap:6px;flex-wrap:wrap;flex-shrink:0;">' + srcTag + '</div>'
       + '</div>'
-      + '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;font-size:13px;color:var(--lz-sub);">'
-      + (companyName !== 'Trade Employer' ? '<span>🏗️ ' + companyName + '</span>' : '')
-      + '<span>📍 ' + location + '</span>'
-      + '<span>⚒️ ' + j.trade + '</span>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;">'
+      + '<span class="badge badge-orange" style="font-size:11px;">' + (j.type || 'Full-time') + '</span>'
+      + expTag
+      + '</div>'
+      + '<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px;font-size:13px;color:var(--s400);">'
+      + (company !== 'Trade Employer' ? '<span>🏗️ ' + company + '</span>' : '')
+      + '<span>📍 ' + loc + '</span>'
+      + '<span>⚒️ ' + (j.trade || '') + '</span>'
       + (j.wage ? '<span>💰 ' + j.wage + '</span>' : '')
       + '<span>📅 ' + posted + '</span>'
       + '</div>'
-      + '<div style="font-size:14px;color:var(--lz-sub);line-height:1.65;margin-bottom:14px;">' + j.description + '</div>'
+      + (j.description ? '<div style="font-size:13px;color:var(--s300);line-height:1.65;margin-bottom:14px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;">' + j.description + '</div>' : '')
       + action
-      + '</div></div>';
+      + '</div></div></div>';
   }).join('');
+
+  // Pagination
+  const pag = document.getElementById('jobsPagination');
+  if (pag) {
+    if (totalPages <= 1) {
+      pag.style.display = 'none';
+    } else {
+      pag.style.display = 'flex';
+      let btns = '';
+      btns += '<button onclick="jobsGoToPage(' + (page-1) + ')" style="padding:8px 14px;background:var(--n700);border:1px solid var(--n500);color:var(--s300);border-radius:4px;cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-weight:600;" ' + (page===1?'disabled':'') + '>← Prev</button>';
+      for (let i = Math.max(1,page-2); i <= Math.min(totalPages,page+2); i++) {
+        btns += '<button onclick="jobsGoToPage(' + i + ')" style="padding:8px 14px;background:' + (i===page?'var(--o500)':'var(--n700)') + ';border:1px solid ' + (i===page?'var(--o500)':'var(--n500)') + ';color:' + (i===page?'white':'var(--s300)') + ';border-radius:4px;cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-weight:600;">' + i + '</button>';
+      }
+      btns += '<button onclick="jobsGoToPage(' + (page+1) + ')" style="padding:8px 14px;background:var(--n700);border:1px solid var(--n500);color:var(--s300);border-radius:4px;cursor:pointer;font-family:\'Barlow Condensed\',sans-serif;font-weight:600;" ' + (page===totalPages?'disabled':'') + '>Next →</button>';
+      pag.innerHTML = btns;
+    }
+  }
 }
+
+function clearJobFilters() {
+  const kw = document.getElementById('jobFilterKeyword');
+  if (kw) kw.value = '';
+  const tr = document.getElementById('jobFilterTrade');
+  if (tr) tr.value = '';
+  const pr = document.getElementById('jobFilterProv');
+  if (pr) pr.value = '';
+  const t0 = document.querySelector('input[name="jobType"][value=""]');
+  if (t0) t0.checked = true;
+  const e0 = document.querySelector('input[name="jobExp"][value=""]');
+  if (e0) e0.checked = true;
+  const s0 = document.querySelector('input[name="jobSource"][value=""]');
+  if (s0) s0.checked = true;
+  filterJobs();
+}
+
+// Keep old renderJobs as alias so any legacy calls don't break
+function renderJobs() { filterJobs(); }
 
 /* ============================================================
    HOW IT WORKS / FAQ / PRICING HELPERS
