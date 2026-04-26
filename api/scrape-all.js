@@ -5,12 +5,15 @@
  * GET /api/scrape-all            — all major cities, all trades
  * GET /api/scrape-all?cities=3   — limit to top N cities (default 8)
  *
- * Sources:
- *   1. Google Places API + Website Enrichment (/api/scrape-google) — primary
- *      Finds companies via Google Places, then visits each company's own
- *      website to extract email, phone, description, and certifications.
- *   2. Yellow Pages Canada (/api/scrape-yellowpages)                — secondary
- *   3. OpenStreetMap via Overpass API                               — tertiary
+ * Sources (all free, no paid API required):
+ *   1. Foursquare Places API — /api/scrape-foursquare (free 1,000/day)
+ *      Returns website URL → enriched from company's own site
+ *   2. Yelp Fusion API       — /api/scrape-yelp       (free 500/day)
+ *      Returns phone + address directly
+ *   3. HomeStars             — /api/scrape-homestars  (no key, Canadian-specific)
+ *      JSON-LD from Canada's top contractor review site
+ *   4. Yellow Pages Canada   — /api/scrape-yellowpages (HTML scraping)
+ *   5. OpenStreetMap         — Overpass API (free, has lat/lng)
  *
  * Edge-cached 24 h. A Vercel Cron hits this daily to keep cache warm.
  */
@@ -156,22 +159,43 @@ async function fetchYP(city) {
   }
 }
 
-// ── Google Places + Website Enrichment scraper ────────────────────────────────
-async function fetchGoogle(batch) {
+// ── Foursquare scraper ────────────────────────────────────────────────────────
+async function fetchFoursquare(batch) {
   const ctrl  = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 55000); // long-running enrichment
+  const timer = setTimeout(() => ctrl.abort(), 55000);
   try {
-    const r = await fetch(`${BASE_URL}/api/scrape-google?batch=${batch}`, {
-      signal: ctrl.signal,
-    });
+    const r = await fetch(`${BASE_URL}/api/scrape-foursquare?batch=${batch}`, { signal: ctrl.signal });
     clearTimeout(timer);
     if (!r.ok) return [];
     const data = await r.json();
     return data.companies || [];
-  } catch {
+  } catch { clearTimeout(timer); return []; }
+}
+
+// ── Yelp scraper ──────────────────────────────────────────────────────────────
+async function fetchYelp() {
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 55000);
+  try {
+    const r = await fetch(`${BASE_URL}/api/scrape-yelp`, { signal: ctrl.signal });
     clearTimeout(timer);
-    return [];
-  }
+    if (!r.ok) return [];
+    const data = await r.json();
+    return data.companies || [];
+  } catch { clearTimeout(timer); return []; }
+}
+
+// ── HomeStars scraper ─────────────────────────────────────────────────────────
+async function fetchHomeStars() {
+  const ctrl  = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 55000);
+  try {
+    const r = await fetch(`${BASE_URL}/api/scrape-homestars`, { signal: ctrl.signal });
+    clearTimeout(timer);
+    if (!r.ok) return [];
+    const data = await r.json();
+    return data.companies || [];
+  } catch { clearTimeout(timer); return []; }
 }
 
 // ── Handler ──────────────────────────────────────────────────────────────────
@@ -185,29 +209,34 @@ module.exports = async function handler(req, res) {
   const maxCities = Math.min(parseInt(req.query?.cities || '8', 10), CITIES.length);
   const citiesToFetch = CITIES.slice(0, maxCities);
 
-  // Run all scrapers concurrently
-  // Google is highest-quality (website-verified) so runs first and its entries win dedup.
-  const [googleBatch0, googleBatch1, osmResult, ...ypResults] = await Promise.allSettled([
-    fetchGoogle(0),
-    fetchGoogle(1),
+  // Run all scrapers concurrently — website-verified entries win dedup
+  const [fsqBatch0, fsqBatch1, yelpResult, hsResult, osmResult, ...ypResults] = await Promise.allSettled([
+    fetchFoursquare(0),
+    fetchFoursquare(1),
+    fetchYelp(),
+    fetchHomeStars(),
     fetchOSM(),
     ...citiesToFetch.map(city => fetchYP(city)),
   ]);
 
   let companies = [
-    ...(googleBatch0.status === 'fulfilled' ? googleBatch0.value : []),
-    ...(googleBatch1.status === 'fulfilled' ? googleBatch1.value : []),
-    ...(osmResult.status === 'fulfilled'    ? osmResult.value    : []),
+    ...(fsqBatch0.status  === 'fulfilled' ? fsqBatch0.value  : []),
+    ...(fsqBatch1.status  === 'fulfilled' ? fsqBatch1.value  : []),
+    ...(yelpResult.status === 'fulfilled' ? yelpResult.value : []),
+    ...(hsResult.status   === 'fulfilled' ? hsResult.value   : []),
+    ...(osmResult.status  === 'fulfilled' ? osmResult.value  : []),
     ...ypResults.flatMap(r => r.status === 'fulfilled' ? r.value : []),
   ];
 
-  // Deduplicate — prefer website-verified entries (Google source), then contact richness
+  // Sort so highest-quality entries survive dedup
   companies.sort((a, b) => {
     const s = c =>
       (c.websiteVerified ? 16 : 0) +
-      (c.source === 'Google Places' ? 8 : 0) +
-      (c.phone ? 4 : 0) +
-      (c.email ? 2 : 0) +
+      (c.source === 'Foursquare Places' ? 8 : 0) +
+      (c.source === 'HomeStars'         ? 6 : 0) +
+      (c.source === 'Yelp'              ? 4 : 0) +
+      (c.email ? 3 : 0) +
+      (c.phone ? 2 : 0) +
       (c.website ? 1 : 0);
     return s(b) - s(a);
   });
@@ -231,6 +260,6 @@ module.exports = async function handler(req, res) {
     total:   companies.length,
     cities:  citiesToFetch,
     fetched: new Date().toISOString(),
-    sources: ['Google Places + Website Enrichment', 'Yellow Pages Canada', 'OpenStreetMap'],
+    sources: ['Foursquare Places', 'Yelp', 'HomeStars', 'Yellow Pages Canada', 'OpenStreetMap'],
   });
 };
