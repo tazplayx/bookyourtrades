@@ -3793,7 +3793,7 @@ let _stripePaymentElement = null;
 /* ============================================================
    STORAGE
 ============================================================ */
-const SEED_VERSION = '2026-04-25-v1'; // Canada-wide expansion — all trades, all provinces, ~94 companies
+const SEED_VERSION = '2026-04-27-v1'; // All incomplete features implemented — email verify, review moderation, claim flow, blog CMS, lead gating
 
 const TRADE_TYPES = [
   'Boilermaker','Carpentry','Cleaning & Janitorial','Concrete & Masonry',
@@ -3823,6 +3823,7 @@ function loadStorage() {
     localStorage.removeItem('to_bookings');
     localStorage.removeItem('to_reviews');
     localStorage.removeItem('to_notifs');
+    localStorage.removeItem('to_blog_posts');
     App.providers = [...SEED_PROVIDERS];
     localStorage.setItem('to_seed_version', SEED_VERSION);
     saveProviders();
@@ -3877,6 +3878,9 @@ function loadStorage() {
 
   const sap = localStorage.getItem('to_applications');
   if (sap) App.applications = JSON.parse(sap);
+
+  // Initialize dynamic blog posts (falls back to static BLOG_POSTS)
+  initBlogPosts();
 
   const sess = sessionStorage.getItem('to_session');
   if (sess) App.currentUser = JSON.parse(sess);
@@ -4302,6 +4306,16 @@ function router() {
       document.title = 'Trade Hiring Guides & Industry News | BookYourTrades Blog';
       renderBlogList();
     }
+  } else if (page === 'verify') {
+    // Email / claim verification
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token') || (parts[1] || '');
+    if (token) {
+      handleEmailVerification(token);
+    } else {
+      navigate('/');
+    }
+    return; // don't activate any page div
   } else if (page === 'trades-education') {
     document.getElementById('page-trades-education').classList.add('active');
     document.title = 'Get Into the Trades \u2014 Ontario Trades Career Guide | BookYourTrades';
@@ -4451,7 +4465,7 @@ function closeMobileNav() {
 function renderBlogList() {
   const grid = document.getElementById('blogGrid');
   if (!grid) return;
-  grid.innerHTML = BLOG_POSTS.map(function(p) {
+  grid.innerHTML = getBlogPosts().map(function(p) {
     return '<div class="blog-card" onclick="navigate(\'/blog/' + p.slug + '\')">'
       + (p.image
           ? '<img class="blog-card-img" src="' + p.image + '" alt="' + p.title + '" loading="lazy" onerror="this.outerHTML=\'<div class=blog-card-img-fallback>' + p.icon + '</div>\'">'
@@ -4470,7 +4484,7 @@ function renderBlogList() {
 }
 
 function renderBlogPost(slug) {
-  const post = BLOG_POSTS.find(function(p) { return p.slug === slug; });
+  const post = getBlogPosts().find(function(p) { return p.slug === slug; });
   const el = document.getElementById('blogPostContent');
   if (!el) return;
 
@@ -5194,7 +5208,7 @@ function renderProvider(id) {
   if (!p) { el.innerHTML=`<div class="container" style="padding:80px 0;text-align:center;"><h2>Provider not found.</h2></div>`; return; }
 
   const ini = p.companyName.split(' ').map(w=>w[0]).slice(0,2).join('');
-  const reviews = App.reviews.filter(r=>r.providerId===id);
+  const reviews = App.reviews.filter(r=>r.providerId===id && (r.status==='approved' || !r.status));
   const avgRating = reviews.length ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : p.rating;
   const reviewCount = reviews.length || p.reviewCount;
   const related = App.providers.filter(x=>x.id!==id && x.tradeType===p.tradeType).slice(0,3);
@@ -5444,19 +5458,22 @@ function handleReview(e, pid) {
     id:'r'+Date.now(), providerId:pid,
     authorName:data.authorName, authorCompany:data.authorCompany||'',
     rating:parseInt(data.rating), comment:data.comment,
-    date: new Date().toISOString().split('T')[0]
+    date: new Date().toISOString().split('T')[0],
+    status: 'pending'
   };
   App.reviews.push(review);
-  // update provider rating
+  // Only recalculate rating from approved reviews
   const idx = App.providers.findIndex(p=>p.id===pid);
   if (idx>-1) {
-    const provRevs = App.reviews.filter(r=>r.providerId===pid);
-    App.providers[idx].rating = parseFloat((provRevs.reduce((s,r)=>s+r.rating,0)/provRevs.length).toFixed(1));
-    App.providers[idx].reviewCount = provRevs.length;
+    const approvedRevs = App.reviews.filter(r=>r.providerId===pid && r.status==='approved');
+    if (approvedRevs.length > 0) {
+      App.providers[idx].rating = parseFloat((approvedRevs.reduce((s,r)=>s+r.rating,0)/approvedRevs.length).toFixed(1));
+      App.providers[idx].reviewCount = approvedRevs.length;
+    }
     saveProviders();
   }
   saveReviews();
-  showToast('Review submitted — thank you!','success');
+  showToast('Review submitted — thank you! It will appear after moderation.','success');
   renderProvider(pid);
 }
 
@@ -5687,24 +5704,152 @@ function handleClaim(e) {
     document.getElementById('claimAlert').innerHTML=`<div class="alert alert-error">An account with this email already exists. <a onclick="closeClaimModal();navigate('/login')" style="color:var(--o400);cursor:pointer;">Sign in instead.</a></div>`;
     return;
   }
-  /* Mark provider as claimed */
   const idx = App.providers.findIndex(p=>p.id===pid);
-  if (idx>-1) {
-    App.providers[idx].claimed = true;
-    App.providers[idx].contactName = data.contactName;
-    App.providers[idx].email = data.email;
-    App.providers[idx].password = data.password;
-    saveProviders();
-  }
-  const user = { id:'u'+Date.now(), email:data.email, password:data.password, providerId:pid };
-  App.users.push(user);
-  saveUsers();
-  App.currentUser = {...user, provider:App.providers[idx]};
-  sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
-  updateNav();
+  if (idx < 0) return;
+  const prov = App.providers[idx];
+
+  // Store pending claim with verification token — don't grant access yet
+  const claimToken = 'clmtk_' + Math.random().toString(36).substr(2,12) + Date.now().toString(36);
+  App.providers[idx].pendingClaim = {
+    name: data.contactName,
+    email: data.email,
+    password: data.password,
+    token: claimToken,
+    verified: false,
+    submittedAt: new Date().toISOString()
+  };
+  saveProviders();
+
+  // Send verification email to claimant
+  fetch('/api/send-email', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      type:'claim_verification', email: data.email,
+      data:{
+        name: data.contactName,
+        company: prov.companyName,
+        trade: prov.tradeType,
+        city: (prov.serviceAreas||[])[0]||'',
+        verifyUrl: 'https://bookyourtrades.com/verify?token=' + claimToken
+      }
+    })
+  }).catch(function(){});
+
   closeClaimModal();
-  navigate('/dashboard');
-  showToast(`Listing claimed! Welcome to BookYourTrades.`,'success');
+  showToast(`Verification email sent to ${data.email}. Click the link in your email to submit your claim for review.`,'success');
+}
+
+function adminApproveClaim(pid) {
+  const idx = App.providers.findIndex(p=>p.id===pid);
+  if (idx<0) return;
+  const claim = App.providers[idx].pendingClaim;
+  if (!claim) return;
+  // Promote claim to active user
+  App.providers[idx].claimed = true;
+  App.providers[idx].contactName = claim.name;
+  App.providers[idx].email = claim.email;
+  App.providers[idx].password = claim.password;
+  App.providers[idx].emailVerified = true;
+  App.providers[idx].status = 'active';
+  delete App.providers[idx].pendingClaim;
+  saveProviders();
+  const user = { id:'u'+Date.now(), email:claim.email, password:claim.password, providerId:pid };
+  App.users.push(user); saveUsers();
+  // Notify claimant
+  fetch('/api/send-email', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      type:'application_approved', email: claim.email,
+      data:{ name: claim.name, company: App.providers[idx].companyName,
+             trade: App.providers[idx].tradeType, city: (App.providers[idx].serviceAreas||[])[0]||'', plan:'Free' }
+    })
+  }).catch(function(){});
+  renderAdminPanel();
+  showToast(`Claim for ${App.providers[idx].companyName} approved.`,'success');
+}
+
+function adminRejectClaim(pid) {
+  const prov = App.providers.find(p=>p.id===pid);
+  if (!prov || !prov.pendingClaim) return;
+  const reason = prompt(`Optional: Reason for rejecting claim on ${prov.companyName}:`);
+  if (reason===null) return;
+  const idx = App.providers.findIndex(p=>p.id===pid);
+  fetch('/api/send-email', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      type:'application_rejected', email: prov.pendingClaim.email,
+      data:{ name: prov.pendingClaim.name, company: prov.companyName, reason: reason||'' }
+    })
+  }).catch(function(){});
+  App.providers[idx].pendingClaim = null;
+  saveProviders();
+  renderAdminPanel();
+  showToast(`Claim on ${prov.companyName} rejected.`,'error');
+}
+
+/* ============================================================
+   EMAIL VERIFICATION
+============================================================ */
+function handleEmailVerification(token) {
+  // Check providers
+  const idx = App.providers.findIndex(p => p.emailToken === token);
+  if (idx > -1) {
+    App.providers[idx].emailVerified = true;
+    delete App.providers[idx].emailToken;
+    saveProviders();
+    showToast('Email verified! Your application is now under review. We\'ll notify you once approved.', 'success');
+    navigate('/login');
+    return;
+  }
+  // Check pending claims
+  const cidx = App.providers.findIndex(p => p.pendingClaim && p.pendingClaim.token === token);
+  if (cidx > -1) {
+    const claim = App.providers[cidx].pendingClaim;
+    // Mark claim verified — awaiting admin approval
+    App.providers[cidx].pendingClaim.verified = true;
+    saveProviders();
+    // Notify admin
+    fetch('/api/send-email', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        type:'admin_alert', email:'',
+        data:{
+          subject:'New Listing Claim — Awaiting Review',
+          details:{
+            'Company': App.providers[cidx].companyName,
+            'Trade': App.providers[cidx].tradeType,
+            'Claimant': claim.name,
+            'Email': claim.email,
+            'Time': new Date().toLocaleString('en-CA')
+          }
+        }
+      })
+    }).catch(function(){});
+    showToast('Claim verified! An admin will review your ownership request within 1–2 business days.','success');
+    navigate('/login');
+    return;
+  }
+  showToast('Verification link is invalid or has already been used.','error');
+  navigate('/');
+}
+
+function resendVerificationEmail(email) {
+  const prov = App.providers.find(p => p.email && p.email.toLowerCase() === email.toLowerCase() && p.emailVerified === false);
+  if (!prov) { showToast('Could not find an unverified account with that email.','error'); return; }
+  // Refresh token
+  const idx = App.providers.findIndex(p=>p.id===prov.id);
+  const newToken = 'evtk_' + Math.random().toString(36).substr(2,12) + Date.now().toString(36);
+  App.providers[idx].emailToken = newToken;
+  saveProviders();
+  fetch('/api/send-email', {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      type:'email_verification', email: prov.email,
+      data:{ name: prov.contactName, company: prov.companyName,
+             verifyUrl: 'https://bookyourtrades.com/verify?token=' + newToken }
+    })
+  }).catch(function(){});
+  showToast('Verification email resent — please check your inbox.','success');
 }
 
 /* ============================================================
@@ -5729,6 +5874,16 @@ function handleLogin(e) {
   const user = App.users.find(u => u.email.toLowerCase() === email && u.password === pass);
   if (user) {
     const prov = App.providers.find(p => p.id === user.providerId);
+    // Gate unverified emails
+    if (prov && prov.emailVerified === false) {
+      document.getElementById('loginAlert').innerHTML = '<div class="alert alert-error">Please verify your email address first. Check your inbox for a verification link. <a href="#" onclick="resendVerificationEmail(\'' + email + '\')" style="color:var(--o400);">Resend email →</a></div>';
+      return;
+    }
+    // Gate accounts still pending approval
+    if (prov && prov.status === 'pending_approval') {
+      document.getElementById('loginAlert').innerHTML = '<div class="alert alert-error">Your application is under review. You\'ll receive an email when approved. Usually within 1–2 business days.</div>';
+      return;
+    }
     App.currentUser = { ...user, provider: prov, role: 'provider' };
     sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
     updateNav();
@@ -5918,7 +6073,9 @@ function handleRegister(e) {
       serviceAreas:areas, rating:0, reviewCount:0, certifications:[],
       featured:false, claimed:false, requestCount:0,
       logoData: logoData||null, password:data.password,
-      status: 'pending_approval', registeredAt: new Date().toISOString()
+      status: 'pending_approval', registeredAt: new Date().toISOString(),
+      emailVerified: false,
+      emailToken: 'evtk_' + Math.random().toString(36).substr(2,12) + Date.now().toString(36)
     };
     const user = { id:'u'+pid, email:data.email, password:data.password, providerId:pid };
     const newUser = user;
@@ -5946,6 +6103,20 @@ function handleRegister(e) {
       localStorage.setItem('to_seekers', JSON.stringify(App.seekers));
     }
 
+    // Send email verification link
+    fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'email_verification',
+        email: prov.email,
+        data: {
+          name:      prov.contactName,
+          company:   prov.companyName,
+          verifyUrl: 'https://bookyourtrades.com/verify?token=' + prov.emailToken
+        }
+      })
+    }).catch(function(){});
     // Fire-and-forget — contractor welcome email + admin alert
     fetch('/api/send-email', {
       method: 'POST',
@@ -5981,10 +6152,36 @@ function handleRegister(e) {
       })
     }).catch(function(){});
     navigate('/');
-    showToast(`Thank you! Your application is under review. We'll contact you at ${data.email} once approved.`,'success');
+    showToast(`Thanks! Check your email at ${data.email} to verify your address, then your application will be reviewed.`,'success');
   };
-  if (file) { const r=new FileReader(); r.onload=ev=>finalize(ev.target.result); r.readAsDataURL(file); }
-  else finalize(null);
+  if (file) {
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      document.getElementById('registerAlert').innerHTML=`<div class="alert alert-error">Logo must be an image file (JPG, PNG, WEBP, etc.).</div>`; return;
+    }
+    // Validate file size (max 2 MB)
+    if (file.size > 2 * 1024 * 1024) {
+      document.getElementById('registerAlert').innerHTML=`<div class="alert alert-error">Logo file must be under 2 MB. Please resize or compress your image.</div>`; return;
+    }
+    // Canvas-based compression to max 400×400 px at 85% JPEG quality
+    const img = new Image();
+    const objectUrl = URL.createObjectURL(file);
+    img.onload = function() {
+      URL.revokeObjectURL(objectUrl);
+      const maxDim = 400;
+      let w = img.width, h = img.height;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
+        else       { w = Math.round(w * maxDim / h); h = maxDim; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      finalize(canvas.toDataURL('image/jpeg', 0.85));
+    };
+    img.onerror = function() { URL.revokeObjectURL(objectUrl); finalize(null); };
+    img.src = objectUrl;
+  } else finalize(null);
 }
 
 /* ============================================================
@@ -6432,10 +6629,13 @@ function renderAdminPanel() {
       <div class="tab-bar" style="margin-bottom:28px;">
         <button class="tab-btn active" onclick="switchTab('admin-listings',this)">📋 All Listings</button>
         <button class="tab-btn" onclick="switchTab('admin-registrations',this)">⏳ Registrations ${getPendingBadge()}</button>
+        <button class="tab-btn" onclick="switchTab('admin-claims',this)">🔑 Claims ${(function(){var c=App.providers.filter(p=>p.pendingClaim&&p.pendingClaim.verified).length;return c>0?'<span style="background:var(--o500);color:white;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;margin-left:4px;">'+c+'</span>':'';}())}</button>
+        <button class="tab-btn" onclick="switchTab('admin-reviews',this)">⭐ Reviews ${(function(){var c=App.reviews.filter(r=>r.status==='pending').length;return c>0?'<span style="background:var(--o500);color:white;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;margin-left:4px;">'+c+'</span>':'';}())}</button>
         <button class="tab-btn" onclick="switchTab('admin-bookings',this)">📅 All Bookings</button>
         <button class="tab-btn" onclick="switchTab('admin-rfqs',this)">📋 Job Requests</button>
         <button class="tab-btn" onclick="switchTab('admin-clients',this)">👥 Clients</button>
         <button class="tab-btn" onclick="switchTab('admin-add',this)">➕ Add Listing</button>
+        <button class="tab-btn" onclick="switchTab('admin-blog',this)">✍️ Blog CMS</button>
         <button class="tab-btn" onclick="switchTab('admin-settings',this)">⚙️ Site Settings</button>
       </div>
 
@@ -6469,6 +6669,83 @@ function renderAdminPanel() {
       <!-- REGISTRATIONS TAB -->
       <div id="admin-registrations" class="tab-content">
         ${renderRegistrationsTab()}
+      </div>
+
+      <!-- CLAIMS TAB -->
+      <div id="admin-claims" class="tab-content">
+        ${(function(){
+          const claims = App.providers.filter(p=>p.pendingClaim);
+          if (claims.length===0) return '<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">🔑</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;">No pending claims</div></div>';
+          return '<div style="margin-bottom:16px;font-size:14px;color:var(--s400);">'+claims.length+' pending claim'+(claims.length!==1?'s':'')+' — verify email status before approving</div>'
+            + '<div style="display:flex;flex-direction:column;gap:12px;">'
+            + claims.map(function(p){
+                const c = p.pendingClaim;
+                const verifiedBadge = c.verified
+                  ? '<span class="badge badge-green">✓ Email Verified</span>'
+                  : '<span class="badge badge-yellow">⏳ Email Not Verified</span>';
+                return '<div style="background:var(--n700);border:1px solid var(--n500);border-left:4px solid var(--o500);border-radius:8px;padding:20px 24px;">'
+                  + '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">'
+                  + '<div>'
+                  + '<div style="font-weight:600;font-size:16px;color:white;">'+p.companyName+'</div>'
+                  + '<div style="font-size:13px;color:var(--s400);margin-top:4px;">'+p.tradeType+' &bull; '+(p.serviceAreas||[]).slice(0,2).join(', ')+'</div>'
+                  + '<div style="margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--s300);">'
+                  + '<span>Claimant: <strong style="color:white;">'+c.name+'</strong></span>'
+                  + '<span>Email: <strong style="color:white;">'+c.email+'</strong></span>'
+                  + '<span>'+verifiedBadge+'</span>'
+                  + '<span style="color:var(--s400);">Submitted: '+new Date(c.submittedAt).toLocaleDateString('en-CA')+'</span>'
+                  + '</div></div>'
+                  + '<div style="display:flex;gap:8px;flex-wrap:wrap;">'
+                  + (c.verified ? '<button class="btn btn-sm" style="background:#1A4D2E;color:#6FE09A;border:1px solid #2A6D3E;" onclick="adminApproveClaim(\''+p.id+'\')">✓ Approve Claim</button>' : '')
+                  + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminRejectClaim(\''+p.id+'\')">✗ Reject</button>'
+                  + '</div></div></div>';
+              }).join('')
+            + '</div>';
+        }())}
+      </div>
+
+      <!-- REVIEWS MODERATION TAB -->
+      <div id="admin-reviews" class="tab-content">
+        ${(function(){
+          const pending = App.reviews.filter(r=>r.status==='pending');
+          const approved = App.reviews.filter(r=>r.status==='approved'||!r.status);
+          return '<div style="display:flex;gap:16px;margin-bottom:20px;flex-wrap:wrap;">'
+            + '<div style="font-size:14px;color:var(--s400);">&#8203;<strong style="color:var(--o400);">'+pending.length+'</strong> pending &bull; <strong style="color:#22C55E;">'+approved.length+'</strong> approved</div>'
+            + '</div>'
+            + (pending.length===0
+              ? '<div style="text-align:center;padding:40px;color:var(--s400);">No reviews pending moderation.</div>'
+              : '<h3 style="font-size:16px;color:var(--s300);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.06em;font-family:\'Barlow Condensed\',sans-serif;">Pending Approval</h3>'
+                + '<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:32px;">'
+                + pending.map(function(r){
+                    const p = App.providers.find(function(x){return x.id===r.providerId;});
+                    const stars = '★'.repeat(r.rating)+'☆'.repeat(5-r.rating);
+                    return '<div style="background:var(--n700);border:1px solid var(--n500);border-left:4px solid var(--o500);border-radius:8px;padding:16px 20px;">'
+                      + '<div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px;">'
+                      + '<div style="flex:1;">'
+                      + '<div style="color:var(--o400);font-size:16px;margin-bottom:4px;">'+stars+'</div>'
+                      + '<div style="font-weight:600;color:white;margin-bottom:4px;">'+r.authorName+(r.authorCompany?' — '+r.authorCompany:'')+'</div>'
+                      + '<div style="font-size:13px;color:var(--s300);line-height:1.6;margin-bottom:6px;">'+r.comment+'</div>'
+                      + '<div style="font-size:12px;color:var(--s400);">For: '+(p?p.companyName:r.providerId)+' &bull; '+r.date+'</div>'
+                      + '</div>'
+                      + '<div style="display:flex;gap:8px;flex-shrink:0;">'
+                      + '<button class="btn btn-sm" style="background:#1A4D2E;color:#6FE09A;border:1px solid #2A6D3E;" onclick="adminApproveReview(\''+r.id+'\')">✓ Approve</button>'
+                      + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteReview(\''+r.id+'\')">✗ Delete</button>'
+                      + '</div></div></div>';
+                  }).join('')
+                + '</div>')
+            + (approved.length > 0
+              ? '<h3 style="font-size:16px;color:var(--s300);margin-bottom:12px;text-transform:uppercase;letter-spacing:0.06em;font-family:\'Barlow Condensed\',sans-serif;">Approved Reviews ('+approved.length+')</h3>'
+                + '<div style="display:flex;flex-direction:column;gap:8px;">'
+                + approved.slice().reverse().slice(0,20).map(function(r){
+                    const p = App.providers.find(function(x){return x.id===r.providerId;});
+                    const stars = '★'.repeat(r.rating)+'☆'.repeat(5-r.rating);
+                    return '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;">'
+                      + '<div><span style="color:var(--o400);">'+stars+'</span> <strong style="color:white;">'+r.authorName+'</strong> <span style="color:var(--s400);font-size:13px;">for '+(p?p.companyName:'unknown')+'</span></div>'
+                      + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;font-size:11px;" onclick="adminDeleteReview(\''+r.id+'\')">Remove</button>'
+                      + '</div>';
+                  }).join('')
+                + '</div>'
+              : '');
+        }())}
       </div>
 
       <!-- BOOKINGS TAB -->
@@ -6574,6 +6851,37 @@ function renderAdminPanel() {
         </div>
       </div>
 
+      <!-- BLOG CMS TAB -->
+      <div id="admin-blog" class="tab-content">
+        <div style="max-width:860px;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;">
+            <div>
+              <h3 style="font-size:20px;color:white;margin-bottom:4px;">Blog Management</h3>
+              <p style="font-size:13px;color:var(--s400);">${(App.blogPosts||BLOG_POSTS).length} posts &bull; Manage and publish trade knowledge articles</p>
+            </div>
+            <button class="btn btn-orange" onclick="openBlogEditor(null)">+ New Post</button>
+          </div>
+          <div id="adminBlogList">
+            ${(function(){
+              const posts = App.blogPosts || BLOG_POSTS;
+              if (posts.length===0) return '<div style="text-align:center;padding:40px;color:var(--s400);">No blog posts yet. Click "+ New Post" to add one.</div>';
+              return posts.map(function(p){
+                return '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:8px;">'
+                  + '<div style="flex:1;min-width:200px;">'
+                  + '<div style="font-weight:600;color:white;font-size:15px;margin-bottom:2px;">'+p.title+'</div>'
+                  + '<div style="font-size:12px;color:var(--s400);">'+(p.tag||'')+(p.author?' &bull; '+p.author:'')+(p.date?' &bull; '+p.date:'')+'</div>'
+                  + '</div>'
+                  + '<div style="display:flex;gap:8px;flex-shrink:0;">'
+                  + '<button class="btn btn-sm btn-navy" onclick="openBlogEditor(\''+p.slug+'\')">✏️ Edit</button>'
+                  + '<a class="btn btn-sm btn-outline" onclick="navigate(\'/blog/'+p.slug+'\')">👁 View</a>'
+                  + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeletePost(\''+p.slug+'\')">🗑️</button>'
+                  + '</div></div>';
+              }).join('');
+            }())}
+          </div>
+        </div>
+      </div>
+
       <!-- SETTINGS TAB -->
       <div id="admin-settings" class="tab-content">
         <div style="max-width:680px;">
@@ -6632,8 +6940,11 @@ function renderRegistrationsTab() {
       + '<div style="display:flex;align-items:center;gap:16px;">' + logoHTML
       + '<div><div style="font-size:18px;font-weight:700;color:white;">' + (p.companyName||'') + '</div>'
       + '<div style="font-size:13px;color:var(--o400);margin-top:2px;">' + (p.tradeType||'') + '</div>'
-      + '<div style="font-size:12px;color:var(--s400);margin-top:2px;">Applied: ' + appliedDate + '</div></div></div>'
-      + '<div style="display:flex;gap:8px;">'
+      + '<div style="font-size:12px;color:var(--s400);margin-top:2px;">Applied: ' + appliedDate + '</div>'
+      + (p.emailVerified ? '<div style="font-size:12px;color:#22C55E;margin-top:2px;">&#x2713; Email Verified</div>' : '<div style="font-size:12px;color:#F0A030;margin-top:2px;">&#9888; Email Not Verified</div>')
+      + '</div></div>'
+      + '<div style="display:flex;gap:8px;align-items:center;">'
+      + (p.emailVerified ? '' : '<span style="font-size:11px;color:#F0A030;padding:0 6px;">Awaiting verification</span>')
       + '<button class="btn btn-sm" style="background:#14532D;color:#86EFAC;border:1px solid #166534;" onclick="approveRegistration(\'' + p.id + '\')">&#x2713; Approve</button>'
       + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="rejectRegistration(\'' + p.id + '\')">&#x2717; Reject</button>'
       + '</div></div>'
@@ -6653,22 +6964,52 @@ function renderRegistrationsTab() {
 function approveRegistration(pid) {
   const idx = App.providers.findIndex(p=>p.id===pid);
   if (idx<0) return;
+  const prov = App.providers[idx];
   App.providers[idx].status = 'active';
   App.providers[idx].claimed = true;
+  App.providers[idx].emailVerified = true;
   saveProviders();
+  // Send approval email
+  const user = App.users.find(u=>u.providerId===pid);
+  if (prov.email) {
+    fetch('/api/send-email', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        type: 'application_approved',
+        email: prov.email,
+        data: {
+          name: prov.contactName, company: prov.companyName,
+          trade: prov.tradeType, city: (prov.serviceAreas||[])[0]||'',
+          plan: prov.plan || 'Free'
+        }
+      })
+    }).catch(function(){});
+  }
   renderAdminPanel();
-  showToast(`${App.providers[idx].companyName} approved and now live in the directory.`,'success');
+  showToast(`${prov.companyName} approved and now live in the directory.`,'success');
 }
 
 function rejectRegistration(pid) {
   const prov = App.providers.find(p=>p.id===pid);
   if (!prov) return;
-  if (!confirm(`Reject and remove application from ${prov.companyName}?`)) return;
+  const reason = prompt(`Optional: Enter a rejection reason for ${prov.companyName} (will appear in email — leave blank to skip):`);
+  if (reason === null) return; // user cancelled the prompt
+  // Send rejection email before deleting
+  if (prov.email) {
+    fetch('/api/send-email', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        type: 'application_rejected',
+        email: prov.email,
+        data: { name: prov.contactName, company: prov.companyName, reason: reason||'' }
+      })
+    }).catch(function(){});
+  }
   App.providers = App.providers.filter(p=>p.id!==pid);
   App.users = App.users.filter(u=>u.providerId!==pid);
   saveProviders(); saveUsers();
   renderAdminPanel();
-  showToast(`Application from ${prov.companyName} rejected and removed.`,'error');
+  showToast(`Application from ${prov.companyName} rejected.`,'error');
 }
 
 function renderAdminListRows(providers) {
@@ -6867,6 +7208,139 @@ function exportData() {
 }
 
 /* ============================================================
+   ADMIN — REVIEW MODERATION
+============================================================ */
+function adminApproveReview(rid) {
+  const idx = App.reviews.findIndex(r=>r.id===rid);
+  if (idx<0) return;
+  App.reviews[idx].status = 'approved';
+  // Recalculate provider rating
+  const pid = App.reviews[idx].providerId;
+  const pidx = App.providers.findIndex(p=>p.id===pid);
+  if (pidx>-1) {
+    const approved = App.reviews.filter(r=>r.providerId===pid&&r.status==='approved');
+    App.providers[pidx].rating = approved.length ? parseFloat((approved.reduce((s,r)=>s+r.rating,0)/approved.length).toFixed(1)) : 0;
+    App.providers[pidx].reviewCount = approved.length;
+    saveProviders();
+  }
+  saveReviews();
+  renderAdminPanel();
+  showToast('Review approved and live.','success');
+}
+
+function adminDeleteReview(rid) {
+  if (!confirm('Delete this review permanently?')) return;
+  const r = App.reviews.find(x=>x.id===rid);
+  App.reviews = App.reviews.filter(x=>x.id!==rid);
+  // Recalculate rating
+  if (r) {
+    const pidx = App.providers.findIndex(p=>p.id===r.providerId);
+    if (pidx>-1) {
+      const approved = App.reviews.filter(x=>x.providerId===r.providerId&&x.status==='approved');
+      App.providers[pidx].rating = approved.length ? parseFloat((approved.reduce((s,x)=>s+x.rating,0)/approved.length).toFixed(1)) : 0;
+      App.providers[pidx].reviewCount = approved.length;
+      saveProviders();
+    }
+  }
+  saveReviews();
+  renderAdminPanel();
+  showToast('Review deleted.','success');
+}
+
+/* ============================================================
+   ADMIN — BLOG CMS
+============================================================ */
+function getBlogPosts() {
+  return App.blogPosts || BLOG_POSTS;
+}
+
+function saveBlogPosts(posts) {
+  App.blogPosts = posts;
+  localStorage.setItem('to_blog_posts', JSON.stringify(posts));
+}
+
+function initBlogPosts() {
+  const stored = localStorage.getItem('to_blog_posts');
+  if (stored) {
+    try { App.blogPosts = JSON.parse(stored); } catch(e) { App.blogPosts = [...BLOG_POSTS]; }
+  } else {
+    App.blogPosts = [...BLOG_POSTS];
+    localStorage.setItem('to_blog_posts', JSON.stringify(App.blogPosts));
+  }
+}
+
+function adminDeletePost(slug) {
+  if (!confirm('Delete blog post "'+slug+'"?')) return;
+  const posts = getBlogPosts().filter(p=>p.slug!==slug);
+  saveBlogPosts(posts);
+  renderAdminPanel();
+  showToast('Blog post deleted.','success');
+}
+
+function openBlogEditor(slug) {
+  const existing = document.getElementById('blogEditorModal');
+  if (existing) existing.remove();
+  const post = slug ? getBlogPosts().find(p=>p.slug===slug) : null;
+  const modal = document.createElement('div');
+  modal.id = 'blogEditorModal';
+  modal.style.cssText = 'position:fixed;inset:0;z-index:9500;background:rgba(6,14,26,0.92);backdrop-filter:blur(6px);display:flex;align-items:flex-start;justify-content:center;padding:20px;overflow-y:auto;';
+  modal.innerHTML = '<div style="background:var(--n700);border:1px solid var(--n400);border-top:4px solid var(--o500);border-radius:8px;padding:32px;max-width:780px;width:100%;box-shadow:0 24px 64px rgba(0,0,0,0.6);margin:auto;">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">'
+    + '<h2 style="font-size:24px;color:white;">'+(slug?'Edit Post':'New Blog Post')+'</h2>'
+    + '<button onclick="document.getElementById(\'blogEditorModal\').remove()" style="background:none;border:none;color:var(--s300);font-size:24px;cursor:pointer;">&times;</button>'
+    + '</div>'
+    + '<div id="blogEditorAlert"></div>'
+    + '<form onsubmit="saveBlogPostForm(event,\''+( slug||'')+'\');">'
+    + '<div class="form-row"><div class="form-group"><label class="form-label">Title *</label><input class="form-control" name="title" required value="'+(post?post.title.replace(/"/g,'&quot;'):'')+'"></div>'
+    + '<div class="form-group"><label class="form-label">Slug (URL) *</label><input class="form-control" name="slug" required value="'+(post?post.slug:'')+'" placeholder="my-post-title"></div></div>'
+    + '<div class="form-row"><div class="form-group"><label class="form-label">Tag / Category</label><input class="form-control" name="tag" value="'+(post?post.tag:'')+'" placeholder="e.g. Electrical, HVAC, Hiring Guide"></div>'
+    + '<div class="form-group"><label class="form-label">Icon (emoji)</label><input class="form-control" name="icon" value="'+(post?post.icon:'📰')+'" style="width:80px;"></div></div>'
+    + '<div class="form-row"><div class="form-group"><label class="form-label">Author</label><input class="form-control" name="author" value="'+(post?post.author:'BookYourTrades Editorial')+'"></div>'
+    + '<div class="form-group"><label class="form-label">Read Time</label><input class="form-control" name="readTime" value="'+(post?post.readTime:'5 min read')+'"></div></div>'
+    + '<div class="form-row"><div class="form-group" style="flex:2;"><label class="form-label">Image URL</label><input class="form-control" name="image" value="'+(post&&post.image?post.image:'')+'" placeholder="https://..."></div>'
+    + '<div class="form-group"><label class="form-label">Publish Date</label><input class="form-control" name="date" value="'+(post?post.date:new Date().toLocaleDateString('en-CA',{month:'long',day:'numeric',year:'numeric'}))+'"></div></div>'
+    + '<div class="form-group"><label class="form-label">Excerpt *</label><textarea class="form-control" name="excerpt" required style="min-height:80px;">'+(post?post.excerpt.replace(/</g,'&lt;'):'')+'</textarea></div>'
+    + '<div class="form-group"><label class="form-label">Body HTML *</label><textarea class="form-control" name="body" required style="min-height:240px;font-family:monospace;font-size:12px;">'+(post?post.body.replace(/</g,'&lt;'):'')+'</textarea></div>'
+    + '<div style="display:flex;gap:10px;margin-top:4px;">'
+    + '<button type="button" class="btn btn-navy" style="flex:1;justify-content:center;" onclick="document.getElementById(\'blogEditorModal\').remove()">Cancel</button>'
+    + '<button type="submit" class="btn btn-orange" style="flex:2;justify-content:center;">Save Post →</button>'
+    + '</div></form></div>';
+  document.body.appendChild(modal);
+}
+
+function saveBlogPostForm(e, existingSlug) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const data = Object.fromEntries(fd);
+  if (!data.title || !data.slug || !data.excerpt || !data.body) {
+    document.getElementById('blogEditorAlert').innerHTML = '<div class="alert alert-error">Please fill all required fields.</div>'; return;
+  }
+  const slug = data.slug.toLowerCase().replace(/[^a-z0-9-]/g,'-').replace(/-+/g,'-');
+  const posts = getBlogPosts();
+  // Check slug uniqueness (unless editing same post)
+  if (posts.find(p=>p.slug===slug&&p.slug!==existingSlug)) {
+    document.getElementById('blogEditorAlert').innerHTML = '<div class="alert alert-error">A post with this slug already exists.</div>'; return;
+  }
+  const newPost = {
+    slug, title: data.title, tag: data.tag||'', icon: data.icon||'📰',
+    author: data.author||'BookYourTrades Editorial', date: data.date||'',
+    readTime: data.readTime||'5 min read',
+    image: data.image||'',
+    excerpt: data.excerpt, body: data.body
+  };
+  let updated;
+  if (existingSlug) {
+    updated = posts.map(p=>p.slug===existingSlug?newPost:p);
+  } else {
+    updated = [newPost, ...posts];
+  }
+  saveBlogPosts(updated);
+  document.getElementById('blogEditorModal')?.remove();
+  renderAdminPanel();
+  showToast(existingSlug?'Post updated!':'Post published!','success');
+}
+
+/* ============================================================
    ENHANCED DASHBOARD
 ============================================================ */
 function renderDashboard() {
@@ -6934,27 +7408,39 @@ function renderDashboard() {
 
       <!-- Appointments -->
       <div id="tab-appt" class="tab-content active">
-        ${bookings.length===0 ? `<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">&#128203;</div><div style="font-family:'Barlow Condensed',sans-serif;font-size:22px;margin-bottom:8px;">No bookings yet</div><div style="font-size:14px;">When clients book through your profile, appointments appear here.</div></div>`
-        : `<div class="table-container"><table class="data-table"><thead><tr><th>Client</th><th>Contact</th><th>Date &amp; Time</th><th>Description</th><th>Status</th><th>Actions</th></tr></thead><tbody>
-          ${bookings.sort((a,b)=>new Date(a.serviceDate)-new Date(b.serviceDate)).map(b=>`
-            <tr>
-              <td><div style="font-weight:500;">${b.customerName}</div><div style="font-size:12px;color:var(--s400);">Submitted ${b.createdAt}</div></td>
-              <td><div style="font-size:13px;">${b.customerEmail}</div><div style="font-size:13px;color:var(--s400);">${b.customerPhone}</div></td>
-              <td><div style="font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;">${formatDate(b.serviceDate)}</div><div style="font-size:13px;color:var(--s400);">${b.serviceTime}</div></td>
-              <td style="max-width:200px;"><div style="font-size:13px;color:var(--s300);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${b.jobDescription}">${b.jobDescription}</div></td>
-              <td>${statusBadge(b.status)}</td>
-              <td><div style="display:flex;gap:6px;flex-wrap:wrap;">
-                ${b.status==='pending'?`
-                  <button class="btn btn-sm btn-orange" onclick="updateStatus('${b.id}','confirmed')">🔓 Unlock Lead — $2.99</button>
-                  <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="updateStatus('${b.id}','cancelled')">Decline</button>
-                `:b.status==='confirmed'?`
-                  <button class="btn btn-sm btn-navy" onclick="updateStatus('${b.id}','completed')">Mark Done</button>
-                  <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="updateStatus('${b.id}','cancelled')">Cancel</button>
-                `:'&mdash;'}
-              </div></td>
-            </tr>
-          `).join('')}
-        </tbody></table></div>`}
+        ${(function(){
+          const isPaidPlan = prov.plan==='pro'||prov.plan==='enterprise';
+          if (!isPaidPlan && bookings.some(b=>b.status==='pending'&&!b.paid)) {
+            var freeNote = '<div style="background:linear-gradient(135deg,#1A1200,#2C1F00);border:1px solid var(--o500);border-radius:8px;padding:14px 20px;margin-bottom:18px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">'
+              + '<span style="font-size:18px;">&#128274;</span>'
+              + '<span style="font-size:14px;color:var(--s300);flex:1;">On the <strong style="color:white;">Free Plan</strong>, client contact info is unlocked per-lead for <strong style="color:var(--o400);">$2.99</strong>. Upgrade to <a onclick="navigate(\'/pricing\')" style="color:var(--o400);cursor:pointer;text-decoration:underline;">Pro</a> for unlimited contact access.</span>'
+              + '</div>';
+          } else { var freeNote = ''; }
+          if (bookings.length===0) return freeNote + '<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">&#128203;</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;margin-bottom:8px;">No bookings yet</div><div style="font-size:14px;">When clients book through your profile, appointments appear here.</div></div>';
+          var rows = bookings.slice().sort(function(a,c){return new Date(a.serviceDate)-new Date(c.serviceDate);}).map(function(b){
+            var contactRevealed = b.paid || isPaidPlan;
+            var contactCell = contactRevealed
+              ? '<div style="font-size:13px;">'+(b.customerEmail||'—')+'</div><div style="font-size:13px;color:var(--s400);">'+(b.customerPhone||'—')+'</div>'
+              : '<div style="font-size:11px;color:var(--o400);font-weight:600;margin-bottom:2px;">&#128274; Contact locked</div><div style="font-size:12px;color:var(--s400);">Unlock for $2.99</div>';
+            var actions;
+            if (b.status==='pending') {
+              actions = '<button class="btn btn-sm btn-orange" onclick="openPayModal(\''+b.id+'\')">&#128274; Unlock Lead — $2.99</button>'
+                + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="updateStatus(\''+b.id+'\',\'cancelled\')">Decline</button>';
+            } else if (b.status==='confirmed') {
+              actions = '<button class="btn btn-sm btn-navy" onclick="updateStatus(\''+b.id+'\',\'completed\')">Mark Done</button>'
+                + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="updateStatus(\''+b.id+'\',\'cancelled\')">Cancel</button>';
+            } else { actions = '&mdash;'; }
+            return '<tr>'
+              + '<td><div style="font-weight:500;">'+b.customerName+'</div><div style="font-size:12px;color:var(--s400);">Submitted '+b.createdAt+'</div></td>'
+              + '<td>'+contactCell+'</td>'
+              + '<td><div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:600;font-size:15px;">'+formatDate(b.serviceDate)+'</div><div style="font-size:13px;color:var(--s400);">'+b.serviceTime+'</div></td>'
+              + '<td style="max-width:200px;"><div style="font-size:13px;color:var(--s300);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+b.jobDescription+'">'+b.jobDescription+'</div></td>'
+              + '<td>'+statusBadge(b.status)+'</td>'
+              + '<td><div style="display:flex;gap:6px;flex-wrap:wrap;">'+actions+'</div></td>'
+              + '</tr>';
+          }).join('');
+          return freeNote + '<div class="table-container"><table class="data-table"><thead><tr><th>Client</th><th>Contact</th><th>Date &amp; Time</th><th>Description</th><th>Status</th><th>Actions</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
+        }())}
       </div>
 
       <!-- Analytics -->

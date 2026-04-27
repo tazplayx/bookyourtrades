@@ -15,6 +15,11 @@
  *   contractor_welcome   — contractor welcome after listing created
  *   admin_alert          — internal alert to admin inbox
  *   new_lead_unclaimed   — outreach email to scraped/unclaimed contractor
+ *   application_approved — contractor approved by admin
+ *   application_rejected — contractor rejected by admin
+ *   email_verification   — provider email verification token
+ *   claim_verification   — ownership claim verification email
+ *   review_approved      — notify contractor their review was approved
  */
 
 const FROM = 'BookYourTrades <info@bookyourtrades.com>';
@@ -175,6 +180,106 @@ function buildNewLeadUnclaimed(data) {
   };
 }
 
+function buildApplicationApproved(data) {
+  return {
+    subject: `🎉 Your listing has been approved — ${data.company || 'BookYourTrades'}`,
+    html: shell(`
+      <h2 style="color:white;font-size:22px;margin:0 0 8px;">You're approved and live! 🎉</h2>
+      <p style="color:#E0621A;font-size:14px;margin:0 0 20px;font-weight:600;">${data.company || ''}</p>
+      <p style="color:#CBD5E1;line-height:1.7;">Hi <strong style="color:white;">${data.name || 'there'}</strong>,</p>
+      <p style="color:#CBD5E1;line-height:1.7;">
+        Great news — your contractor listing on BookYourTrades has been <strong style="color:#4ADE80;">reviewed and approved</strong>.
+        Commercial clients across Canada can now find and contact your business.
+      </p>
+      ${infoTable(
+        row('Business', data.company || '') +
+        row('Trade', data.trade || '') +
+        row('Service Area', data.city || '') +
+        row('Plan', data.plan || 'Free') +
+        row('Status', '<span style="color:#4ADE80;font-weight:700;">✓ Approved</span>')
+      )}
+      <p style="color:#CBD5E1;line-height:1.7;"><strong style="color:white;">Maximize your leads:</strong></p>
+      <ul style="color:#CBD5E1;line-height:2;padding-left:20px;margin:0 0 20px;">
+        <li>Complete your profile with certifications and photos</li>
+        <li>Respond to RFQ leads quickly to win more jobs</li>
+        <li>Upgrade to <strong style="color:#E0621A;">Pro ($49/mo)</strong> for featured placement and unlimited contacts</li>
+      </ul>
+      ${btn('https://bookyourtrades.com/dashboard', 'Go to Your Dashboard →')}
+      <p style="color:#64748B;font-size:13px;text-align:center;">Questions? <a href="mailto:info@bookyourtrades.com">info@bookyourtrades.com</a></p>
+    `),
+  };
+}
+
+function buildApplicationRejected(data) {
+  return {
+    subject: `Your BookYourTrades application — ${data.company || 'Update'}`,
+    html: shell(`
+      <h2 style="color:white;font-size:22px;margin:0 0 16px;">Application Update</h2>
+      <p style="color:#CBD5E1;line-height:1.7;">Hi <strong style="color:white;">${data.name || 'there'}</strong>,</p>
+      <p style="color:#CBD5E1;line-height:1.7;">
+        Thank you for applying to list your business on BookYourTrades. After reviewing your application,
+        we were unable to approve <strong style="color:white;">${data.company || 'your listing'}</strong> at this time.
+      </p>
+      ${data.reason ? `
+      <div style="background:#0B1929;border:1px solid #1E3A5C;border-left:3px solid #E0621A;border-radius:8px;padding:16px;margin:20px 0;">
+        <p style="color:#64748B;font-size:12px;text-transform:uppercase;letter-spacing:0.08em;margin:0 0 8px;">Reason</p>
+        <p style="color:#CBD5E1;margin:0;line-height:1.7;">${data.reason}</p>
+      </div>` : ''}
+      <p style="color:#CBD5E1;line-height:1.7;">
+        Common reasons for rejection include incomplete trade licence information, unverifiable business details,
+        or service areas outside our current coverage. You're welcome to reapply once these are resolved.
+      </p>
+      ${btn('https://bookyourtrades.com/register', 'Reapply Now →')}
+      <p style="color:#64748B;font-size:13px;text-align:center;">
+        If you believe this is an error, please contact <a href="mailto:info@bookyourtrades.com">info@bookyourtrades.com</a> with your business details.
+      </p>
+    `),
+  };
+}
+
+function buildEmailVerification(data) {
+  return {
+    subject: 'Verify your BookYourTrades email address',
+    html: shell(`
+      <h2 style="color:white;font-size:22px;margin:0 0 16px;">Confirm your email address</h2>
+      <p style="color:#CBD5E1;line-height:1.7;">Hi <strong style="color:white;">${data.name || 'there'}</strong>,</p>
+      <p style="color:#CBD5E1;line-height:1.7;">
+        You registered <strong style="color:white;">${data.company || 'your business'}</strong> on BookYourTrades.
+        Click below to verify your email address and complete your registration.
+      </p>
+      ${btn(data.verifyUrl, 'Verify My Email →')}
+      <p style="color:#64748B;font-size:13px;text-align:center;line-height:1.8;">
+        This link expires in <strong style="color:white;">24 hours</strong>.<br>
+        If you didn't register on BookYourTrades, you can safely ignore this email.
+      </p>
+    `),
+  };
+}
+
+function buildClaimVerification(data) {
+  return {
+    subject: `Verify your ownership claim — ${data.company || 'BookYourTrades'}`,
+    html: shell(`
+      <h2 style="color:white;font-size:22px;margin:0 0 16px;">Confirm your listing claim</h2>
+      <p style="color:#CBD5E1;line-height:1.7;">Hi <strong style="color:white;">${data.name || 'there'}</strong>,</p>
+      <p style="color:#CBD5E1;line-height:1.7;">
+        You requested to claim the <strong style="color:white;">${data.company || 'contractor'}</strong> listing on BookYourTrades.
+        Click below to verify your email and submit this claim for admin review.
+      </p>
+      ${infoTable(
+        row('Business', data.company || '') +
+        row('Trade', data.trade || '') +
+        row('City', data.city || '')
+      )}
+      ${btn(data.verifyUrl, 'Verify & Submit Claim →')}
+      <p style="color:#64748B;font-size:13px;text-align:center;line-height:1.8;">
+        After verification, an admin will review your claim within 1–2 business days.<br>
+        Questions? <a href="mailto:info@bookyourtrades.com">info@bookyourtrades.com</a>
+      </p>
+    `),
+  };
+}
+
 // ── Handler ──────────────────────────────────────────────────────────────────
 
 module.exports = async function handler(req, res) {
@@ -219,6 +324,22 @@ module.exports = async function handler(req, res) {
       to = data.companyEmail;
       if (!to) return res.status(400).json({ error: 'companyEmail required' });
       ({ subject, html } = buildNewLeadUnclaimed(data));
+      break;
+    case 'application_approved':
+      to = email;
+      ({ subject, html } = buildApplicationApproved(data));
+      break;
+    case 'application_rejected':
+      to = email;
+      ({ subject, html } = buildApplicationRejected(data));
+      break;
+    case 'email_verification':
+      to = email;
+      ({ subject, html } = buildEmailVerification(data));
+      break;
+    case 'claim_verification':
+      to = email;
+      ({ subject, html } = buildClaimVerification(data));
       break;
     default:
       return res.status(400).json({ error: 'Unknown email type: ' + type });
