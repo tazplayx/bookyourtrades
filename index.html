@@ -4462,25 +4462,46 @@ function closeMobileNav() {
 /* ============================================================
    BLOG
 ============================================================ */
+async function maybeLoadObsidianPosts() {
+  // Silently try to pull fresh posts from Obsidian feed — merge into local cache
+  try {
+    const r    = await fetch('/api/blog-feed');
+    const data = await r.json();
+    if (data.ok && data.posts && data.posts.length > 0) {
+      const existing = getBlogPosts();
+      const obsidianSlugs = new Set(data.posts.map(p=>p.slug));
+      const merged = [...data.posts, ...existing.filter(p=>!obsidianSlugs.has(p.slug))];
+      saveBlogPosts(merged);
+    }
+  } catch(e) { /* fail silently — site still works from local cache */ }
+}
+
 function renderBlogList() {
   const grid = document.getElementById('blogGrid');
   if (!grid) return;
-  grid.innerHTML = getBlogPosts().map(function(p) {
-    return '<div class="blog-card" onclick="navigate(\'/blog/' + p.slug + '\')">'
-      + (p.image
-          ? '<img class="blog-card-img" src="' + p.image + '" alt="' + p.title + '" loading="lazy" onerror="this.outerHTML=\'<div class=blog-card-img-fallback>' + p.icon + '</div>\'">'
-          : '<div class="blog-card-img-fallback">' + p.icon + '</div>')
-      + '<div class="blog-card-body">'
-      + '<div class="blog-card-tag">' + p.tag + '</div>'
-      + '<div class="blog-card-title">' + p.title + '</div>'
-      + '<div class="blog-card-excerpt">' + p.excerpt + '</div>'
-      + '<div class="blog-card-meta">'
-      + '<span>&#128100; ' + p.author + '</span>'
-      + '<span>&#128336; ' + p.readTime + '</span>'
-      + '<span>&#128197; ' + p.date + '</span>'
-      + '</div>'
-      + '</div></div>';
-  }).join('');
+  // Kick off background sync from Obsidian feed — re-render if posts change
+  maybeLoadObsidianPosts().then(function() {
+    const g2 = document.getElementById('blogGrid');
+    if (g2) g2.innerHTML = getBlogPosts().map(buildBlogCard).join('');
+  });
+  grid.innerHTML = getBlogPosts().map(buildBlogCard).join('');
+}
+
+function buildBlogCard(p) {
+  return '<div class="blog-card" onclick="navigate(\'/blog/' + p.slug + '\')">'
+    + (p.image
+        ? '<img class="blog-card-img" src="' + p.image + '" alt="' + p.title + '" loading="lazy" onerror="this.outerHTML=\'<div class=blog-card-img-fallback>' + (p.icon||'📰') + '</div>\'">'
+        : '<div class="blog-card-img-fallback">' + (p.icon||'📰') + '</div>')
+    + '<div class="blog-card-body">'
+    + '<div class="blog-card-tag">' + (p.tag||'Trade Knowledge') + '</div>'
+    + '<div class="blog-card-title">' + p.title + '</div>'
+    + '<div class="blog-card-excerpt">' + (p.excerpt||'') + '</div>'
+    + '<div class="blog-card-meta">'
+    + '<span>&#128100; ' + (p.author||'BookYourTrades') + '</span>'
+    + '<span>&#128336; ' + (p.readTime||'5 min read') + '</span>'
+    + (p.date ? '<span>&#128197; ' + p.date + '</span>' : '')
+    + '</div>'
+    + '</div></div>';
 }
 
 function renderBlogPost(slug) {
@@ -4549,7 +4570,7 @@ function renderBlogPost(slug) {
     + '<div style="max-width:740px;margin:48px auto 0;border-top:1px solid var(--lz-border);padding-top:32px;">'
     + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:18px;color:var(--lz-text);margin-bottom:20px;">More From the Blog</div>'
     + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;">'
-    + BLOG_POSTS.filter(function(x) { return x.slug !== slug; }).slice(0,3).map(function(x) {
+    + getBlogPosts().filter(function(x) { return x.slug !== slug; }).slice(0,3).map(function(x) {
         return '<div class="blog-card" onclick="navigate(\'/blog/' + x.slug + '\')" style="cursor:pointer;">'
           + (x.image
               ? '<img class="blog-card-img" src="' + x.image + '" alt="" loading="lazy" style="height:120px;" onerror="this.style.display=\'none\'">'
@@ -6636,7 +6657,7 @@ function renderAdminPanel() {
         <button class="tab-btn" onclick="switchTab('admin-clients',this)">👥 Clients</button>
         <button class="tab-btn" onclick="switchTab('admin-add',this)">➕ Add Listing</button>
         <button class="tab-btn" onclick="switchTab('admin-blog',this)">✍️ Blog CMS</button>
-        <button class="tab-btn" onclick="switchTab('admin-settings',this)">⚙️ Site Settings</button>
+        <button class="tab-btn" onclick="switchTab('admin-settings',this);onAdminSettingsOpen()">⚙️ Site Settings</button>
       </div>
 
       <!-- LISTINGS TAB -->
@@ -6874,6 +6895,7 @@ function renderAdminPanel() {
                   + '<div style="display:flex;gap:8px;flex-shrink:0;">'
                   + '<button class="btn btn-sm btn-navy" onclick="openBlogEditor(\''+p.slug+'\')">✏️ Edit</button>'
                   + '<a class="btn btn-sm btn-outline" onclick="navigate(\'/blog/'+p.slug+'\')">👁 View</a>'
+                  + '<button class="btn btn-sm" style="background:#2D1A4D;color:#C4B5FD;border:1px solid #4C3A7A;" onclick="publishPostToSocial(\''+p.slug+'\')">🚀 Publish</button>'
                   + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeletePost(\''+p.slug+'\')">🗑️</button>'
                   + '</div></div>';
               }).join('');
@@ -6884,7 +6906,79 @@ function renderAdminPanel() {
 
       <!-- SETTINGS TAB -->
       <div id="admin-settings" class="tab-content">
-        <div style="max-width:680px;">
+        <div style="max-width:720px;">
+
+          <!-- ── Blotato + Ayrshare ──────────────────────────────────── -->
+          <div style="background:var(--n700);border:1px solid var(--n500);border-top:3px solid #7C3AED;border-radius:8px;padding:28px;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+              <div style="font-size:24px;">📣</div>
+              <div>
+                <h3 style="font-size:20px;color:white;margin:0;">Social Media Publishing</h3>
+                <div style="font-size:13px;color:var(--s400);margin-top:2px;">Blotato (infographic posts) + Ayrshare (multi-platform scheduling)</div>
+              </div>
+            </div>
+            <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);border-radius:6px;padding:12px 16px;margin:16px 0;font-size:13px;color:var(--s300);line-height:1.7;">
+              Set your <strong style="color:white;">Blotato API key</strong> (blotato.com → Settings → API Keys) for AI-generated infographic social posts.<br>
+              Set your <strong style="color:white;">Ayrshare API key</strong> (ayrshare.com → Profile → API Key) to schedule to LinkedIn, X, Instagram, and more simultaneously.<br>
+              Both keys are set as <strong style="color:var(--o400);">Vercel environment variables</strong> — never stored here.
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+              <div style="background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:14px 16px;">
+                <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;font-weight:700;margin-bottom:6px;">BLOTATO_API_KEY</div>
+                <div id="blotatoStatus" style="font-size:13px;color:var(--s400);">Checking…</div>
+              </div>
+              <div style="background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:14px 16px;">
+                <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;font-weight:700;margin-bottom:6px;">AYRSHARE_API_KEY</div>
+                <div id="ayrshareStatus" style="font-size:13px;color:var(--s400);">Checking…</div>
+              </div>
+            </div>
+            <div style="margin-bottom:16px;">
+              <label class="form-label">Default Platforms to Post To</label>
+              <div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:8px;" id="socialPlatformsGrid">
+                ${['linkedin','twitter','instagram','facebook','tiktok','bluesky','threads'].map(p=>{
+                  const saved = JSON.parse(localStorage.getItem('byt_social_platforms')||'["linkedin","twitter"]');
+                  return `<label class="checkbox-item" style="font-size:13px;"><input type="checkbox" id="plat_${p}" ${saved.includes(p)?'checked':''} onchange="saveSocialPlatforms()"> ${p.charAt(0).toUpperCase()+p.slice(1)}</label>`;
+                }).join('')}
+              </div>
+            </div>
+            <button class="btn btn-navy btn-sm" onclick="checkSocialStatus()">🔄 Refresh Status</button>
+          </div>
+
+          <!-- ── Obsidian / GitHub Blog Brain ───────────────────────── -->
+          <div style="background:var(--n700);border:1px solid var(--n500);border-top:3px solid #7C3AED;border-radius:8px;padding:28px;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+              <div style="font-size:24px;">🧠</div>
+              <div>
+                <h3 style="font-size:20px;color:white;margin:0;">Obsidian Blog Brain</h3>
+                <div style="font-size:13px;color:var(--s400);margin-top:2px;">Sync your Obsidian vault → GitHub → live blog feed</div>
+              </div>
+            </div>
+            <div style="background:rgba(124,58,237,0.08);border:1px solid rgba(124,58,237,0.25);border-radius:6px;padding:14px 16px;margin:16px 0;font-size:13px;color:var(--s300);line-height:1.8;">
+              <strong style="color:white;">Setup (one-time):</strong><br>
+              1. Install the <strong style="color:#A78BFA;">obsidian-git</strong> plugin in Obsidian → sync your vault to a private GitHub repo<br>
+              2. Create a <code style="background:var(--n600);padding:1px 5px;border-radius:3px;">blog/</code> folder in your vault — each <code style="background:var(--n600);padding:1px 5px;border-radius:3px;">.md</code> file becomes a blog post<br>
+              3. Add YAML frontmatter: <code style="background:var(--n600);padding:1px 5px;border-radius:3px;">title, slug, tag, excerpt, date</code><br>
+              4. Add <strong style="color:var(--o400);">GITHUB_TOKEN</strong> and <strong style="color:var(--o400);">OBSIDIAN_REPO</strong> to Vercel env vars<br>
+              5. Blog posts from Obsidian will automatically appear on the site — no admin needed
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+              <div style="background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:14px 16px;">
+                <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;font-weight:700;margin-bottom:6px;">GITHUB_TOKEN</div>
+                <div id="githubTokenStatus" style="font-size:13px;color:var(--s400);">Checking…</div>
+              </div>
+              <div style="background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:14px 16px;">
+                <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#A78BFA;font-weight:700;margin-bottom:6px;">OBSIDIAN_REPO</div>
+                <div id="obsidianRepoStatus" style="font-size:13px;color:var(--s400);">Checking…</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn btn-navy btn-sm" onclick="checkObsidianFeed()">🔄 Test Feed Connection</button>
+              <button class="btn btn-navy btn-sm" onclick="syncObsidianNow()">⬇️ Pull Posts from Obsidian Now</button>
+            </div>
+            <div id="obsidianFeedResult" style="margin-top:14px;"></div>
+          </div>
+
+          <!-- ── Lead Fee ───────────────────────────────────────────── -->
           <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
             <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Lead Fee Settings</h3>
             <div class="form-row">
@@ -6897,6 +6991,8 @@ function renderAdminPanel() {
               </div>
             </div>
           </div>
+
+          <!-- ── Directory Management ───────────────────────────────── -->
           <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;margin-bottom:20px;">
             <h3 style="font-size:20px;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Directory Management</h3>
             <div style="display:flex;flex-direction:column;gap:12px;">
@@ -6904,6 +7000,8 @@ function renderAdminPanel() {
               <button class="btn btn-navy" onclick="exportData()">⬇️ Export All Data (JSON)</button>
             </div>
           </div>
+
+          <!-- ── Admin Credentials ──────────────────────────────────── -->
           <div style="background:var(--n700);border:1px solid var(--n500);border-radius:6px;padding:28px;">
             <h3 style="font-size:20px;margin-bottom:12px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Admin Credentials</h3>
             <div style="font-size:14px;color:var(--s300);margin-bottom:16px;">Change the admin password below. You will need to use the new password on next login.</div>
@@ -6912,6 +7010,7 @@ function renderAdminPanel() {
               <div class="form-group" style="display:flex;align-items:flex-end;"><button class="btn btn-orange" onclick="changeAdminPass()">Update</button></div>
             </div>
           </div>
+
         </div>
       </div>
 
@@ -7338,6 +7437,148 @@ function saveBlogPostForm(e, existingSlug) {
   document.getElementById('blogEditorModal')?.remove();
   renderAdminPanel();
   showToast(existingSlug?'Post updated!':'Post published!','success');
+}
+
+/* ============================================================
+   SOCIAL PUBLISHING — Blotato / Ayrshare
+============================================================ */
+function saveSocialPlatforms() {
+  const platforms = ['linkedin','twitter','instagram','facebook','tiktok','bluesky','threads']
+    .filter(p => document.getElementById('plat_'+p)?.checked);
+  localStorage.setItem('byt_social_platforms', JSON.stringify(platforms));
+  showToast('Platform preferences saved.','success');
+}
+
+async function checkSocialStatus() {
+  // Probe /api/publish-social with a dry-run flag to confirm keys are configured
+  const el1 = document.getElementById('blotatoStatus');
+  const el2 = document.getElementById('ayrshareStatus');
+  if (el1) el1.innerHTML = '<span style="color:var(--s400);">Checking…</span>';
+  if (el2) el2.innerHTML = '<span style="color:var(--s400);">Checking…</span>';
+  try {
+    const r = await fetch('/api/publish-social', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ title:'__probe__', slug:'__probe__', _dry_run: true })
+    });
+    const data = await r.json();
+    if (data.note && data.note.includes('No social API key')) {
+      if (el1) el1.innerHTML = '<span style="color:#F0A030;">⚠ Not configured — add BLOTATO_API_KEY to Vercel</span>';
+      if (el2) el2.innerHTML = '<span style="color:#F0A030;">⚠ Not configured — add AYRSHARE_API_KEY to Vercel</span>';
+    } else {
+      const prov = data.provider || '';
+      if (el1) el1.innerHTML = prov==='blotato'
+        ? '<span style="color:#22C55E;">✓ Connected (active provider)</span>'
+        : '<span style="color:var(--s400);">Not active — Ayrshare is primary</span>';
+      if (el2) el2.innerHTML = prov==='ayrshare'
+        ? '<span style="color:#22C55E;">✓ Connected (active provider)</span>'
+        : '<span style="color:var(--s400);">Not active — Blotato is primary</span>';
+    }
+  } catch(err) {
+    if (el1) el1.innerHTML = '<span style="color:#F08080;">Error: '+err.message+'</span>';
+    if (el2) el2.innerHTML = '<span style="color:#F08080;">Error: '+err.message+'</span>';
+  }
+}
+
+async function publishPostToSocial(slug) {
+  const post = getBlogPosts().find(p=>p.slug===slug);
+  if (!post) { showToast('Post not found.','error'); return; }
+  const platforms = JSON.parse(localStorage.getItem('byt_social_platforms')||'["linkedin","twitter"]');
+
+  // Prompt for optional schedule date
+  const schedInput = prompt(
+    'Schedule this post (leave blank to post immediately):\nEnter date/time e.g. "2026-05-01T09:00:00Z" — or leave blank for NOW:',
+    ''
+  );
+  if (schedInput === null) return; // cancelled
+
+  showToast('Publishing to social…','success');
+
+  try {
+    const body = {
+      title: post.title, excerpt: post.excerpt,
+      slug: post.slug, tag: post.tag,
+      platforms,
+      scheduleDate: schedInput.trim() || undefined
+    };
+    const r = await fetch('/api/publish-social', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    const data = await r.json();
+    if (data.ok) {
+      const when = schedInput.trim() ? 'scheduled for '+schedInput.trim() : 'posted immediately';
+      showToast(`✓ "${post.title}" ${when} via ${data.provider}`, 'success');
+    } else {
+      showToast('Social publish failed: '+(data.note||data.error||'unknown error'),'error');
+      if (data.note) alert('Social publish note:\n\n'+data.note+'\n\nCheck Vercel environment variables.');
+    }
+  } catch(err) {
+    showToast('Network error: '+err.message,'error');
+  }
+}
+
+/* ============================================================
+   OBSIDIAN / GITHUB BLOG FEED
+============================================================ */
+async function checkObsidianFeed() {
+  const el = document.getElementById('obsidianFeedResult');
+  const gt = document.getElementById('githubTokenStatus');
+  const or = document.getElementById('obsidianRepoStatus');
+  if (el) el.innerHTML = '<div style="font-size:13px;color:var(--s400);">Connecting to GitHub…</div>';
+  try {
+    const r = await fetch('/api/blog-feed');
+    const data = await r.json();
+    if (data.source === 'not_configured') {
+      if (gt) gt.innerHTML = '<span style="color:#F0A030;">⚠ Not set</span>';
+      if (or) or.innerHTML = '<span style="color:#F0A030;">⚠ Not set</span>';
+      if (el) el.innerHTML = '<div style="background:#2C1F00;border:1px solid var(--o500);border-radius:6px;padding:14px 16px;font-size:13px;color:var(--s300);">'
+        + '⚠ Obsidian feed not configured.<br>'
+        + 'Add <strong style="color:var(--o400);">GITHUB_TOKEN</strong> and <strong style="color:var(--o400);">OBSIDIAN_REPO</strong> to your Vercel environment variables, then redeploy.'
+        + '</div>';
+    } else if (data.ok) {
+      if (gt) gt.innerHTML = '<span style="color:#22C55E;">✓ Connected</span>';
+      if (or) or.innerHTML = '<span style="color:#22C55E;">✓ '+data.repo+'</span>';
+      if (el) el.innerHTML = '<div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:6px;padding:14px 16px;font-size:13px;color:var(--s300);">'
+        + '✓ Connected to <strong style="color:white;">'+data.repo+'</strong> ('+data.branch+' / '+data.blogPath+')<br>'
+        + 'Found <strong style="color:#22C55E;">'+data.count+' posts</strong> in Obsidian vault.</div>';
+    } else {
+      if (gt) gt.innerHTML = '<span style="color:#F08080;">Error</span>';
+      if (or) or.innerHTML = '<span style="color:#F08080;">Error</span>';
+      if (el) el.innerHTML = '<div style="background:#2C0A0A;border:1px solid #6D2A2A;border-radius:6px;padding:14px 16px;font-size:13px;color:#F08080;">Error: '+(data.error||'unknown')+'</div>';
+    }
+  } catch(err) {
+    if (el) el.innerHTML = '<div style="color:#F08080;font-size:13px;">Network error: '+err.message+'</div>';
+  }
+}
+
+async function syncObsidianNow() {
+  const el = document.getElementById('obsidianFeedResult');
+  if (el) el.innerHTML = '<div style="font-size:13px;color:var(--s400);">Pulling posts from Obsidian vault…</div>';
+  try {
+    const r    = await fetch('/api/blog-feed');
+    const data = await r.json();
+    if (!data.ok || !data.posts || data.posts.length === 0) {
+      if (el) el.innerHTML = '<div style="color:#F0A030;font-size:13px;">'+(data.note||data.error||'No posts found in Obsidian vault.')+'</div>';
+      return;
+    }
+    // Merge Obsidian posts with existing blog posts (Obsidian takes precedence by slug)
+    const existing = getBlogPosts();
+    const obsidianSlugs = new Set(data.posts.map(p=>p.slug));
+    const merged = [...data.posts, ...existing.filter(p=>!obsidianSlugs.has(p.slug))];
+    saveBlogPosts(merged);
+    renderAdminPanel();
+    showToast('✓ Pulled '+data.posts.length+' posts from Obsidian vault.','success');
+    if (el) el.innerHTML = '<div style="background:rgba(34,197,94,0.08);border:1px solid rgba(34,197,94,0.25);border-radius:6px;padding:14px 16px;font-size:13px;color:var(--s300);">'
+      + '✓ Synced <strong style="color:white;">'+data.posts.length+' posts</strong> from Obsidian. Blog CMS updated.</div>';
+  } catch(err) {
+    if (el) el.innerHTML = '<div style="color:#F08080;font-size:13px;">Error: '+err.message+'</div>';
+  }
+}
+
+// Auto-check status when admin settings tab is first opened
+function onAdminSettingsOpen() {
+  checkSocialStatus();
+  checkObsidianFeed();
 }
 
 /* ============================================================
