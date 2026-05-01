@@ -99,6 +99,8 @@
 ]
   }
   </script>
+  <!-- Dynamic structured data injected per page route by updateSEO() -->
+  <script id="dynamic-schema" type="application/ld+json"></script>
   <!-- Structured Data: Organization -->
   <script type="application/ld+json">
   {
@@ -4224,6 +4226,59 @@ const BLOG_POSTS = [
 /* ============================================================
    ROUTING
 ============================================================ */
+// ── Dynamic SEO / Schema.org ──────────────────────────────────────────────────
+
+function updateSEO(opts) {
+  var BASE = 'https://bookyourtrades.com';
+  var title = opts.title || "BookYourTrades — Canada's Commercial Trades Directory";
+  var desc  = opts.description || 'Find and book licensed electricians, plumbers, HVAC specialists, roofers, welders, and more across Canada. The trusted national commercial trades directory.';
+  var img   = opts.image || BASE + '/logo.png';
+  var canon = opts.canonical || (BASE + location.pathname);
+
+  document.title = title;
+
+  function setMeta(sel, attr, val) {
+    var el = document.querySelector(sel);
+    if (el) el.setAttribute(attr, val);
+  }
+
+  setMeta('meta[name="description"]',         'content', desc);
+  setMeta('link[rel="canonical"]',            'href',    canon);
+  setMeta('meta[property="og:title"]',        'content', title);
+  setMeta('meta[property="og:description"]',  'content', desc);
+  setMeta('meta[property="og:url"]',          'content', canon);
+  setMeta('meta[property="og:image"]',        'content', img);
+  setMeta('meta[name="twitter:title"]',       'content', title);
+  setMeta('meta[name="twitter:description"]', 'content', desc);
+  setMeta('meta[name="twitter:image"]',       'content', img);
+
+  // Dynamic JSON-LD (replaces any previously injected schema)
+  var el = document.getElementById('dynamic-schema');
+  if (!el) {
+    el = document.createElement('script');
+    el.id   = 'dynamic-schema';
+    el.type = 'application/ld+json';
+    document.head.appendChild(el);
+  }
+  if (opts.schema) {
+    el.textContent = JSON.stringify(opts.schema, null, 0);
+  } else {
+    el.textContent = '';
+  }
+}
+
+// ── Build breadcrumb schema ───────────────────────────────────────────────────
+
+function breadcrumbSchema(items) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map(function(item, i) {
+      return { '@type': 'ListItem', position: i + 1, name: item.name, item: 'https://bookyourtrades.com' + item.path };
+    })
+  };
+}
+
 function navigate(path) {
   history.pushState({}, '', path);
   router();
@@ -4239,26 +4294,65 @@ function router() {
 
   if (!page) {
     document.getElementById('page-home').classList.add('active');
-    document.title = "BookYourTrades \u2014 Ontario's #1 Commercial Trades Directory";
+    updateSEO({
+      title: "BookYourTrades — Canada's #1 Commercial Trades Directory",
+      description: 'Connect with licensed electricians, plumbers, HVAC, roofers, welders and 28 other certified trades across Canada. Get verified quotes, read reviews, and book directly.',
+      canonical: 'https://bookyourtrades.com/',
+      schema: {
+        '@context': 'https://schema.org',
+        '@graph': [
+          { '@type':'Organization', '@id':'https://bookyourtrades.com/#org', name:'BookYourTrades', url:'https://bookyourtrades.com', logo:'https://bookyourtrades.com/logo.png', description:"Canada's trusted commercial trades directory.", areaServed:{'@type':'Country',name:'Canada'}, contactPoint:{'@type':'ContactPoint',contactType:'customer support',email:'hello@bookyourtrades.com'} },
+          { '@type':'WebSite', url:'https://bookyourtrades.com', name:'BookYourTrades', potentialAction:{'@type':'SearchAction',target:'https://bookyourtrades.com/directory?q={search_term_string}','query-input':'required name=search_term_string'} },
+          { '@type':'FAQPage', mainEntity:[
+            { '@type':'Question', name:'How do I find a licensed electrician in Canada?', acceptedAnswer:{'@type':'Answer',text:'Use BookYourTrades to browse verified electricians by city and province. Filter by trade type, read reviews, and request quotes — all free.'} },
+            { '@type':'Question', name:'What trades are listed on BookYourTrades?', acceptedAnswer:{'@type':'Answer',text:'We list 31 commercial trade types including Electrical, Plumbing, HVAC, Roofing, Welding, Carpentry, General Contracting, Sheet Metal, Concrete & Masonry, Pipefitting, Refrigeration, Painting & Coating, and more across Canada.'} },
+            { '@type':'Question', name:'Is BookYourTrades free to use?', acceptedAnswer:{'@type':'Answer',text:'Yes. Searching and contacting contractors is free. Trade companies can list at no cost; Pro plans offer enhanced visibility and lead management.'} },
+            { '@type':'Question', name:'Which Canadian cities does BookYourTrades cover?', acceptedAnswer:{'@type':'Answer',text:'BookYourTrades covers 47+ Canadian cities including Toronto, Vancouver, Calgary, Edmonton, Ottawa, Winnipeg, Montreal, Halifax, Hamilton, and more across all provinces.'} }
+          ]}
+        ]
+      }
+    });
     renderHome();
   } else if (page === 'directory') {
     document.getElementById('page-directory').classList.add('active');
-    document.title = 'Find Licensed Trade Contractors Across Canada | BookYourTrades';
+    var _sp = new URLSearchParams(location.search);
+    var _trade = _sp.get('trade') || '';
+    var _city  = _sp.get('city')  || '';
+    var _dirTitle, _dirDesc, _dirSchema;
+    if (_trade && _city) {
+      _dirTitle = _trade + ' Contractors in ' + _city + ', Canada | BookYourTrades';
+      _dirDesc  = 'Find licensed ' + _trade.toLowerCase() + ' contractors in ' + _city + ', Canada. Compare verified trades, read reviews, and get free quotes on BookYourTrades.';
+      _dirSchema = {'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Directory',item:'https://bookyourtrades.com/directory'},{'@type':'ListItem',position:2,name:_trade,item:'https://bookyourtrades.com/directory?trade='+encodeURIComponent(_trade)},{'@type':'ListItem',position:3,name:_city,item:'https://bookyourtrades.com/directory?trade='+encodeURIComponent(_trade)+'&city='+encodeURIComponent(_city)}]};
+    } else if (_trade) {
+      _dirTitle = 'Licensed ' + _trade + ' Contractors Across Canada | BookYourTrades';
+      _dirDesc  = 'Browse verified ' + _trade.toLowerCase() + ' contractors across Canada. Connect with licensed professionals, compare reviews, and get quotes — free on BookYourTrades.';
+      _dirSchema = {'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Directory',item:'https://bookyourtrades.com/directory'},{'@type':'ListItem',position:2,name:_trade,item:'https://bookyourtrades.com/directory?trade='+encodeURIComponent(_trade)}]};
+    } else if (_city) {
+      _dirTitle = 'Trade Contractors in ' + _city + ', Canada | BookYourTrades';
+      _dirDesc  = 'Find licensed trade contractors in ' + _city + ' — electricians, plumbers, HVAC, roofers, welders and more. Verified professionals on BookYourTrades.';
+      _dirSchema = {'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Directory',item:'https://bookyourtrades.com/directory'},{'@type':'ListItem',position:2,name:_city,item:'https://bookyourtrades.com/directory?city='+encodeURIComponent(_city)}]};
+    } else {
+      _dirTitle = 'Find Licensed Trade Contractors Across Canada | BookYourTrades';
+      _dirDesc  = 'Browse 10,000+ verified trade contractors across Canada. Find electricians, plumbers, HVAC, roofing, welding, carpentry professionals — compare and book free.';
+      _dirSchema = {'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'Directory',item:'https://bookyourtrades.com/directory'}]};
+    }
+    updateSEO({ title: _dirTitle, description: _dirDesc, schema: _dirSchema });
     renderDirectory();
     setTimeout(initDirectoryMap, 100);
-    loadScrapedCompanies(); // async — merges OSM results after seed data renders
+    loadScrapedCompanies(); // async — merges scraped results after seed data renders
   } else if (page === 'provider') {
     document.getElementById('page-provider').classList.add('active');
     renderProvider(parts[1]);
   } else if (page === 'register') {
     document.getElementById('page-register').classList.add('active');
-    document.title = 'List Your Trade Business | BookYourTrades';
+    updateSEO({ title: 'List Your Trade Business Free | BookYourTrades', description: 'Add your licensed trade company to Canada's largest commercial trades directory. Free listing — get leads from businesses across Canada.' });
   } else if (page === 'login') {
     document.getElementById('page-login').classList.add('active');
+    updateSEO({ title: 'Login | BookYourTrades', description: 'Log in to manage your trade business listing on BookYourTrades.' });
   } else if (page === 'admin') {
     if (!App.currentUser || App.currentUser.role !== 'admin') { navigate('/login'); return; }
     document.getElementById('page-admin').classList.add('active');
-    document.title = 'Admin Panel | BookYourTrades';
+    updateSEO({ title: 'Admin Panel | BookYourTrades', description: 'BookYourTrades administration.' });
     renderAdmin();
   } else if (page === 'dashboard') {
     if (!App.currentUser) { navigate('/login'); return; }
@@ -4286,7 +4380,7 @@ function router() {
     document.getElementById('page-how-it-works').classList.add('active');
   } else if (page === 'rfq') {
     document.getElementById('page-rfq').classList.add('active');
-    document.title = 'Post a Job Request | BookYourTrades';
+    updateSEO({ title: 'Post a Job Request | BookYourTrades', description: 'Post your commercial trade project and get quotes from verified licensed contractors across Canada. Free to post.' });
     // reset form on nav
     const f = document.getElementById('rfqForm');
     const r = document.getElementById('rfqResults');
@@ -4296,14 +4390,14 @@ function router() {
     if (s) s.style.display = 'none';
   } else if (page === 'pricing') {
     document.getElementById('page-pricing').classList.add('active');
-    document.title = 'Plans & Pricing | BookYourTrades';
+    updateSEO({ title: 'Plans & Pricing | BookYourTrades', description: 'Free and Pro plans for trade contractors. Get more leads, verified badges, and premium placement on Canada's commercial trades directory.' });
   } else if (page === 'blog') {
     if (parts[1]) {
       document.getElementById('page-blog-post').classList.add('active');
       renderBlogPost(parts[1]);
     } else {
       document.getElementById('page-blog').classList.add('active');
-      document.title = 'Trade Hiring Guides & Industry News | BookYourTrades Blog';
+      updateSEO({ title: 'Trade Hiring Guides & Industry News | BookYourTrades Blog', description: 'Expert guides on hiring licensed trade contractors in Canada. Tips on electrical, plumbing, HVAC, roofing, and more from the BookYourTrades editorial team.' });
       renderBlogList();
     }
   } else if (page === 'verify') {
@@ -4318,24 +4412,24 @@ function router() {
     return; // don't activate any page div
   } else if (page === 'trades-education') {
     document.getElementById('page-trades-education').classList.add('active');
-    document.title = 'Get Into the Trades \u2014 Ontario Trades Career Guide | BookYourTrades';
+    updateSEO({ title: 'Get Into the Trades \u2014 Canadian Trades Career Guide | BookYourTrades', description: 'Everything you need to know about starting a career in the skilled trades in Canada. Red Seal programs, apprenticeships, and certification guides.' });
   } else if (page === 'jobs') {
     document.getElementById('page-jobs').classList.add('active');
-    document.title = 'Trades Careers & Apprenticeships Across Canada | BookYourTrades';
+    updateSEO({ title: 'Trades Careers & Apprenticeships Across Canada | BookYourTrades', description: 'Browse trade job postings and apprenticeships across Canada. Find electrician, plumber, HVAC, welder, and carpenter jobs near you.' });
     loadLiveJobs();
   } else if (page === 'news') {
     document.getElementById('page-news').classList.add('active');
-    document.title = 'Ontario Trade Industry News | BookYourTrades';
+    updateSEO({ title: 'Canadian Trade Industry News | BookYourTrades', description: 'Stay current with Canadian trade industry news — regulations, labour trends, technology, and business insights for contractors across Canada.' });
     loadNews(window._newsKw || '');
   } else if (page === 'terms') {
     document.getElementById('page-terms').classList.add('active');
-    document.title = 'Terms of Service | BookYourTrades';
+    updateSEO({ title: 'Terms of Service | BookYourTrades', description: 'BookYourTrades terms of service governing the use of our commercial trades directory platform.' });
   } else if (page === 'privacy') {
     document.getElementById('page-privacy').classList.add('active');
-    document.title = 'Privacy Policy | BookYourTrades';
+    updateSEO({ title: 'Privacy Policy | BookYourTrades', description: 'How BookYourTrades collects, uses, and protects your personal information.' });
   } else if (page === 'disclaimer') {
     document.getElementById('page-disclaimer').classList.add('active');
-    document.title = 'Contractor Disclaimer | BookYourTrades';
+    updateSEO({ title: 'Contractor Disclaimer | BookYourTrades', description: 'Important disclaimers regarding trade contractor listings and booking on BookYourTrades.' });
   } else {
     document.getElementById('page-home').classList.add('active');
     renderHome();
@@ -4518,30 +4612,38 @@ function renderBlogPost(slug) {
     return;
   }
 
-  /* Update page meta for SEO/AEO */
-  document.title = post.title + ' | BookYourTrades Blog';
-  var metaDesc = document.querySelector('meta[name="description"]');
-  if (metaDesc) metaDesc.setAttribute('content', post.excerpt);
-
-  /* Inject BlogPosting structured data */
-  var existing = document.getElementById('blogLd');
-  if (existing) existing.remove();
-  var ld = document.createElement('script');
-  ld.type = 'application/ld+json';
-  ld.id = 'blogLd';
-  ld.textContent = JSON.stringify({
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    'headline': post.title,
-    'description': post.excerpt,
-    'author': { '@type': 'Organization', 'name': post.author, 'url': 'https://bookyourtrades.com' },
-    'publisher': { '@type': 'Organization', 'name': 'BookYourTrades', 'url': 'https://bookyourtrades.com', 'logo': { '@type': 'ImageObject', 'url': 'https://bookyourtrades.com/logo.png' } },
-    'datePublished': post.date,
-    'url': 'https://bookyourtrades.com/blog/' + post.slug,
-    'mainEntityOfPage': { '@type': 'WebPage', '@id': 'https://bookyourtrades.com/blog/' + post.slug },
-    'keywords': post.tag + ', Ontario trades, contractor hiring, commercial trades Ontario'
+  /* Update page meta + schema.org via unified updateSEO() */
+  var _blogCanon = 'https://bookyourtrades.com/blog/' + post.slug;
+  updateSEO({
+    title: post.title + ' | BookYourTrades Blog',
+    description: post.excerpt || post.title,
+    canonical: _blogCanon,
+    image: post.image || 'https://bookyourtrades.com/logo.png',
+    schema: {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'BlogPosting',
+          headline: post.title,
+          description: post.excerpt || post.title,
+          author: { '@type': 'Organization', name: post.author || 'BookYourTrades Editorial', url: 'https://bookyourtrades.com' },
+          publisher: { '@type': 'Organization', name: 'BookYourTrades', url: 'https://bookyourtrades.com', logo: { '@type': 'ImageObject', url: 'https://bookyourtrades.com/logo.png' } },
+          datePublished: post.date,
+          url: _blogCanon,
+          mainEntityOfPage: { '@type': 'WebPage', '@id': _blogCanon },
+          image: post.image || 'https://bookyourtrades.com/logo.png',
+          keywords: (post.tag || 'Trades') + ', Canadian contractor, commercial trades Canada, hire contractor Canada'
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Blog', item: 'https://bookyourtrades.com/blog' },
+            { '@type': 'ListItem', position: 2, name: post.title, item: _blogCanon }
+          ]
+        }
+      ]
+    }
   });
-  document.head.appendChild(ld);
 
   el.innerHTML = '<div class="blog-hero">'
     + '<div class="container">'
@@ -5233,6 +5335,42 @@ function renderProvider(id) {
   const avgRating = reviews.length ? (reviews.reduce((s,r)=>s+r.rating,0)/reviews.length).toFixed(1) : p.rating;
   const reviewCount = reviews.length || p.reviewCount;
   const related = App.providers.filter(x=>x.id!==id && x.tradeType===p.tradeType).slice(0,3);
+
+  // ── Dynamic SEO + LocalBusiness Schema ──────────────────────────────────────
+  const _provCity = p.city || (p.serviceAreas && p.serviceAreas[0]) || 'Canada';
+  const _provProv = p.province || '';
+  const _provDesc = p.description || (p.tradeType + ' contractor serving ' + _provCity + (_provProv ? ', ' + _provProv : '') + '.');
+  const _provTitle = p.companyName + ' — ' + p.tradeType + ' Contractor in ' + _provCity + ' | BookYourTrades';
+  const _provSeoDesc = _provDesc.slice(0, 160);
+  const _localBizSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: p.companyName,
+    description: _provDesc.slice(0, 500),
+    url: p.website || ('https://bookyourtrades.com/directory/' + id),
+    telephone: p.phone || undefined,
+    email: p.email || undefined,
+    image: p.logoUrl || 'https://bookyourtrades.com/logo.png',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: _provCity,
+      addressRegion: _provProv,
+      addressCountry: 'CA'
+    },
+    areaServed: (p.serviceAreas || [_provCity]).map(function(a) { return { '@type': 'City', name: a }; }),
+    aggregateRating: reviewCount > 0 ? { '@type': 'AggregateRating', ratingValue: String(avgRating), reviewCount: String(reviewCount), bestRating: '5', worstRating: '1' } : undefined,
+    hasOfferCatalog: { '@type': 'OfferCatalog', name: p.tradeType + ' Services' }
+  };
+  // Remove undefined fields
+  Object.keys(_localBizSchema).forEach(function(k) { if (_localBizSchema[k] === undefined) delete _localBizSchema[k]; });
+  if (_localBizSchema.aggregateRating === undefined) delete _localBizSchema.aggregateRating;
+  updateSEO({
+    title: _provTitle,
+    description: _provSeoDesc,
+    canonical: 'https://bookyourtrades.com/directory/' + id,
+    image: p.logoUrl || p.imageUrl || 'https://bookyourtrades.com/logo.png',
+    schema: _localBizSchema
+  });
 
   el.innerHTML = `
     <!-- Profile Header -->
