@@ -293,7 +293,8 @@ module.exports = async function handler(req, res) {
   const adminEmail = process.env.ADMIN_EMAIL || 'info@bookyourtrades.com';
 
   if (!apiKey) {
-    return res.status(200).json({ ok: true, note: 'RESEND_API_KEY not set — email skipped' });
+    console.error('[send-email] RESEND_API_KEY is not set in environment variables');
+    return res.status(200).json({ ok: false, error: 'email_not_configured', note: 'RESEND_API_KEY is not set. Add it in Vercel → Settings → Environment Variables.' });
   }
 
   const { type, email, data = {} } = req.body || {};
@@ -341,6 +342,9 @@ module.exports = async function handler(req, res) {
       to = email;
       ({ subject, html } = buildClaimVerification(data));
       break;
+    case '__status_check__':
+      // Used by admin panel to confirm the API key is present
+      return res.status(200).json({ ok: true, configured: true, note: 'RESEND_API_KEY is set.' });
     default:
       return res.status(400).json({ error: 'Unknown email type: ' + type });
   }

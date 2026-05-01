@@ -5988,8 +5988,26 @@ function handleEmailVerification(token) {
     navigate('/login');
     return;
   }
-  showToast('Verification link is invalid or has already been used.','error');
-  navigate('/');
+  // Token not found — could be a cross-browser/device issue (localStorage is browser-local)
+  // Show a helpful explanation instead of just an error
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  var _vEl = document.getElementById('page-home');
+  if (_vEl) _vEl.classList.add('active');
+  setTimeout(function() {
+    var _msg = document.createElement('div');
+    _msg.style.cssText = 'position:fixed;top:80px;left:50%;transform:translateX(-50%);z-index:9999;max-width:560px;width:90%;background:#111E2D;border:1px solid #E0621A;border-radius:10px;padding:24px 28px;box-shadow:0 8px 32px rgba(0,0,0,0.5);';
+    _msg.innerHTML = '<div style="font-size:20px;font-weight:700;color:white;margin-bottom:10px;">&#128279; Verification Link Issue</div>'
+      + '<p style="color:#CBD5E1;line-height:1.7;font-size:14px;margin:0 0 16px;">'
+      + 'This verification link must be opened in the <strong style="color:white;">same browser</strong> where you registered. '
+      + 'It looks like this is a different browser or device, so your account data isn\'t here yet.</p>'
+      + '<p style="color:#CBD5E1;font-size:14px;margin:0 0 16px;">Please either:</p>'
+      + '<ul style="color:#CBD5E1;font-size:14px;line-height:2;margin:0 0 20px;padding-left:18px;">'
+      + '<li>Go back to the browser/device where you registered and click the link there</li>'
+      + '<li>Or <a href="/register" onclick="navigate(\'/register\');this.closest(\'div\').remove();return false;" style="color:#E0621A;">re-register on this device</a></li>'
+      + '</ul>'
+      + '<button onclick="this.parentElement.remove()" style="background:#E0621A;color:white;border:none;padding:10px 24px;border-radius:6px;font-weight:700;cursor:pointer;font-size:14px;">Got it</button>';
+    document.body.appendChild(_msg);
+  }, 300);
 }
 
 function resendVerificationEmail(email) {
@@ -6262,56 +6280,49 @@ function handleRegister(e) {
       localStorage.setItem('to_seekers', JSON.stringify(App.seekers));
     }
 
-    // Send email verification link
+    // Send email verification — awaited so we can surface failures
+    var _verifyUrl = 'https://bookyourtrades.com/verify?token=' + prov.emailToken;
     fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         type: 'email_verification',
         email: prov.email,
-        data: {
-          name:      prov.contactName,
-          company:   prov.companyName,
-          verifyUrl: 'https://bookyourtrades.com/verify?token=' + prov.emailToken
-        }
+        data: { name: prov.contactName, company: prov.companyName, verifyUrl: _verifyUrl }
       })
-    }).catch(function(){});
-    // Fire-and-forget — contractor welcome email + admin alert
+    }).then(function(r){ return r.json(); }).then(function(result) {
+      if (result && result.ok === false) {
+        // Email delivery failed — show the verify link directly so the user isn't blocked
+        console.warn('[send-email] delivery failed:', result.error || result.note);
+        var _alertEl = document.getElementById('registerAlert');
+        if (_alertEl) _alertEl.innerHTML = '<div class="alert" style="background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.4);color:#FDE047;border-radius:8px;padding:14px 18px;font-size:14px;line-height:1.6;">'
+          + '<strong>Email delivery issue</strong> — our email service may not be configured yet. '
+          + 'Copy and paste this link in your browser to verify your account:<br>'
+          + '<a href="' + _verifyUrl + '" style="color:#FDE047;word-break:break-all;">' + _verifyUrl + '</a></div>';
+      }
+    }).catch(function(err) {
+      console.warn('[send-email] network error:', err);
+    });
+    // Fire-and-forget — welcome + admin alert
     fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         type: 'contractor_welcome',
         email: prov.email,
-        data: {
-          name:    prov.contactName,
-          company: prov.companyName,
-          trade:   prov.tradeType,
-          city:    (prov.serviceAreas || [])[0] || '',
-        }
+        data: { name: prov.contactName, company: prov.companyName, trade: prov.tradeType, city: (prov.serviceAreas || [])[0] || '' }
       })
     }).catch(function(){});
     fetch('/api/send-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        type: 'admin_alert',
-        email: '',
-        data: {
-          subject: 'New Trade Contractor Registered',
-          details: {
-            'Company': prov.companyName,
-            'Trade': prov.tradeType,
-            'Contact': prov.contactName,
-            'Email': prov.email,
-            'City': (prov.serviceAreas || [])[0] || '—',
-            'Time': new Date().toLocaleString('en-CA')
-          }
-        }
+        type: 'admin_alert', email: '',
+        data: { subject: 'New Trade Contractor Registered', details: { 'Company': prov.companyName, 'Trade': prov.tradeType, 'Contact': prov.contactName, 'Email': prov.email, 'City': (prov.serviceAreas || [])[0] || '', 'Time': new Date().toLocaleString('en-CA') } }
       })
     }).catch(function(){});
     navigate('/');
-    showToast(`Thanks! Check your email at ${data.email} to verify your address, then your application will be reviewed.`,'success');
+    showToast('Registration submitted! Check your email (' + data.email + ') for a verification link. Open the link in this same browser to verify.', 'success');
   };
   if (file) {
     // Validate file type
@@ -7046,6 +7057,37 @@ function renderAdminPanel() {
       <div id="admin-settings" class="tab-content">
         <div style="max-width:720px;">
 
+          <!-- ── Email System ───────────────────────────────────────────── -->
+          <div style="background:var(--n700);border:1px solid var(--n500);border-top:3px solid #E0621A;border-radius:8px;padding:28px;margin-bottom:20px;">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
+              <div style="font-size:24px;">✉️</div>
+              <div>
+                <h3 style="font-size:20px;color:white;margin:0;">Email System (Resend)</h3>
+                <div style="font-size:13px;color:var(--s400);margin-top:2px;">Powers all transactional emails — verification, approvals, leads</div>
+              </div>
+            </div>
+            <div style="background:rgba(224,98,26,0.08);border:1px solid rgba(224,98,26,0.2);border-radius:6px;padding:14px 16px;margin:16px 0;font-size:13px;color:var(--s300);line-height:1.7;">
+              Add <strong style="color:white;">RESEND_API_KEY</strong> in <strong style="color:var(--o400);">Vercel → Project → Settings → Environment Variables</strong>, then redeploy.<br>
+              Also ensure <strong style="color:white;">bookyourtrades.com</strong> is a verified sending domain in your Resend dashboard (resend.com → Domains).<br>
+              SPF + DKIM records must be added to your DNS — Resend's dashboard shows the exact records needed.
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+              <div style="background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:14px 16px;">
+                <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--o400);font-weight:700;margin-bottom:6px;">RESEND_API_KEY</div>
+                <div id="resendKeyStatus" style="font-size:13px;color:var(--s400);">—</div>
+              </div>
+              <div style="background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:14px 16px;">
+                <div style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--o400);font-weight:700;margin-bottom:6px;">FROM Domain</div>
+                <div style="font-size:13px;color:var(--s300);">info@bookyourtrades.com</div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+              <input type="email" id="testEmailAddr" placeholder="Send test to: your@email.com" style="flex:1;min-width:220px;background:var(--n600);border:1px solid var(--n400);border-radius:6px;padding:10px 14px;color:white;font-size:14px;" />
+              <button onclick="sendTestEmail()" style="background:var(--o500);color:white;border:none;padding:10px 20px;border-radius:6px;font-weight:700;cursor:pointer;font-size:14px;">Send Test Email</button>
+            </div>
+            <div id="testEmailResult" style="margin-top:10px;font-size:13px;"></div>
+          </div>
+
           <!-- ── Blotato + Ayrshare ──────────────────────────────────── -->
           <div style="background:var(--n700);border:1px solid var(--n500);border-top:3px solid #7C3AED;border-radius:8px;padding:28px;margin-bottom:20px;">
             <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px;">
@@ -7717,6 +7759,66 @@ async function syncObsidianNow() {
 function onAdminSettingsOpen() {
   checkSocialStatus();
   checkObsidianFeed();
+  checkResendStatus();
+}
+
+function checkResendStatus() {
+  var el = document.getElementById('resendKeyStatus');
+  if (!el) return;
+  el.textContent = 'Checking…';
+  // Probe by sending a 0-byte OPTIONS request — the real test is sendTestEmail()
+  // Instead, we try a dummy call that returns the config-check error if key missing
+  fetch('/api/send-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ type: '__status_check__', email: '', data: {} })
+  }).then(function(r) { return r.json(); }).then(function(res) {
+    if (res.error === 'email_not_configured') {
+      el.innerHTML = '<span style="color:#F87171;font-weight:700;">✗ Not configured</span> — add RESEND_API_KEY in Vercel env vars';
+    } else {
+      // Any other response (even "Unknown email type") means the key IS set
+      el.innerHTML = '<span style="color:#4ADE80;font-weight:700;">✓ API key present</span>';
+    }
+  }).catch(function() {
+    el.innerHTML = '<span style="color:#FBBF24;">? Could not reach /api/send-email</span>';
+  });
+}
+
+function sendTestEmail() {
+  var addr = (document.getElementById('testEmailAddr') || {}).value || '';
+  var result = document.getElementById('testEmailResult');
+  if (!addr || !addr.includes('@')) {
+    if (result) result.innerHTML = '<span style="color:#F87171;">Enter a valid email address first.</span>';
+    return;
+  }
+  if (result) result.innerHTML = '<span style="color:var(--s400);">Sending…</span>';
+  fetch('/api/send-email', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      type: 'admin_alert',
+      email: addr,
+      data: {
+        subject: 'BookYourTrades Email Test',
+        details: {
+          'Status':  'Email system is working correctly',
+          'Sent to': addr,
+          'Time':    new Date().toLocaleString('en-CA'),
+          'From':    'info@bookyourtrades.com (via Resend)'
+        }
+      }
+    })
+  }).then(function(r) { return r.json(); }).then(function(res) {
+    if (res.ok) {
+      if (result) result.innerHTML = '<span style="color:#4ADE80;font-weight:700;">✓ Test email sent!</span> Check your inbox (and spam folder) at ' + addr;
+    } else if (res.error === 'email_not_configured') {
+      if (result) result.innerHTML = '<span style="color:#F87171;font-weight:700;">✗ RESEND_API_KEY not set.</span> Add it in Vercel → Settings → Environment Variables, then redeploy.';
+    } else {
+      if (result) result.innerHTML = '<span style="color:#F87171;">Send failed: ' + (res.note || res.error || 'Unknown error') + '</span>';
+    }
+  }).catch(function(err) {
+    if (result) result.innerHTML = '<span style="color:#F87171;">Network error — is Vercel running? ' + err.message + '</span>';
+  });
 }
 
 /* ============================================================
