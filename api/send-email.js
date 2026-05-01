@@ -24,31 +24,55 @@
 
 const FROM = 'BookYourTrades <info@bookyourtrades.com>';
 
-// Shared email shell — dark branded
-function shell(bodyHtml) {
-  return `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<style>
-  body{margin:0;padding:0;background:#0B1929;font-family:Arial,Helvetica,sans-serif;}
-  a{color:#E0621A;}
-</style></head>
-<body>
-<div style="max-width:600px;margin:32px auto;border-radius:10px;overflow:hidden;border:1px solid #1E3A5C;">
-  <div style="background:linear-gradient(135deg,#0F1923,#1A2C42);padding:24px 32px;text-align:center;border-bottom:2px solid #E0621A;">
+// Shared email shell — dark branded, deliverability-optimised
+function shell(bodyHtml, preheader = '') {
+  // Preheader text appears in inbox snippet — keeps first line meaningful
+  const preheaderHtml = preheader
+    ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;color:#0B1929;line-height:1px;">${preheader}&nbsp;&#8203;&zwnj;&nbsp;&#8203;&zwnj;&nbsp;&#8203;&zwnj;</div>`
+    : '';
+  return `<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="format-detection" content="telephone=no,address=no,email=no,date=no,url=no">
+  <title>BookYourTrades</title>
+  <style>
+    body { margin:0; padding:0; background:#0B1929; font-family:Arial,Helvetica,sans-serif; -webkit-text-size-adjust:100%; }
+    a { color:#E0621A; }
+    img { border:0; outline:none; text-decoration:none; }
+    table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; }
+  </style>
+</head>
+<body style="margin:0;padding:0;background:#0B1929;">
+${preheaderHtml}
+<table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+<tr><td style="padding:32px 16px;">
+<div style="max-width:600px;margin:0 auto;border-radius:10px;overflow:hidden;border:1px solid #1E3A5C;">
+  <div style="background:#0F1923;padding:24px 32px;text-align:center;border-bottom:2px solid #E0621A;">
     <div style="font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:#E0621A;font-weight:700;margin-bottom:4px;">BookYourTrades</div>
     <div style="font-size:13px;color:#94A3B8;">Canada's Commercial Trades Directory</div>
   </div>
   <div style="background:#111E2D;padding:32px;">
     ${bodyHtml}
   </div>
-  <div style="background:#0B1929;border-top:1px solid #1E3A5C;padding:16px 32px;text-align:center;">
-    <p style="color:#475569;font-size:12px;margin:0;">
+  <div style="background:#0B1929;border-top:1px solid #1E3A5C;padding:20px 32px;text-align:center;">
+    <p style="color:#475569;font-size:12px;margin:0 0 8px;">
       <a href="https://bookyourtrades.com" style="color:#E0621A;">bookyourtrades.com</a>
       &nbsp;&bull;&nbsp; info@bookyourtrades.com
-      &nbsp;&bull;&nbsp; Canada's commercial trades directory
+    </p>
+    <p style="color:#334155;font-size:11px;margin:0;">
+      You received this email because you registered on BookYourTrades.<br>
+      <a href="https://bookyourtrades.com" style="color:#475569;">Unsubscribe</a>
+      &nbsp;&bull;&nbsp;
+      <a href="https://bookyourtrades.com/privacy" style="color:#475569;">Privacy Policy</a>
     </p>
   </div>
 </div>
+</td></tr>
+</table>
 </body></html>`;
 }
 
@@ -84,7 +108,7 @@ function buildVerification(data) {
       <p style="color:#CBD5E1;line-height:1.7;">Thanks for registering${data.company ? ' for <strong style="color:white;">' + data.company + '</strong>' : ''} on BookYourTrades. Click below to verify your email and activate your account.</p>
       ${btn(data.verifyUrl || 'https://bookyourtrades.com', 'Verify My Email →')}
       <p style="color:#64748B;font-size:13px;text-align:center;">This link expires in 24 hours. If you didn't register, you can safely ignore this email.</p>
-    `),
+    `, 'One click to activate your BookYourTrades account.'),
   };
 }
 
@@ -356,7 +380,21 @@ module.exports = async function handler(req, res) {
         'Authorization': 'Bearer ' + apiKey,
         'Content-Type':  'application/json',
       },
-      body: JSON.stringify({ from: FROM, to: [to], subject, html }),
+      body: JSON.stringify({
+        from:    FROM,
+        to:      [to],
+        subject,
+        html,
+        // Deliverability headers — reduces spam scoring
+        headers: {
+          'List-Unsubscribe':       '<mailto:unsubscribe@bookyourtrades.com>',
+          'List-Unsubscribe-Post':  'List-Unsubscribe=One-Click',
+          'X-Entity-Ref-ID':        require('crypto').randomUUID(),
+        },
+        // Plain-text fallback improves spam score significantly
+        text: subject + '\n\n' + (html || '').replace(/<[^>]+>/g, ' ').replace(/\s{2,}/g, ' ').trim() + '\n\nBookYourTrades — https://bookyourtrades.com',
+        tags: [{ name: 'category', value: type || 'transactional' }],
+      }),
     });
 
     const result = await r.json();

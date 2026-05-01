@@ -3792,10 +3792,39 @@ let _stripeInstance = null;
 let _stripeElements = null;
 let _stripePaymentElement = null;
 
+// -- Seed RFQ / Lead Data -- 25 demo leads covering all trade types
+const SEED_RFQS = [
+  { id:'rfq1',  tradeType:'Electrical',           title:'Commercial Panel Upgrade',            city:'Toronto',    province:'ON', budget:'$3,000-$6,000',    timeline:'Within 2 weeks',   urgency:'high',   contactName:'Marcus Webb',      contactEmail:'m.webb@retailgroup.ca',      contactPhone:'416-555-0182', jobDescription:'200A panel upgrade for 3,200 sq ft retail unit in Etobicoke. ESA permit filing required.', status:'open', createdAt:'2026-04-29T14:22:00Z' },
+  { id:'rfq2',  tradeType:'Plumbing',              title:'Washroom Rough-in -- Office Build',    city:'Mississauga',province:'ON', budget:'$8,000-$14,000',   timeline:'3-4 weeks',        urgency:'normal', contactName:'Sandra Osei',      contactEmail:'s.osei@buildgroup.ca',       contactPhone:'905-555-0241', jobDescription:'New washroom rough-in for 4-fixture commercial washroom in 6-story office building.', status:'open', createdAt:'2026-04-28T09:15:00Z' },
+  { id:'rfq3',  tradeType:'HVAC',                  title:'RTU Replacement -- Warehouse',         city:'Brampton',   province:'ON', budget:'$18,000-$28,000',  timeline:'ASAP',             urgency:'high',   contactName:'Dave Kurzman',     contactEmail:'d.kurzman@logisticsinc.ca',   contactPhone:'905-555-0394', jobDescription:'Replace aging 20-ton rooftop unit at 40,000 sq ft distribution centre. TSSA certification required.', status:'open', createdAt:'2026-04-29T08:00:00Z' },
+  { id:'rfq4',  tradeType:'Roofing',               title:'Flat Roof Membrane Replacement',       city:'Hamilton',   province:'ON', budget:'$22,000-$35,000',  timeline:'2-3 weeks',        urgency:'normal', contactName:'Lisa Tran',        contactEmail:'l.tran@hamiltonprop.ca',     contactPhone:'905-555-0117', jobDescription:'TPO membrane replacement on 8,000 sq ft flat commercial roof. Quotes needed ASAP.', status:'open', createdAt:'2026-04-27T16:45:00Z' },
+  { id:'rfq5',  tradeType:'General Contracting',   title:'Office Tenant Improvement 4,000 sqft', city:'Ottawa',     province:'ON', budget:'$60,000-$90,000',  timeline:'6-8 weeks',        urgency:'normal', contactName:'Priya Singh',      contactEmail:'p.singh@govtech.ca',         contactPhone:'613-555-0278', jobDescription:'Full interior TI for new tech company tenant -- demising walls, new flooring, lighting, washrooms.', status:'open', createdAt:'2026-04-26T11:30:00Z' },
+  { id:'rfq6',  tradeType:'Electrical',            title:'LED Retrofit -- Office Tower',         city:'Vancouver',  province:'BC', budget:'$12,000-$20,000',  timeline:'3-4 weeks',        urgency:'normal', contactName:'Ryan Cho',         contactEmail:'r.cho@propertywest.ca',      contactPhone:'604-555-0351', jobDescription:'LED retrofit of all common areas on 14-floor office tower. ~600 fixtures. BC Hydro incentive required.', status:'open', createdAt:'2026-04-28T13:00:00Z' },
+  { id:'rfq7',  tradeType:'Plumbing',              title:'Grease Trap Install -- Restaurant',    city:'Calgary',    province:'AB', budget:'$6,000-$10,000',   timeline:'2 weeks',          urgency:'high',   contactName:'Maria Delgado',    contactEmail:'m.delgado@foodgroup.ca',     contactPhone:'403-555-0194', jobDescription:'Supply and install 100 GPM grease trap for new 80-seat restaurant. City of Calgary FOG bylaw compliance.', status:'open', createdAt:'2026-04-29T10:10:00Z' },
+  { id:'rfq8',  tradeType:'HVAC',                  title:'Chiller Plant Service Contract',       city:'Toronto',    province:'ON', budget:'Contract TBD',     timeline:'Ongoing',          urgency:'normal', contactName:'Peter Okonkwo',    contactEmail:'p.okonkwo@facilitymgmt.ca',  contactPhone:'416-555-0462', jobDescription:'Certified chiller technician for preventive maintenance on 200-ton York centrifugal chiller. Annual contract.', status:'open', createdAt:'2026-04-25T09:00:00Z' },
+  { id:'rfq9',  tradeType:'Welding & Fabrication', title:'Structural Steel Mezzanine Addition',  city:'Edmonton',   province:'AB', budget:'$25,000-$40,000',  timeline:'4-5 weeks',        urgency:'normal', contactName:'Rob Ference',      contactEmail:'r.ference@industrialco.ca',  contactPhone:'780-555-0283', jobDescription:'Design-build mezzanine addition inside existing warehouse. ~3,000 sq ft at 12ft elevation. CWB certification.', status:'open', createdAt:'2026-04-27T14:20:00Z' },
+  { id:'rfq10', tradeType:'Concrete & Masonry',    title:'Parking Deck Repair -- Commercial',    city:'Mississauga',province:'ON', budget:'$40,000-$70,000',  timeline:'3-6 weeks',        urgency:'high',   contactName:'Asha Nair',        contactEmail:'a.nair@plazamgmt.ca',        contactPhone:'905-555-0536', jobDescription:'Structural repair of 300-space parking deck. Spall repair, waterproofing, traffic coating. PE stamp required.', status:'open', createdAt:'2026-04-28T15:30:00Z' },
+  { id:'rfq11', tradeType:'Carpentry',             title:'Wood Feature Wall -- Corporate Lobby', city:'Toronto',    province:'ON', budget:'$15,000-$25,000',  timeline:'3 weeks',          urgency:'normal', contactName:'Jennifer Lau',     contactEmail:'j.lau@archfirm.ca',          contactPhone:'416-555-0619', jobDescription:'Custom white oak slatted feature wall in 30-ft lobby. Designer drawings available. Fine finish carpenter.', status:'open', createdAt:'2026-04-26T09:00:00Z' },
+  { id:'rfq12', tradeType:'Sheet Metal',           title:'Kitchen Exhaust Hood & Ductwork',      city:'Winnipeg',   province:'MB', budget:'$8,000-$14,000',   timeline:'3 weeks',          urgency:'normal', contactName:'Kevin Brant',      contactEmail:'k.brant@restaurantdev.ca',   contactPhone:'204-555-0247', jobDescription:'Custom Type I hood system and stainless ductwork for commercial kitchen expansion. SMACNA standards.', status:'open', createdAt:'2026-04-29T11:45:00Z' },
+  { id:'rfq13', tradeType:'Fire Protection',       title:'Sprinkler System -- New Warehouse',    city:'Calgary',    province:'AB', budget:'$35,000-$55,000',  timeline:'6-8 weeks',        urgency:'normal', contactName:'Tom Greer',        contactEmail:'t.greer@westlogistics.ca',   contactPhone:'403-555-0381', jobDescription:'Design-install wet pipe sprinkler system for 60,000 sq ft warehouse. NFPA 13 required.', status:'open', createdAt:'2026-04-24T14:00:00Z' },
+  { id:'rfq14', tradeType:'Painting & Coating',    title:'Industrial Floor Coating -- Food Plant',city:'Hamilton',  province:'ON', budget:'$18,000-$28,000',  timeline:'Weekends only',    urgency:'normal', contactName:'Julie Mosher',     contactEmail:'j.mosher@foodmfg.ca',        contactPhone:'905-555-0174', jobDescription:'Epoxy floor coating for 12,000 sq ft food manufacturing facility. USDA-approved coating. Weekend shifts.', status:'open', createdAt:'2026-04-27T10:20:00Z' },
+  { id:'rfq15', tradeType:'Demolition',            title:'Interior Demo -- 3-Floor Office',      city:'Toronto',    province:'ON', budget:'$20,000-$35,000',  timeline:'2-3 weeks',        urgency:'high',   contactName:'Ahmed Khalil',     contactEmail:'a.khalil@redevelopco.ca',    contactPhone:'416-555-0745', jobDescription:'Selective interior demo on floors 8-10 of Yonge St office tower. Non-load-bearing walls, ceilings, millwork.', status:'open', createdAt:'2026-04-29T09:30:00Z' },
+  { id:'rfq16', tradeType:'Insulation',            title:'Spray Foam -- Cold Storage Build',     city:'Vancouver',  province:'BC', budget:'$12,000-$20,000',  timeline:'3-4 weeks',        urgency:'normal', contactName:'Grace Kim',        contactEmail:'g.kim@coldchain.ca',         contactPhone:'604-555-0428', jobDescription:'Closed-cell spray foam for new 5,000 sq ft cold storage room. R-40 minimum. Vapour barrier included.', status:'open', createdAt:'2026-04-26T14:00:00Z' },
+  { id:'rfq17', tradeType:'Flooring',              title:'LVT Installation -- Medical Office',   city:'Ottawa',     province:'ON', budget:'$9,000-$15,000',   timeline:'2 weeks',          urgency:'normal', contactName:'Dr. Natasha Bowen',contactEmail:'n.bowen@medclinic.ca',      contactPhone:'613-555-0551', jobDescription:'5,000 sq ft LVT flooring replacement in active medical clinic. Must work after hours. Rubber base throughout.', status:'open', createdAt:'2026-04-28T10:30:00Z' },
+  { id:'rfq18', tradeType:'Security Systems',      title:'Access Control -- Multi-Tenant Office',city:'Edmonton',   province:'AB', budget:'$18,000-$30,000',  timeline:'4-5 weeks',        urgency:'normal', contactName:'Frank Li',         contactEmail:'f.li@eastwestprop.ca',       contactPhone:'780-555-0392', jobDescription:'IP-based access control for 8-story office building. 24 doors, elevator integration, cloud management.', status:'open', createdAt:'2026-04-25T11:00:00Z' },
+  { id:'rfq19', tradeType:'Millwright',            title:'Conveyor System Rebuild -- Food Plant', city:'Mississauga',province:'ON', budget:'$30,000-$50,000',  timeline:'Planned shutdown',  urgency:'normal', contactName:'Steve Bouchard',  contactEmail:'s.bouchard@foodline.ca',     contactPhone:'905-555-0618', jobDescription:'Rebuild and realignment of 400ft conveyor system during planned 2-week plant shutdown. Red Seal required.', status:'open', createdAt:'2026-04-23T09:00:00Z' },
+  { id:'rfq20', tradeType:'Landscaping',           title:'Commercial Grounds Maintenance Contract',city:'Calgary',  province:'AB', budget:'$2,500/mo',         timeline:'Ongoing seasonal',  urgency:'normal', contactName:'Renata Patel',    contactEmail:'r.patel@retailreit.ca',      contactPhone:'403-555-0277', jobDescription:'Year-round grounds maintenance for 6 retail properties across NE Calgary. Snow removal included.', status:'open', createdAt:'2026-04-28T08:00:00Z' },
+  { id:'rfq21', tradeType:'Drywall & Plastering',  title:'Drywall Finishers -- Condo Floors 3-8',city:'Toronto',   province:'ON', budget:'$40,000-$65,000',  timeline:'8-12 weeks',        urgency:'normal', contactName:'Paul Varga',      contactEmail:'p.varga@condo-dev.ca',       contactPhone:'416-555-0834', jobDescription:'Drywall installation and Level 4 finish for floors 3-8 of 25-storey condo tower. Coordination required.', status:'open', createdAt:'2026-04-27T13:00:00Z' },
+  { id:'rfq22', tradeType:'Paving & Asphalt',      title:'Parking Lot Resurfacing -- Mall',      city:'Winnipeg',   province:'MB', budget:'$45,000-$75,000',  timeline:'Spring 2026',       urgency:'normal', contactName:'Linda Chow',      contactEmail:'l.chow@mallmgmt.ca',         contactPhone:'204-555-0339', jobDescription:'Full milling and resurfacing of 350-stall surface parking lot. Line painting and speed bumps included.', status:'open', createdAt:'2026-04-22T10:00:00Z' },
+  { id:'rfq23', tradeType:'Snow Removal',           title:'Snow Removal Contract 2026/27',        city:'Ottawa',    province:'ON', budget:'Seasonal contract', timeline:'Oct 2026 start',    urgency:'normal', contactName:'Marcus Leblanc',  contactEmail:'m.leblanc@govprop.ca',       contactPhone:'613-555-0412', jobDescription:'Snow removal and ice control for 3 federal government buildings in downtown Ottawa. 24/7 response.', status:'open', createdAt:'2026-04-20T14:00:00Z' },
+  { id:'rfq24', tradeType:'Boilermaker',            title:'Pressure Vessel Inspection & Repair',  city:'Hamilton',   province:'ON', budget:'$15,000-$25,000',  timeline:'Planned shutdown',  urgency:'high',   contactName:'George Stamos',   contactEmail:'g.stamos@steelco.ca',        contactPhone:'905-555-0163', jobDescription:'NDE inspection and weld repair of (3) ASME pressure vessels during annual maintenance shutdown.', status:'open', createdAt:'2026-04-29T07:00:00Z' },
+  { id:'rfq25', tradeType:'Refrigeration',          title:'Walk-In Cooler System -- Grocery',     city:'Vancouver',  province:'BC', budget:'$28,000-$45,000',  timeline:'6 weeks',           urgency:'normal', contactName:'Amy Wong',        contactEmail:'a.wong@grocerychainbc.ca',   contactPhone:'604-555-0587', jobDescription:'Install refrigeration system for 1,200 sq ft walk-in cooler and 400 sq ft freezer. HFC-free preferred.', status:'open', createdAt:'2026-04-26T11:00:00Z' },
+];
+
 /* ============================================================
    STORAGE
 ============================================================ */
-const SEED_VERSION = '2026-04-27-v1'; // All incomplete features implemented — email verify, review moderation, claim flow, blog CMS, lead gating
+const SEED_VERSION = '2026-05-01-v1'; // Dashboard leads overhaul — SEED_RFQS, onboarding card, upgrade CTAs, 5-free lead gating
 
 const TRADE_TYPES = [
   'Boilermaker','Carpentry','Cleaning & Janitorial','Concrete & Masonry',
@@ -3870,6 +3899,9 @@ function loadStorage() {
   if (!sc) saveClients();
 
   App.rfqs = sq ? JSON.parse(sq) : [];
+  // Merge any SEED_RFQS not already present (by id)
+  const _rfqIds = new Set(App.rfqs.map(r => r.id));
+  SEED_RFQS.forEach(r => { if (!_rfqIds.has(r.id)) App.rfqs.push(r); });
   if (!sq) saveRFQs();
 
   const sk = localStorage.getItem('to_seekers');
@@ -6394,8 +6426,100 @@ function renderDashboard_OLD_REMOVED() {
         <button class="tab-btn" onclick="switchTab('tab-avail',this)">&#128336; Availability</button>
       </div>
 
+      <!-- Leads Tab -->
+      <div id="tab-leads" class="tab-content active">
+        ${(function(){
+          const isPro = prov.plan==='pro' || prov.plan==='enterprise';
+          const allLeads = (App.rfqs||[]).filter(function(r){ return r.status==='open' && r.tradeType===prov.tradeType; })
+            .sort(function(a,b){ return new Date(b.createdAt)-new Date(a.createdAt); });
+          const FREE_LIMIT = 5;
+          const freeLeads   = allLeads.slice(0, FREE_LIMIT);
+          const lockedLeads = allLeads.slice(FREE_LIMIT);
+
+          if (allLeads.length === 0) {
+            return '<div style="text-align:center;padding:70px 40px;">'
+              + '<div style="font-size:48px;margin-bottom:16px;">&#128203;</div>'
+              + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:26px;color:white;margin-bottom:8px;">No leads yet for ' + prov.tradeType + '</div>'
+              + '<div style="font-size:14px;color:var(--s400);max-width:400px;margin:0 auto 24px;">When clients post job requests matching your trade and city, they appear here automatically. Check back soon!</div>'
+              + '<button onclick="navigate(\'/rfq\')" class="btn btn-orange">&#128226; Post Your Own Job Request</button>'
+              + '</div>';
+          }
+
+          function renderLead(job, isLocked) {
+            const urgencyBadge = job.urgency==='high' ? '<span style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#FCA5A5;font-size:11px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:4px;">&#128308; Urgent</span>' : '';
+            if (isLocked) {
+              return '<div style="position:relative;border-radius:10px;overflow:hidden;margin-bottom:12px;">'
+                + '<div style="filter:blur(5px);pointer-events:none;user-select:none;background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:22px 26px;">'
+                + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:19px;color:white;margin-bottom:8px;">' + (job.title||'Lead Request') + '</div>'
+                + '<div style="display:flex;gap:14px;font-size:13px;color:var(--s400);"><span>&#128205; ' + (job.city||'') + ', ' + (job.province||'') + '</span><span>&#128178; ' + (job.budget||'') + '</span><span>&#128336; ' + (job.timeline||'') + '</span></div>'
+                + '<div style="font-size:14px;color:var(--s300);margin-top:8px;line-height:1.5;">' + (job.jobDescription||'').slice(0,100) + '...</div>'
+                + '</div>'
+                + '<div style="position:absolute;inset:0;background:rgba(11,17,26,0.75);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;">'
+                + '<span style="font-size:28px;">&#128274;</span>'
+                + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:16px;color:white;font-weight:700;">Unlock with Pro Membership</div>'
+                + '<button onclick="navigate(\'/pricing\')" class="btn btn-orange btn-sm">Upgrade to Pro &#8594;</button>'
+                + '</div>'
+                + '</div>';
+            }
+            return '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:22px 26px;margin-bottom:12px;display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">'
+              + '<div style="flex:1;min-width:240px;">'
+              + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">'
+              + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:19px;color:white;">' + (job.title||'Lead Request') + '</div>'
+              + urgencyBadge
+              + '</div>'
+              + '<div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--s400);margin-bottom:10px;">'
+              + '<span>&#128205; ' + (job.city||'') + ', ' + (job.province||'') + '</span>'
+              + '<span>&#128178; ' + (job.budget||'TBD') + '</span>'
+              + '<span>&#128336; ' + (job.timeline||'Flexible') + '</span>'
+              + '<span>&#128197; ' + (job.createdAt ? new Date(job.createdAt).toLocaleDateString('en-CA') : '') + '</span>'
+              + '</div>'
+              + (job.jobDescription ? '<div style="font-size:14px;color:var(--s300);line-height:1.6;margin-bottom:12px;">' + job.jobDescription + '</div>' : '')
+              + '<div style="font-size:13px;color:var(--s400);">&#128100; <strong style="color:var(--s200);">' + (job.contactName||'Client') + '</strong></div>'
+              + '</div>'
+              + '<div style="flex-shrink:0;display:flex;flex-direction:column;gap:8px;min-width:160px;">'
+              + '<a href="mailto:' + (job.contactEmail||'') + '" class="btn btn-orange btn-sm" style="text-align:center;">&#128140; Email Client</a>'
+              + (job.contactPhone ? '<a href="tel:' + job.contactPhone + '" class="btn btn-outline btn-sm" style="text-align:center;font-size:12px;">&#128222; ' + job.contactPhone + '</a>' : '')
+              + '</div>'
+              + '</div>';
+          }
+
+          var html = '';
+
+          if (!isPro && lockedLeads.length > 0) {
+            html += '<div style="background:linear-gradient(135deg,#0D1F0D,#1A3A1A);border:1px solid rgba(34,197,94,0.25);border-radius:10px;padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
+              + '<span style="font-size:20px;">&#127381;</span>'
+              + '<span style="flex:1;font-size:14px;color:var(--s200);"><strong style="color:#6FE09A;">' + allLeads.length + ' ' + prov.tradeType + ' leads</strong> in your area. First 5 are free. <strong style="color:white;">' + lockedLeads.length + ' more</strong> locked behind Pro.</span>'
+              + '<button onclick="navigate(\'/pricing\')" class="btn btn-orange btn-sm">Unlock All &#8594;</button>'
+              + '</div>';
+          } else if (isPro) {
+            html += '<div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">'
+              + '<span style="font-size:16px;">&#9989;</span>'
+              + '<span style="font-size:14px;color:var(--s300);">Full lead access active &mdash; <strong style="color:var(--o400);">' + allLeads.length + ' open ' + prov.tradeType + ' leads</strong> in your area.</span>'
+              + '</div>';
+          }
+
+          const visibleLeads = isPro ? allLeads : freeLeads;
+          html += visibleLeads.map(function(j){ return renderLead(j, false); }).join('');
+          if (!isPro && lockedLeads.length > 0) {
+            html += lockedLeads.map(function(j){ return renderLead(j, true); }).join('');
+            html += '<div style="background:linear-gradient(135deg,#1A0E00,#2C1A00);border:2px solid var(--o500);border-radius:12px;padding:28px 32px;margin-top:24px;text-align:center;">'
+              + '<div style="font-size:36px;margin-bottom:12px;">&#128081;</div>'
+              + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:24px;color:white;margin-bottom:8px;">Unlock All ' + allLeads.length + ' Leads with Pro</div>'
+              + '<p style="font-size:14px;color:var(--s300);max-width:480px;margin:0 auto 20px;line-height:1.6;">Get full contact details, project budgets, and timelines for every matching ' + prov.tradeType + ' lead posted in Canada.</p>'
+              + '<div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:20px;">'
+              + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Unlimited lead access</div>'
+              + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Full client contact info</div>'
+              + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Priority listing placement</div>'
+              + '</div>'
+              + '<button onclick="navigate(\'/pricing\')" class="btn btn-orange" style="font-size:16px;padding:14px 36px;">Upgrade to Pro &mdash; from $49/mo &#8594;</button>'
+              + '</div>';
+          }
+          return html;
+        })()}
+      </div>
+
       <!-- Appointments -->
-      <div id="tab-appt" class="tab-content active">
+      <div id="tab-appt" class="tab-content">
         ${bookings.length===0 ? `
           <div style="text-align:center;padding:60px;color:var(--s400);">
             <div style="font-size:40px;margin-bottom:12px;">&#128203;</div>
@@ -7865,15 +7989,66 @@ function renderDashboard() {
     </div>
 
     <div class="container" style="padding-top:40px;padding-bottom:80px;">
-      <div class="dash-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:40px;">
-        <div class="stat-card"><div class="stat-value">${bookings.length}</div><div class="stat-label">Total Bookings</div></div>
+
+      ${(function(){
+        /* ── Onboarding card — only shown when profile is thin ── */
+        const profileComplete = !!(prov.phone && prov.certifications && prov.certifications.length && prov.description && prov.description.length > 60 && prov.website);
+        if (bookings.length === 0 && !profileComplete) {
+          const steps = [
+            { done: !!(prov.phone),                            label: 'Add your phone number' },
+            { done: !!(prov.website),                          label: 'Add your website URL' },
+            { done: !!(prov.description && prov.description.length > 60), label: 'Write a company description (60+ chars)' },
+            { done: !!(prov.certifications && prov.certifications.length), label: 'Add certifications / licences' },
+            { done: !!(prov.logoUrl),                          label: 'Upload your company logo' },
+          ];
+          const doneCount = steps.filter(s=>s.done).length;
+          const pct = Math.round(doneCount / steps.length * 100);
+          return '<div style="background:linear-gradient(135deg,#0A1929,#0F2744);border:1px solid rgba(99,179,237,0.25);border-radius:12px;padding:28px 32px;margin-bottom:32px;">'
+            + '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-bottom:20px;">'
+            + '<div>'
+            + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:22px;color:white;margin-bottom:4px;">&#127881; Welcome to BookYourTrades!</div>'
+            + '<div style="font-size:14px;color:var(--s300);">Complete your profile to start receiving leads. Profile ' + pct + '% complete.</div>'
+            + '</div>'
+            + '<a onclick="switchTab(\'tab-profile\',document.querySelectorAll(\'.tab-btn\')[4])" class="btn btn-orange btn-sm" style="cursor:pointer;">Complete Profile &#8594;</a>'
+            + '</div>'
+            + '<div style="background:var(--n600);border-radius:999px;height:6px;margin-bottom:20px;overflow:hidden;">'
+            + '<div style="background:linear-gradient(90deg,var(--o500),#F0C040);height:100%;width:' + pct + '%;border-radius:999px;transition:width 0.4s;"></div>'
+            + '</div>'
+            + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;">'
+            + steps.map(function(s) {
+                return '<div style="display:flex;align-items:center;gap:10px;font-size:13px;color:' + (s.done ? '#6FE09A' : 'var(--s300)') + ';background:' + (s.done ? 'rgba(34,197,94,0.08)' : 'var(--n700)') + ';border:1px solid ' + (s.done ? 'rgba(34,197,94,0.25)' : 'var(--n500)') + ';border-radius:6px;padding:8px 12px;">'
+                  + '<span style="font-size:16px;">' + (s.done ? '&#10003;' : '&#9711;') + '</span> ' + s.label
+                  + '</div>';
+              }).join('')
+            + '</div></div>';
+        }
+        return '';
+      })()}
+
+      ${(function(){
+        /* ── Upgrade banner — free plan only ── */
+        if (prov.plan && prov.plan !== 'free') return '';
+        const matchingLeads = (App.rfqs || []).filter(function(r){ return r.status==='open' && r.tradeType===prov.tradeType; });
+        const hiddenCount = Math.max(0, matchingLeads.length - 5);
+        if (hiddenCount === 0) return '';
+        return '<div style="background:linear-gradient(135deg,#1A0E00,#2C1A00);border:1px solid var(--o600);border-radius:10px;padding:16px 24px;margin-bottom:28px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">'
+          + '<span style="font-size:22px;">&#128274;</span>'
+          + '<span style="flex:1;font-size:14px;color:var(--s200);"><strong style="color:var(--o300);">' + hiddenCount + ' leads locked</strong> on your Free plan. Upgrade to Pro to see all ' + matchingLeads.length + ' matching ' + prov.tradeType + ' leads in your area.</span>'
+          + '<button onclick="navigate(\'/pricing\')" class="btn btn-orange btn-sm" style="white-space:nowrap;">Unlock All Leads &#8594;</button>'
+          + '</div>';
+      })()}
+
+      <div class="dash-stats" style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:40px;">
+        <div class="stat-card"><div class="stat-value">${(App.rfqs||[]).filter(r=>r.status==='open'&&r.tradeType===prov.tradeType).length}</div><div class="stat-label">Open Leads</div></div>
+        <div class="stat-card"><div class="stat-value">${bookings.length}</div><div class="stat-label">Appointments</div></div>
         <div class="stat-card"><div class="stat-value" style="color:#F0A030;">${pending.length}</div><div class="stat-label">Awaiting Review</div></div>
         <div class="stat-card"><div class="stat-value" style="color:#22C55E;">${confirmed.length}</div><div class="stat-label">Confirmed</div></div>
         <div class="stat-card"><div class="stat-value">${profileViews}</div><div class="stat-label">Profile Views</div></div>
       </div>
 
       <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('tab-appt',this)">&#128197; Appointments</button>
+        <button class="tab-btn active" onclick="switchTab('tab-leads',this)">&#128203; Leads ${(function(){var n=(App.rfqs||[]).filter(r=>r.status==='open'&&r.tradeType===prov.tradeType).length;return n>0?'<span style="background:var(--o500);color:white;border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px;">' +n+ '</span>':'';}())}</button>
+        <button class="tab-btn" onclick="switchTab('tab-appt',this)">&#128197; Appointments ${pending.length>0?'<span style="background:#F0A030;color:white;border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px;">'+pending.length+'</span>':''}</button>
         <button class="tab-btn" onclick="switchTab('tab-analytics',this)">&#128200; Analytics</button>
         <button class="tab-btn" onclick="switchTab('tab-notifs',this)">
           &#128276; Notifications${unread>0?` <span style="background:var(--o500);color:white;border-radius:50%;width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;font-size:10px;margin-left:4px;">${unread}</span>`:''}
@@ -7882,7 +8057,6 @@ function renderDashboard() {
         <button class="tab-btn" onclick="switchTab('tab-profile',this)">&#9881;&#65039; Profile</button>
         <button class="tab-btn" onclick="switchTab('tab-reputation',this)">&#127942; Reputation &amp; XP</button>
         <button class="tab-btn" onclick="switchTab('tab-avail',this)">&#128336; Availability</button>
-        <button class="tab-btn" onclick="switchTab('tab-jobs',this)">&#128203; Available Careers</button>
         <button class="tab-btn" onclick="switchTab('tab-post-job',this)">&#128226; Post a Job</button>
         <button class="tab-btn" onclick="switchTab('tab-photos',this)">&#128247; Photos</button>
       </div>
@@ -8068,92 +8242,11 @@ function renderDashboard() {
         </div>
       </div>
 
-      <!-- Available Careers / RFQs — Pro & Enterprise only -->
-      <div id="tab-jobs" class="tab-content">
-        ${(function() {
-          const isPro = prov.plan === 'pro' || prov.plan === 'enterprise';
-          const matchingJobs = (App.rfqs || []).filter(r => r.status === 'open' && r.tradeType === prov.tradeType);
+            <!-- tab-jobs: hidden / merged into Leads tab -->
+      <!-- (tab-jobs id kept for backward compat with any deep links) -->
+      <div id="tab-jobs" class="tab-content" style="display:none;"></div>
 
-          // ── Upsell banner (always visible at top) ───────────────────────────
-          const upsellBanner = '<div style="background:linear-gradient(135deg,#1A1200,#2C1F00);border:2px solid var(--o500);border-radius:12px;padding:28px 28px 24px;margin-bottom:28px;position:relative;overflow:hidden;">'
-            + '<div style="position:absolute;top:-24px;right:-24px;width:120px;height:120px;background:rgba(224,98,26,0.08);border-radius:50%;"></div>'
-            + '<div style="display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">'
-            + '<div style="font-size:40px;line-height:1;">&#128081;</div>'
-            + '<div style="flex:1;min-width:220px;">'
-            + '<div style="font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--o400);font-family:\'Barlow Condensed\',sans-serif;font-weight:700;margin-bottom:4px;">&#9889; Pro &amp; Enterprise Exclusive</div>'
-            + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:24px;color:white;line-height:1.2;margin-bottom:8px;">Access All Client RFQs &amp; Job Requests</div>'
-            + '<p style="font-size:14px;color:var(--s300);line-height:1.6;margin:0 0 16px;">Upgrade to <strong style="color:var(--o400);">Pro</strong> or <strong style="color:var(--o400);">Enterprise</strong> to see every job request posted by clients — including full contact info, project budgets, and timelines. Free plan members see a preview only.</p>'
-            + '<div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:20px;">'
-            + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Unlimited RFQ access</div>'
-            + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Full client contact details</div>'
-            + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Instant lead alerts</div>'
-            + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Featured placement in directory</div>'
-            + '</div>'
-            + '<button onclick="navigate(\'/pricing\')" class="btn btn-orange" style="font-size:15px;padding:12px 28px;">Upgrade to Pro — from $49/mo &#8594;</button>'
-            + '</div></div></div>';
-
-          if (!isPro) {
-            // Show upsell + blurred preview of first 3
-            const preview = matchingJobs.slice(0, 3);
-            const previewHtml = preview.length === 0
-              ? '<div style="text-align:center;padding:40px;color:var(--s400);font-size:14px;">No open job requests yet — check back soon.</div>'
-              : '<div style="position:relative;">'
-                + '<div style="filter:blur(4px);pointer-events:none;user-select:none;display:flex;flex-direction:column;gap:12px;">'
-                + preview.map(function(job) {
-                    return '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:20px 24px;">'
-                      + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:18px;color:white;margin-bottom:6px;">' + (job.title || 'Job Request') + '</div>'
-                      + '<div style="display:flex;gap:14px;font-size:13px;color:var(--s400);">'
-                      + '<span>&#128205; ' + (job.city || '—') + '</span>'
-                      + (job.budget ? '<span>&#128178; ' + job.budget + '</span>' : '')
-                      + '</div></div>';
-                  }).join('')
-                + '</div>'
-                + '<div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(11,25,41,0.55);border-radius:8px;">'
-                + '<div style="text-align:center;">'
-                + '<div style="font-size:28px;margin-bottom:8px;">&#128274;</div>'
-                + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:18px;color:white;margin-bottom:6px;">' + matchingJobs.length + ' job request' + (matchingJobs.length!==1?'s':'') + ' hidden</div>'
-                + '<div style="font-size:13px;color:var(--s300);margin-bottom:14px;">Upgrade to Pro to unlock full access</div>'
-                + '<button onclick="navigate(\'/pricing\')" class="btn btn-orange btn-sm">Upgrade to Pro &#8594;</button>'
-                + '</div></div></div>';
-            return upsellBanner + previewHtml;
-          }
-
-          // Pro/Enterprise — full access
-          if (matchingJobs.length === 0) {
-            return '<div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:16px 20px;margin-bottom:24px;display:flex;align-items:center;gap:12px;">'
-              + '<span style="font-size:18px;">&#9989;</span>'
-              + '<span style="font-size:14px;color:var(--s300);">Full RFQ access active on your <strong style="color:var(--o400);">' + (prov.plan==='enterprise'?'Enterprise':'Pro') + '</strong> plan. No matching job requests yet — check back soon.</span>'
-              + '</div>'
-              + '<div style="text-align:center;padding:40px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">&#128203;</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;margin-bottom:8px;">No open job requests yet</div><div style="font-size:14px;">When clients post job requests matching your trade (' + prov.tradeType + '), they\'ll appear here.</div></div>';
-          }
-          return '<div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">'
-            + '<span style="font-size:16px;">&#9989;</span>'
-            + '<span style="font-size:14px;color:var(--s300);">Full RFQ access active — <strong style="color:var(--o400);">' + matchingJobs.length + ' open job request' + (matchingJobs.length!==1?'s':'') + '</strong> matching your trade: <strong style="color:white;">' + prov.tradeType + '</strong></span>'
-            + '</div>'
-            + '<div style="display:flex;flex-direction:column;gap:12px;">'
-            + matchingJobs.map(function(job) {
-                return '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:20px 24px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;">'
-                  + '<div style="flex:1;min-width:220px;">'
-                  + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:18px;color:white;margin-bottom:6px;">' + (job.title || job.jobDescription || 'Job Request') + '</div>'
-                  + '<div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--s400);margin-bottom:8px;">'
-                  + '<span>&#128205; ' + (job.city || (job.serviceAreas && job.serviceAreas[0]) || '—') + '</span>'
-                  + (job.budget ? '<span>&#128178; ' + job.budget + '</span>' : '')
-                  + (job.timeline ? '<span>&#128336; ' + job.timeline + '</span>' : '')
-                  + '<span>&#128197; Posted ' + (job.createdAt ? new Date(job.createdAt).toLocaleDateString('en-CA') : '—') + '</span>'
-                  + '</div>'
-                  + (job.jobDescription ? '<div style="font-size:14px;color:var(--s300);line-height:1.6;">' + job.jobDescription + '</div>' : '')
-                  + '</div>'
-                  + '<div style="flex-shrink:0;display:flex;flex-direction:column;gap:8px;">'
-                  + '<a href="mailto:' + (job.contactEmail||'') + '" class="btn btn-orange btn-sm">Contact Client &#8594;</a>'
-                  + (job.contactPhone ? '<a href="tel:' + job.contactPhone + '" class="btn btn-outline btn-sm" style="font-size:12px;">&#128222; ' + job.contactPhone + '</a>' : '')
-                  + '</div>'
-                  + '</div>';
-              }).join('')
-            + '</div>';
-        })()}
-      </div>
-
-      <!-- Post a Job -->
+<!-- Post a Job -->
       <div id="tab-post-job" class="tab-content">
         <div style="max-width:640px;">
           <div id="postJobAlert"></div>
