@@ -8061,8 +8061,100 @@ function renderDashboard() {
         <button class="tab-btn" onclick="switchTab('tab-photos',this)">&#128247; Photos</button>
       </div>
 
+      <!-- Leads Tab -->
+      <div id="tab-leads" class="tab-content active">
+        ${(function(){
+          const isPro = prov.plan==='pro' || prov.plan==='enterprise';
+          const allLeads = (App.rfqs||[]).filter(function(r){ return r.status==='open' && r.tradeType===prov.tradeType; })
+            .sort(function(a,b){ return new Date(b.createdAt)-new Date(a.createdAt); });
+          const FREE_LIMIT = 5;
+          const freeLeads   = allLeads.slice(0, FREE_LIMIT);
+          const lockedLeads = allLeads.slice(FREE_LIMIT);
+
+          if (allLeads.length === 0) {
+            return '<div style="text-align:center;padding:70px 40px;">'
+              + '<div style="font-size:48px;margin-bottom:16px;">&#128203;</div>'
+              + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:26px;color:white;margin-bottom:8px;">No leads yet for ' + prov.tradeType + '</div>'
+              + '<div style="font-size:14px;color:var(--s400);max-width:400px;margin:0 auto 24px;">When clients post job requests matching your trade and city, they appear here automatically. Check back soon!</div>'
+              + '<button onclick="navigate(\'/rfq\')">&#128226; Post Your Own Job Request</button>'
+              + '</div>';
+          }
+
+          function renderLead(job, isLocked) {
+            const urgencyBadge = job.urgency==='high' ? '<span style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);color:#FCA5A5;font-size:11px;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;border-radius:4px;">&#128308; Urgent</span>' : '';
+            if (isLocked) {
+              return '<div style="position:relative;border-radius:10px;overflow:hidden;margin-bottom:12px;">'
+                + '<div style="filter:blur(5px);pointer-events:none;user-select:none;background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:22px 26px;">'
+                + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:19px;color:white;margin-bottom:8px;">' + (job.title||'Lead Request') + '</div>'
+                + '<div style="display:flex;gap:14px;font-size:13px;color:var(--s400);"><span>&#128205; ' + (job.city||'') + ', ' + (job.province||'') + '</span><span>&#128178; ' + (job.budget||'') + '</span><span>&#128336; ' + (job.timeline||'') + '</span></div>'
+                + '<div style="font-size:14px;color:var(--s300);margin-top:8px;line-height:1.5;">' + (job.jobDescription||'').slice(0,100) + '...</div>'
+                + '</div>'
+                + '<div style="position:absolute;inset:0;background:rgba(11,17,26,0.75);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;">'
+                + '<span style="font-size:28px;">&#128274;</span>'
+                + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-size:16px;color:white;font-weight:700;">Unlock with Pro Membership</div>'
+                + '<button onclick="navigate(\'/pricing\')">Upgrade to Pro &#8594;</button>'
+                + '</div>'
+                + '</div>';
+            }
+            return '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:22px 26px;margin-bottom:12px;display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">'
+              + '<div style="flex:1;min-width:240px;">'
+              + '<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">'
+              + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:19px;color:white;">' + (job.title||'Lead Request') + '</div>'
+              + urgencyBadge
+              + '</div>'
+              + '<div style="display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--s400);margin-bottom:10px;">'
+              + '<span>&#128205; ' + (job.city||'') + ', ' + (job.province||'') + '</span>'
+              + '<span>&#128178; ' + (job.budget||'TBD') + '</span>'
+              + '<span>&#128336; ' + (job.timeline||'Flexible') + '</span>'
+              + '<span>&#128197; ' + (job.createdAt ? new Date(job.createdAt).toLocaleDateString('en-CA') : '') + '</span>'
+              + '</div>'
+              + (job.jobDescription ? '<div style="font-size:14px;color:var(--s300);line-height:1.6;margin-bottom:12px;">' + job.jobDescription + '</div>' : '')
+              + '<div style="font-size:13px;color:var(--s400);">&#128100; <strong style="color:var(--s200);">' + (job.contactName||'Client') + '</strong></div>'
+              + '</div>'
+              + '<div style="flex-shrink:0;display:flex;flex-direction:column;gap:8px;min-width:160px;">'
+              + '<a href="mailto:' + (job.contactEmail||'') + '" class="btn btn-orange btn-sm" style="text-align:center;">&#128140; Email Client</a>'
+              + (job.contactPhone ? '<a href="tel:' + job.contactPhone + '" class="btn btn-outline btn-sm" style="text-align:center;font-size:12px;">&#128222; ' + job.contactPhone + '</a>' : '')
+              + '</div>'
+              + '</div>';
+          }
+
+          var html = '';
+
+          if (!isPro && lockedLeads.length > 0) {
+            html += '<div style="background:linear-gradient(135deg,#0D1F0D,#1A3A1A);border:1px solid rgba(34,197,94,0.25);border-radius:10px;padding:18px 24px;margin-bottom:24px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">'
+              + '<span style="font-size:20px;">&#127381;</span>'
+              + '<span style="flex:1;font-size:14px;color:var(--s200);"><strong style="color:#6FE09A;">' + allLeads.length + ' ' + prov.tradeType + ' leads</strong> in your area. First 5 are free. <strong style="color:white;">' + lockedLeads.length + ' more</strong> locked behind Pro.</span>'
+              + '<button onclick="navigate(\'/pricing\')">Unlock All &#8594;</button>'
+              + '</div>';
+          } else if (isPro) {
+            html += '<div style="background:rgba(34,197,94,0.06);border:1px solid rgba(34,197,94,0.2);border-radius:8px;padding:14px 20px;margin-bottom:20px;display:flex;align-items:center;gap:12px;">'
+              + '<span style="font-size:16px;">&#9989;</span>'
+              + '<span style="font-size:14px;color:var(--s300);">Full lead access active &mdash; <strong style="color:var(--o400);">' + allLeads.length + ' open ' + prov.tradeType + ' leads</strong> in your area.</span>'
+              + '</div>';
+          }
+
+          const visibleLeads = isPro ? allLeads : freeLeads;
+          html += visibleLeads.map(function(j){ return renderLead(j, false); }).join('');
+          if (!isPro && lockedLeads.length > 0) {
+            html += lockedLeads.map(function(j){ return renderLead(j, true); }).join('');
+            html += '<div style="background:linear-gradient(135deg,#1A0E00,#2C1A00);border:2px solid var(--o500);border-radius:12px;padding:28px 32px;margin-top:24px;text-align:center;">'
+              + '<div style="font-size:36px;margin-bottom:12px;">&#128081;</div>'
+              + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:24px;color:white;margin-bottom:8px;">Unlock All ' + allLeads.length + ' Leads with Pro</div>'
+              + '<p style="font-size:14px;color:var(--s300);max-width:480px;margin:0 auto 20px;line-height:1.6;">Get full contact details, project budgets, and timelines for every matching ' + prov.tradeType + ' lead posted in Canada.</p>'
+              + '<div style="display:flex;justify-content:center;gap:24px;flex-wrap:wrap;margin-bottom:20px;">'
+              + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Unlimited lead access</div>'
+              + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Full client contact info</div>'
+              + '<div style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--s200);"><span style="color:#22C55E;font-weight:700;">&#10003;</span> Priority listing placement</div>'
+              + '</div>'
+              + '<button onclick="navigate(\'/pricing\')">Upgrade to Pro from $49/mo &#8594;</button>'
+              + '</div>';
+          }
+          return html;
+        })()}
+      </div>
+
       <!-- Appointments -->
-      <div id="tab-appt" class="tab-content active">
+      <div id="tab-appt" class="tab-content">
         ${(function(){
           const isPaidPlan = prov.plan==='pro'||prov.plan==='enterprise';
           if (!isPaidPlan && bookings.some(b=>b.status==='pending'&&!b.paid)) {
