@@ -130,7 +130,7 @@
   <meta property="og:locale:alternate" content="en_US" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Barlow+Condensed:ital,wght@0,300;0,400;0,600;0,700;0,800;1,700&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
   <!-- Leaflet.js — interactive map -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -586,7 +586,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 ============================================================ */
 .stars { color: var(--o400); font-size: 14px; }
 .divider { height: 1px; background: var(--n500); margin: 32px 0; }
-.page-section { padding: 60px 0; }
+.page-section { padding: 72px 0; position: relative; z-index: 2; }
 
 .alert {
   padding: 14px 18px; border-radius: 4px; font-size: 14px;
@@ -1128,6 +1128,583 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 .plan-pro      { background: linear-gradient(135deg,#E0621A,#F07030); color: white; }
 .plan-featured { background: linear-gradient(135deg,#1A3A6E,#2A5FA8); color: white; }
 
+
+/* ============================================================
+   SCROLL-REVEAL ANIMATIONS
+============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Stagger delays */
+.reveal-d1 { transition-delay: 0.08s; }
+.reveal-d2 { transition-delay: 0.16s; }
+.reveal-d3 { transition-delay: 0.24s; }
+.reveal-d4 { transition-delay: 0.32s; }
+.reveal-d5 { transition-delay: 0.40s; }
+
+/* ============================================================
+   STATS ROW (hero bottom)
+============================================================ */
+.hero-stats-row {
+  display: flex; gap: 36px; flex-wrap: wrap;
+  margin-top: 28px;
+  opacity: 0;
+  animation: heroReveal 0.7s ease forwards 0.7s;
+}
+.hero-stat-item { display: flex; flex-direction: column; gap: 2px; }
+.hero-stat-val {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 38px; color: var(--cyan); line-height: 1;
+  text-shadow: 0 0 20px var(--cyan-glow);
+}
+.hero-stat-val.orange { color: var(--o400); text-shadow: 0 0 20px rgba(255,107,43,0.4); }
+.hero-stat-lbl {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; letter-spacing: 0.15em;
+  text-transform: uppercase; color: var(--s400);
+}
+
+/* ============================================================
+   BLUEPRINT TAG LABELS  (section eyebrows)
+============================================================ */
+.blueprint-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--cyan);
+  background: var(--cyan-dim);
+  border: 1px solid var(--cyan-border);
+  padding: 4px 14px; margin-bottom: 12px;
+}
+.blueprint-tag::before { content: '//'; opacity: 0.5; }
+
+.blueprint-tag.orange {
+  color: var(--o400);
+  background: rgba(255,107,43,0.07);
+  border-color: rgba(255,107,43,0.22);
+}
+.blueprint-tag.orange::before { content: '//'; }
+
+/* ============================================================
+   FEATURE CARDS (homepage why-us section)
+============================================================ */
+.feature-card {
+  background: var(--n700);
+  border: 1px solid var(--n500);
+  padding: 32px 28px;
+  position: relative; overflow: hidden;
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+.feature-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: var(--cyan);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.35s ease;
+}
+.feature-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.4); border-color: var(--cyan-border); }
+.feature-card:hover::before { transform: scaleX(1); }
+
+.feature-icon {
+  width: 52px; height: 52px;
+  background: var(--cyan-dim); border: 1px solid var(--cyan-border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 18px;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.feature-card:hover .feature-icon {
+  background: rgba(0,200,255,0.14);
+  box-shadow: 0 0 20px var(--cyan-glow);
+}
+.feature-card h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; letter-spacing: 0.04em;
+  color: var(--white); margin-bottom: 10px; line-height: 1;
+}
+.feature-card p {
+  font-size: 15px; color: var(--s300); line-height: 1.6; font-weight: 300;
+}
+
+/* ============================================================
+   HORIZONTAL RULE / SECTION DIVIDER
+============================================================ */
+.h-rule {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, var(--cyan) 0%, rgba(0,200,255,0.2) 50%, transparent 100%);
+  margin: 0 0 0;
+  opacity: 0.5;
+}
+
+/* ============================================================
+   SCROLLBAR STYLING
+============================================================ */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--n900); }
+::-webkit-scrollbar-thumb { background: var(--n500); }
+::-webkit-scrollbar-thumb:hover { background: var(--cyan); }
+
+/* ============================================================
+   NAV CTA BUTTON
+============================================================ */
+.nav-cta {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 15px !important; letter-spacing: 0.10em !important;
+  background: var(--o500) !important; color: white !important;
+  padding: 8px 20px !important; margin-left: 8px;
+  transition: background 0.2s, box-shadow 0.2s !important;
+  box-shadow: 0 0 0 1px rgba(255,107,43,0.3);
+}
+.nav-cta:hover {
+  background: var(--o400) !important;
+  box-shadow: 0 0 16px rgba(255,107,43,0.4) !important;
+  transform: none !important;
+}
+.nav-cta::after { display: none !important; }
+
+
+/* ============================================================
+   REDESIGN OVERRIDES — blueprint aesthetic
+============================================================ */
+
+/* --- Extended CSS vars --- */
+:root {
+  --n900: #070d1a;
+  --n800: #0d1828;
+  --n700: #122035;
+  --cyan: #00c8ff;
+  --cyan-dim: rgba(0,200,255,0.08);
+  --cyan-glow: rgba(0,200,255,0.25);
+  --cyan-border: rgba(0,200,255,0.18);
+  --grid-line:  rgba(0,180,255,0.06);
+  --grid-line2: rgba(0,180,255,0.025);
+  --orange: #ff6b2b;
+  --orange-glow: rgba(255,107,43,0.3);
+}
+
+/* --- Blueprint grid background --- */
+body {
+  background: var(--n900);
+  position: relative;
+}
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(var(--grid-line2) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line2) 1px, transparent 1px);
+  background-size: 80px 80px, 80px 80px, 20px 20px, 20px 20px;
+  background-position: -1px -1px, -1px -1px, -1px -1px, -1px -1px;
+}
+
+/* Ensure all content sits above grid */
+#app, nav, #navbar, .page, footer { position: relative; z-index: 1; }
+
+/* --- Typography: Bebas Neue for display headings --- */
+h1, h2 {
+  font-family: 'Bebas Neue', 'Barlow Condensed', sans-serif;
+  font-weight: 400;
+  line-height: 1.0;
+  letter-spacing: 0.04em;
+}
+h3, h4, h5, h6 {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.06em;
+}
+
+/* --- Glassmorphic Navbar --- */
+#navbar {
+  background: rgba(7,13,26,0.82) !important;
+  backdrop-filter: blur(18px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(150%) !important;
+  border-bottom: 1px solid var(--cyan-border) !important;
+  box-shadow: 0 0 40px rgba(0,200,255,0.07), 0 2px 0 rgba(0,200,255,0.12) !important;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+#navbar.scrolled {
+  background: rgba(7,13,26,0.96) !important;
+  box-shadow: 0 0 60px rgba(0,200,255,0.12), 0 2px 0 rgba(0,200,255,0.18) !important;
+}
+
+/* Nav logo pulse ring */
+.nav-logo-mark {
+  background: var(--orange) !important;
+  box-shadow: 0 0 0 0 var(--orange-glow);
+  animation: logoPulse 3s ease-in-out infinite;
+}
+@keyframes logoPulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--orange-glow); }
+  50%       { box-shadow: 0 0 0 8px rgba(255,107,43,0); }
+}
+
+/* Cyan nav links */
+.nav-link:hover, .nav-link.active {
+  color: var(--cyan) !important;
+}
+.nav-link {
+  position: relative;
+  transition: color 0.2s;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0; right: 0;
+  height: 1px;
+  background: var(--cyan);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.25s ease;
+}
+.nav-link:hover::after, .nav-link.active::after { transform: scaleX(1); }
+
+/* Nav CTA button */
+.nav-cta {
+  background: transparent !important;
+  border: 1px solid var(--cyan) !important;
+  color: var(--cyan) !important;
+  font-family: 'Share Tech Mono', monospace !important;
+  letter-spacing: 0.08em !important;
+  font-size: 12px !important;
+  padding: 8px 18px !important;
+  transition: background 0.2s, box-shadow 0.2s, color 0.2s !important;
+}
+.nav-cta:hover {
+  background: var(--cyan-dim) !important;
+  box-shadow: 0 0 16px var(--cyan-glow) !important;
+  color: white !important;
+}
+
+/* ============================================================
+   HERO — parallax, radial glow, scan lines, bracket corners
+============================================================ */
+.hero {
+  position: relative;
+  min-height: 80vh;
+  display: flex;
+  align-items: center;
+  background: var(--n900) !important;
+  overflow: hidden;
+  padding: 100px 0 80px;
+}
+
+/* Radial glow behind hero content */
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 140%;
+  height: 140%;
+  background: radial-gradient(ellipse 60% 55% at 50% 40%,
+    rgba(0,200,255,0.09) 0%,
+    rgba(255,107,43,0.04) 40%,
+    transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Scan line overlay */
+.hero::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 3px,
+    rgba(0,200,255,0.012) 3px,
+    rgba(0,200,255,0.012) 4px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.hero .container {
+  position: relative;
+  z-index: 2;
+}
+
+/* Bracket corners on hero */
+.hero-bracket-tl, .hero-bracket-tr,
+.hero-bracket-bl, .hero-bracket-br {
+  position: absolute;
+  width: 40px; height: 40px;
+  border-color: var(--cyan);
+  border-style: solid;
+  opacity: 0.4;
+  z-index: 2;
+}
+.hero-bracket-tl { top:20px; left:24px; border-width:2px 0 0 2px; }
+.hero-bracket-tr { top:20px; right:24px; border-width:2px 2px 0 0; }
+.hero-bracket-bl { bottom:20px; left:24px; border-width:0 0 2px 2px; }
+.hero-bracket-br { bottom:20px; right:24px; border-width:0 2px 2px 0; }
+
+/* Hero text overrides */
+.hero-eyebrow {
+  font-family: 'Share Tech Mono', monospace !important;
+  font-size: 11px !important;
+  letter-spacing: 0.25em !important;
+  text-transform: uppercase !important;
+  color: var(--cyan) !important;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block;
+  width: 32px; height: 1px;
+  background: var(--cyan);
+}
+
+.hero h1 {
+  font-size: clamp(52px, 7vw, 96px) !important;
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-weight: 400 !important;
+  line-height: 0.95 !important;
+  letter-spacing: 0.03em !important;
+  color: white !important;
+  animation: heroReveal 0.8s ease both;
+  animation-delay: 0.1s;
+}
+.hero h1 .accent-cyan { color: var(--cyan); }
+.hero h1 .accent-orange { color: var(--orange); }
+
+.hero p {
+  font-family: 'Barlow', sans-serif;
+  color: var(--s300);
+  font-size: 16px;
+  line-height: 1.7;
+  max-width: 580px;
+  margin-top: 20px;
+  animation: heroReveal 0.8s ease both;
+  animation-delay: 0.25s;
+}
+
+@keyframes heroReveal {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Hero search bar redesign */
+.search-bar {
+  background: rgba(7,13,26,0.8) !important;
+  border: 1px solid var(--cyan-border) !important;
+  backdrop-filter: blur(12px) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 0 0 0 var(--cyan-glow);
+  transition: box-shadow 0.3s, border-color 0.3s;
+  animation: heroReveal 0.8s ease both;
+  animation-delay: 0.4s;
+  margin-top: 32px;
+  padding: 6px !important;
+}
+.search-bar:focus-within {
+  border-color: var(--cyan) !important;
+  box-shadow: 0 0 0 3px rgba(0,200,255,0.12) !important;
+}
+.search-bar input {
+  background: transparent !important;
+  color: white !important;
+  font-family: 'Barlow', sans-serif !important;
+}
+.search-bar input::placeholder { color: rgba(156,189,214,0.5) !important; }
+.search-bar select {
+  background: rgba(13,24,40,0.9) !important;
+  color: var(--s300) !important;
+  border-left: 1px solid var(--cyan-border) !important;
+  border-right: 1px solid var(--cyan-border) !important;
+}
+.search-bar button {
+  background: var(--orange) !important;
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 16px !important;
+  letter-spacing: 0.1em !important;
+  border-radius: 2px !important;
+  padding: 10px 28px !important;
+  transition: background 0.2s, box-shadow 0.2s !important;
+}
+.search-bar button:hover {
+  background: #ff4f0d !important;
+  box-shadow: 0 0 20px var(--orange-glow) !important;
+}
+
+/* Hero stats row */
+.hero-stats-row {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+  animation: heroReveal 0.8s ease both;
+  animation-delay: 0.55s;
+}
+.hero-stat-val {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-size: 26px !important;
+  color: var(--cyan) !important;
+  line-height: 1 !important;
+  display: block !important;
+}
+.hero-stat-val.orange { color: var(--orange) !important; }
+
+/* ============================================================
+   SECTION / CARD overrides
+============================================================ */
+
+/* Section headings */
+.section-header h2,
+.section-title {
+  font-family: 'Bebas Neue', sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.05em !important;
+  font-size: clamp(32px, 4vw, 52px) !important;
+}
+
+.section-header p,
+.section-subtitle {
+  font-family: 'Barlow', sans-serif;
+  color: var(--s400);
+}
+
+/* Category cards — cyan glow on hover */
+.category-card {
+  border: 1px solid rgba(0,200,255,0.1) !important;
+  background: rgba(13,24,40,0.7) !important;
+  backdrop-filter: blur(6px);
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s !important;
+}
+.category-card:hover {
+  border-color: var(--cyan) !important;
+  box-shadow: 0 0 24px rgba(0,200,255,0.15) !important;
+  transform: translateY(-4px) !important;
+}
+.cat-icon {
+  font-size: 32px;
+  margin-bottom: 10px;
+  filter: drop-shadow(0 0 8px rgba(0,200,255,0.3));
+}
+
+/* Provider cards */
+.provider-card, .listing-card, .result-card {
+  border: 1px solid rgba(0,200,255,0.08) !important;
+  background: rgba(13,24,40,0.8) !important;
+  transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s !important;
+}
+.provider-card:hover, .listing-card:hover, .result-card:hover {
+  border-color: rgba(0,200,255,0.3) !important;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4), 0 0 20px rgba(0,200,255,0.1) !important;
+  transform: translateY(-3px) !important;
+}
+
+/* Primary buttons */
+.btn, .btn-primary, button[class*="btn"] {
+  font-family: 'Barlow Condensed', sans-serif !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.05em !important;
+}
+.btn-primary, .btn-orange {
+  background: var(--orange) !important;
+  border: none !important;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.15s !important;
+}
+.btn-primary:hover, .btn-orange:hover {
+  background: #ff4f0d !important;
+  box-shadow: 0 0 24px var(--orange-glow) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* CTA section dark bg */
+.cta-section, [class*="cta-bg"] {
+  background: var(--n900) !important;
+  border-top: 1px solid var(--cyan-border);
+  border-bottom: 1px solid var(--cyan-border);
+  position: relative;
+  overflow: hidden;
+}
+.cta-section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(0,200,255,0.06) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+/* ============================================================
+   SCROLL REVEAL
+============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-delay-1 { transition-delay: 0.1s; }
+.reveal-delay-2 { transition-delay: 0.2s; }
+.reveal-delay-3 { transition-delay: 0.3s; }
+.reveal-delay-4 { transition-delay: 0.4s; }
+
+/* ============================================================
+   FOOTER
+============================================================ */
+footer {
+  border-top: 1px solid var(--cyan-border) !important;
+  background: rgba(7,13,26,0.95) !important;
+}
+
+/* ============================================================
+   FORMS / INPUTS
+============================================================ */
+input[type="text"], input[type="email"], input[type="password"],
+input[type="tel"], input[type="number"], textarea, select {
+  border: 1px solid rgba(0,200,255,0.15) !important;
+  background: rgba(13,24,40,0.7) !important;
+  color: white !important;
+  transition: border-color 0.2s, box-shadow 0.2s !important;
+}
+input[type="text"]:focus, input[type="email"]:focus,
+input[type="password"]:focus, textarea:focus, select:focus {
+  border-color: var(--cyan) !important;
+  box-shadow: 0 0 0 3px rgba(0,200,255,0.1) !important;
+  outline: none !important;
+}
+
+/* ============================================================
+   MOBILE
+============================================================ */
+@media (max-width: 768px) {
+  .hero { min-height: 60vh; padding: 80px 0 60px; }
+  .hero h1 { font-size: clamp(42px, 12vw, 64px) !important; }
+  .hero-bracket-tl, .hero-bracket-tr,
+  .hero-bracket-bl, .hero-bracket-br { display: none; }
+  body::before { background-size: 40px 40px, 40px 40px, 10px 10px, 10px 10px; }
+}
 </style>
 </head>
 <body>
@@ -1138,7 +1715,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
 <nav id="navbar">
   <div class="container">
     <div class="nav-inner">
-      <a class="nav-logo" onclick="navigate('/')">
+      <a class="nav-logo" onclick="navigate('/')" style="text-decoration:none;">
         <img src="logo.png" alt="BookYourTrades" style="height:44px;width:auto;display:block;" />
       </a>
       <div class="nav-links" id="navLinks">
@@ -1198,8 +1775,12 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   <!-- Hero -->
   <section class="hero">
     <div class="container" style="position:relative;z-index:1;">
+      <div class="hero-bracket-tl"></div>
+      <div class="hero-bracket-tr"></div>
+      <div class="hero-bracket-bl"></div>
+      <div class="hero-bracket-br"></div>
       <div class="hero-eyebrow">Canada's Commercial Trades Registry</div>
-      <h1>Find Certified<br><span>Trade Professionals</span><br>Across Canada</h1>
+      <h1>Find <span class="accent-cyan">Certified</span><br>Trade <span class="accent-orange">Professionals</span><br>Across Canada</h1>
       <p>Connect with licensed electricians, plumbers, HVAC specialists, welders, roofers, and more. Verified trade contractors from coast to coast ready to quote your next project.</p>
       <div class="search-bar">
         <input type="text" id="heroSearch" placeholder="Search trades, companies, services..." />
@@ -1219,7 +1800,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
       </div>
       <div style="margin-top:24px;display:flex;gap:32px;flex-wrap:wrap;">
         <div style="font-size:14px;color:var(--s300);">
-          <span style="color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:22px;">80+</span>
+          <span class="hero-stat-val">80+</span>
           <span style="margin-left:6px;">Listed Contractors</span>
         </div>
         <div style="font-size:14px;color:var(--s300);">
@@ -1248,7 +1829,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   <!-- Featured Providers -->
   <section class="page-section">
     <div class="container">
-      <div class="section-header">
+      <div class="section-header reveal">
         <div>
           <div class="section-label">Verified Contractors</div>
           <div class="section-title">Featured Providers</div>
@@ -1292,7 +1873,7 @@ textarea.form-control { resize: vertical; min-height: 100px; }
   </section>
 
   <!-- CTA Banner -->
-  <section style="padding:60px 0;background:linear-gradient(135deg,var(--o600) 0%,var(--o500) 50%,var(--o400) 100%);position:relative;overflow:hidden;">
+  <section style="padding:60px 0;background:linear-gradient(135deg,#0a1422 0%,var(--o500) 50%,var(--o400) 100%);position:relative;overflow:hidden;">
     <div style="position:absolute;inset:0;background-image:repeating-linear-gradient(-45deg,transparent,transparent 40px,rgba(0,0,0,0.08) 40px,rgba(0,0,0,0.08) 41px);"></div>
     <div class="container" style="position:relative;z-index:1;text-align:center;">
       <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(255,255,255,0.7);margin-bottom:12px;">For Trade Businesses</div>
@@ -4377,7 +4958,7 @@ function router() {
     renderProvider(parts[1]);
   } else if (page === 'register') {
     document.getElementById('page-register').classList.add('active');
-    updateSEO({ title: 'List Your Trade Business Free | BookYourTrades', description: 'Add your licensed trade company to Canada's largest commercial trades directory. Free listing — get leads from businesses across Canada.' });
+    updateSEO({ title: 'List Your Trade Business Free | BookYourTrades', description: 'Add your licensed trade company to Canada\'s largest commercial trades directory. Free listing — get leads from businesses across Canada.' });
   } else if (page === 'login') {
     document.getElementById('page-login').classList.add('active');
     updateSEO({ title: 'Login | BookYourTrades', description: 'Log in to manage your trade business listing on BookYourTrades.' });
@@ -4422,7 +5003,7 @@ function router() {
     if (s) s.style.display = 'none';
   } else if (page === 'pricing') {
     document.getElementById('page-pricing').classList.add('active');
-    updateSEO({ title: 'Plans & Pricing | BookYourTrades', description: 'Free and Pro plans for trade contractors. Get more leads, verified badges, and premium placement on Canada's commercial trades directory.' });
+    updateSEO({ title: 'Plans & Pricing | BookYourTrades', description: 'Free and Pro plans for trade contractors. Get more leads, verified badges, and premium placement on Canada\'s commercial trades directory.' });
   } else if (page === 'blog') {
     if (parts[1]) {
       document.getElementById('page-blog-post').classList.add('active');
@@ -9344,6 +9925,118 @@ function handleClientAccountUpdate(e) {
 ============================================================ */
 window.addEventListener('popstate', router);
 document.addEventListener('DOMContentLoaded', () => { loadStorage(); router(); });
+</script>
+
+<script>
+/* ── Nav scroll effect ── */
+(function() {
+  var nav = document.getElementById('navbar');
+  if (!nav) return;
+  window.addEventListener('scroll', function() {
+    if (window.scrollY > 30) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  }, { passive: true });
+})();
+
+/* ── Scroll-reveal with IntersectionObserver ── */
+(function() {
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.10 });
+
+  function markReveal() {
+    /* Mark category cards */
+    document.querySelectorAll('.category-card').forEach(function(el, i) {
+      el.classList.add('reveal');
+      el.style.transitionDelay = (i * 0.04) + 's';
+      io.observe(el);
+    });
+    /* Provider cards */
+    document.querySelectorAll('.provider-card').forEach(function(el, i) {
+      el.classList.add('reveal');
+      el.style.transitionDelay = (i * 0.06) + 's';
+      io.observe(el);
+    });
+    /* Section headers */
+    document.querySelectorAll('.section-header, .page-section > .container > h2').forEach(function(el) {
+      el.classList.add('reveal');
+      io.observe(el);
+    });
+    /* Feature cards */
+    document.querySelectorAll('.feature-card').forEach(function(el, i) {
+      el.classList.add('reveal');
+      el.style.transitionDelay = (i * 0.08) + 's';
+      io.observe(el);
+    });
+  }
+
+  /* Run after initial render and re-run on SPA navigation */
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', markReveal);
+  } else {
+    markReveal();
+  }
+
+  /* Re-apply after SPA route changes */
+  var _origNavigate = window.navigate;
+  if (typeof _origNavigate === 'function') {
+    window.navigate = function() {
+      _origNavigate.apply(this, arguments);
+      setTimeout(markReveal, 120);
+    };
+  }
+})();
+</script>
+
+
+<script>
+// ── Redesign: Scroll animations & navbar ────────────────────
+(function() {
+  // Navbar scroll state
+  var navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', function() {
+    if (navbar) {
+      if (window.scrollY > 40) navbar.classList.add('scrolled');
+      else navbar.classList.remove('scrolled');
+    }
+  }, { passive: true });
+
+  // IntersectionObserver for .reveal elements
+  var io = new IntersectionObserver(function(entries) {
+    entries.forEach(function(e) {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        io.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  function initReveal() {
+    document.querySelectorAll('.reveal').forEach(function(el) {
+      if (!el.classList.contains('visible')) io.observe(el);
+    });
+  }
+
+  // Run on initial load
+  document.addEventListener('DOMContentLoaded', initReveal);
+
+  // Re-run after SPA navigation (patch navigate())
+  var _origNavigate = window.navigate;
+  if (typeof _origNavigate === 'function') {
+    window.navigate = function() {
+      _origNavigate.apply(this, arguments);
+      setTimeout(initReveal, 120);
+    };
+  }
+
+  // Also run after short delay for already-loaded page
+  setTimeout(initReveal, 200);
+})();
 </script>
 </body>
 </html>
