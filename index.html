@@ -2211,10 +2211,16 @@ nav, .navbar, .nav-inner {
 .hero::before {
   content: '' !important;
   position: absolute !important;
-  top: 0 !important; left: 0 !important;
-  width: 100% !important; height: 100% !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
   background: rgba(5, 12, 28, 0.80) !important;
   z-index: 0 !important;
+  pointer-events: none !important;
 }
 
 /* Keep photo covering full hero */
