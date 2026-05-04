@@ -2178,6 +2178,30 @@ section.page-section:has(.cat-ui-wrap) {
   .cat-expand-row { flex-wrap: wrap !important; }
   .cat-expand-btn { width: 100% !important; justify-content: center !important; }
 }
+
+/* ============================================================
+   NAV DROPDOWN Z-INDEX FIX — ensure nav stacks above all page content
+============================================================ */
+nav, .navbar, header nav, #mainNav {
+  position: relative;
+  z-index: 1200 !important;
+}
+.nav-inner {
+  position: relative;
+  z-index: 1200 !important;
+}
+.nav-dropdown {
+  position: relative;
+  z-index: 1200 !important;
+}
+.nav-dropdown-menu {
+  z-index: 2000 !important;
+  position: absolute !important;
+}
+/* Also ensure the nav wrapper doesn't clip its children */
+nav, .navbar, .nav-inner {
+  overflow: visible !important;
+}
 </style>
 </head>
 <body>
