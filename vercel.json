@@ -4,11 +4,5 @@
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
     { "source": "/robots.txt",  "destination": "/api/robots"  },
     { "source": "/(.*)",        "destination": "/index.html"  }
-  ],
-  "crons": [
-    { "path": "/api/scrape-all",          "schedule": "0 5 * * *"  },
-    { "path": "/api/scrape-all?batch=1",  "schedule": "30 5 * * *" },
-    { "path": "/api/scrape-careers",      "schedule": "0 */4 * * *"},
-    { "path": "/api/careers",             "schedule": "0 7 * * *"  }
   ]
 }
