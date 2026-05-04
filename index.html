@@ -2266,6 +2266,48 @@ nav, .navbar, .nav-inner {
   gap: 52px !important;
 }
 
+
+/* ============================================================
+   CATEGORY HEADER ROW — title left, dropdown right
+============================================================ */
+.cat-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 48px;
+  flex-wrap: wrap;
+  margin-bottom: 28px;
+}
+.cat-header-text {
+  flex-shrink: 0;
+}
+.cat-header-controls {
+  flex: 1;
+  min-width: 280px;
+  max-width: 560px;
+}
+.cat-header-controls .cat-ui-wrap {
+  width: 100%;
+}
+.cat-header-controls .cat-dropdown-trigger {
+  max-width: 100%;
+  width: 100%;
+}
+.cat-header-controls .cat-expand-row {
+  margin-top: 12px;
+}
+
+@media (max-width: 768px) {
+  .cat-header-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+  .cat-header-controls {
+    width: 100%;
+    max-width: 100%;
+  }
+}
 </style>
 </head>
 <body>
@@ -2382,11 +2424,13 @@ nav, .navbar, .nav-inner {
   <!-- Categories -->
   <section class="page-section" style="background:var(--n800);border-bottom:1px solid var(--n600);">
     <div class="container">
-      <div style="margin-bottom:28px;">
-        <div class="section-label">Browse By Trade</div>
-        <div class="section-title">What Are You Looking For?</div>
-      </div>
-      <div class="cat-ui-wrap">
+      <div class="cat-header-row">
+        <div class="cat-header-text">
+          <div class="section-label">Browse By Trade</div>
+          <div class="section-title">What Are You Looking For?</div>
+        </div>
+        <div class="cat-header-controls">
+          <div class="cat-ui-wrap">
         <!-- Dropdown trigger -->
         <button class="cat-dropdown-trigger" id="catDropdownTrigger" onclick="toggleCatDropdown()" aria-expanded="false">
           <span class="trigger-left">
@@ -2405,6 +2449,9 @@ nav, .navbar, .nav-inner {
           Browse all 31 categories
         </button>
       </div>
+        </div><!-- /cat-ui-wrap -->
+        </div><!-- /cat-header-controls -->
+      </div><!-- /cat-header-row -->
       <!-- Full icon grid (expandable) -->
       <div class="cat-grid-full" id="catGridFull">
         <div class="category-grid" id="categoryGrid"></div>
