@@ -1,0 +1,84 @@
+<!-- ============================================================
+     PAGE: CONTACT
+============================================================ -->
+<div id="page-contact" class="page">
+  <div style="background:var(--n800);border-bottom:3px solid var(--o500);padding:60px 0 48px;">
+    <div class="container" style="max-width:800px;">
+      <div style="font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;">Get In Touch</div>
+      <h1 style="font-size:42px;color:white;margin-bottom:12px;">Contact Us</h1>
+      <p style="color:var(--s300);font-size:16px;max-width:540px;">Have a question, issue, or business inquiry? Fill out the form below and our team will respond within 1&#8211;2 business days.</p>
+    </div>
+  </div>
+  <div class="container" style="max-width:800px;padding-top:56px;padding-bottom:80px;">
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:48px;align-items:start;" class="contact-grid">
+      <div>
+        <div id="contactAlert"></div>
+        <form id="contactForm" onsubmit="handleContactSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input class="form-control" name="name" required placeholder="John Smith" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address *</label>
+              <input class="form-control" type="email" name="email" required placeholder="you@company.com" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Phone <span style="color:var(--s500);font-weight:400;">(Optional)</span></label>
+              <input class="form-control" type="tel" name="phone" placeholder="(416) 555-0100" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject *</label>
+              <select class="form-control" name="subject" required>
+                <option value="">&#8212; Select a subject &#8212;</option>
+                <option>General Inquiry</option>
+                <option>Support Request</option>
+                <option>Listing Issue</option>
+                <option>Billing Question</option>
+                <option>Partnership Opportunity</option>
+                <option>Report a Problem</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message *</label>
+            <textarea class="form-control" name="message" required style="min-height:160px;" placeholder="Describe your question or issue in detail..."></textarea>
+          </div>
+          <button type="submit" id="contactSubmitBtn" class="btn btn-orange" style="min-width:200px;justify-content:center;">Send Message &#8594;</button>
+        </form>
+      </div>
+      <div>
+        <div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:28px;margin-bottom:20px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:white;margin-bottom:16px;">Contact Info</div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:rgba(224,98,26,0.15);border:1px solid rgba(224,98,26,0.3);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#128139;</div>
+              <div><div style="font-size:12px;color:var(--s400);margin-bottom:2px;">Email</div><a href="mailto:info@bookyourtrades.com" style="color:var(--o400);font-size:14px;">info@bookyourtrades.com</a></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:rgba(224,98,26,0.15);border:1px solid rgba(224,98,26,0.3);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#127758;</div>
+              <div><div style="font-size:12px;color:var(--s400);margin-bottom:2px;">Coverage</div><div style="font-size:14px;color:var(--s200);">All Canadian Provinces</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:rgba(224,98,26,0.15);border:1px solid rgba(224,98,26,0.3);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#128336;</div>
+              <div><div style="font-size:12px;color:var(--s400);margin-bottom:2px;">Response Time</div><div style="font-size:14px;color:var(--s200);">1&#8211;2 Business Days</div></div>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:24px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:white;margin-bottom:14px;">Quick Links</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a onclick="navigate('/rfq')" style="color:var(--o400);cursor:pointer;font-size:14px;">&#128226; Post a Job Request</a>
+            <a onclick="navigate('/register')" style="color:var(--o400);cursor:pointer;font-size:14px;">&#127970; List Your Business</a>
+            <a onclick="navigate('/directory')" style="color:var(--o400);cursor:pointer;font-size:14px;">&#128269; Browse Directory</a>
+            <a onclick="navigate('/pricing')" style="color:var(--o400);cursor:pointer;font-size:14px;">&#128181; View Pricing</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -2341,6 +2341,9 @@ nav, .navbar, .nav-inner {
 .hero-bracket-tr { right: 5% !important; }
 .hero-bracket-bl { left: 5% !important; }
 .hero-bracket-br { right: 5% !important; }
+
+/* Contact page responsive */
+@media (max-width: 768px) { .contact-grid { grid-template-columns: 1fr !important; } }
 </style>
 </head>
 <body>
@@ -3914,6 +3917,90 @@ nav, .navbar, .nav-inner {
 </div>
 
 <!-- ============================================================
+     PAGE: CONTACT
+============================================================ -->
+<div id="page-contact" class="page">
+  <div style="background:var(--n800);border-bottom:3px solid var(--o500);padding:60px 0 48px;">
+    <div class="container" style="max-width:800px;">
+      <div style="font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:8px;">Get In Touch</div>
+      <h1 style="font-size:42px;color:white;margin-bottom:12px;">Contact Us</h1>
+      <p style="color:var(--s300);font-size:16px;max-width:540px;">Have a question, issue, or business inquiry? Fill out the form below and our team will respond within 1&#8211;2 business days.</p>
+    </div>
+  </div>
+  <div class="container" style="max-width:800px;padding-top:56px;padding-bottom:80px;">
+    <div style="display:grid;grid-template-columns:1fr 320px;gap:48px;align-items:start;" class="contact-grid">
+      <div>
+        <div id="contactAlert"></div>
+        <form id="contactForm" onsubmit="handleContactSubmit(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input class="form-control" name="name" required placeholder="John Smith" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address *</label>
+              <input class="form-control" type="email" name="email" required placeholder="you@company.com" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Phone <span style="color:var(--s500);font-weight:400;">(Optional)</span></label>
+              <input class="form-control" type="tel" name="phone" placeholder="(416) 555-0100" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">Subject *</label>
+              <select class="form-control" name="subject" required>
+                <option value="">&#8212; Select a subject &#8212;</option>
+                <option>General Inquiry</option>
+                <option>Support Request</option>
+                <option>Listing Issue</option>
+                <option>Billing Question</option>
+                <option>Partnership Opportunity</option>
+                <option>Report a Problem</option>
+                <option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Message *</label>
+            <textarea class="form-control" name="message" required style="min-height:160px;" placeholder="Describe your question or issue in detail..."></textarea>
+          </div>
+          <button type="submit" id="contactSubmitBtn" class="btn btn-orange" style="min-width:200px;justify-content:center;">Send Message &#8594;</button>
+        </form>
+      </div>
+      <div>
+        <div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:28px;margin-bottom:20px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;color:white;margin-bottom:16px;">Contact Info</div>
+          <div style="display:flex;flex-direction:column;gap:16px;">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:rgba(224,98,26,0.15);border:1px solid rgba(224,98,26,0.3);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#128139;</div>
+              <div><div style="font-size:12px;color:var(--s400);margin-bottom:2px;">Email</div><a href="mailto:info@bookyourtrades.com" style="color:var(--o400);font-size:14px;">info@bookyourtrades.com</a></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:rgba(224,98,26,0.15);border:1px solid rgba(224,98,26,0.3);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#127758;</div>
+              <div><div style="font-size:12px;color:var(--s400);margin-bottom:2px;">Coverage</div><div style="font-size:14px;color:var(--s200);">All Canadian Provinces</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="width:36px;height:36px;background:rgba(224,98,26,0.15);border:1px solid rgba(224,98,26,0.3);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">&#128336;</div>
+              <div><div style="font-size:12px;color:var(--s400);margin-bottom:2px;">Response Time</div><div style="font-size:14px;color:var(--s200);">1&#8211;2 Business Days</div></div>
+            </div>
+          </div>
+        </div>
+        <div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:24px;">
+          <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;color:white;margin-bottom:14px;">Quick Links</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <a onclick="navigate('/rfq')" style="color:var(--o400);cursor:pointer;font-size:14px;">&#128226; Post a Job Request</a>
+            <a onclick="navigate('/register')" style="color:var(--o400);cursor:pointer;font-size:14px;">&#127970; List Your Business</a>
+            <a onclick="navigate('/directory')" style="color:var(--o400);cursor:pointer;font-size:14px;">&#128269; Browse Directory</a>
+            <a onclick="navigate('/pricing')" style="color:var(--o400);cursor:pointer;font-size:14px;">&#128181; View Pricing</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
      PAGE: TERMS OF SERVICE
 ============================================================ -->
 <div id="page-terms" class="page">
@@ -5070,7 +5157,7 @@ const SEED_RFQS = [
 /* ============================================================
    STORAGE
 ============================================================ */
-const SEED_VERSION = '2026-05-01-v1'; // Dashboard leads overhaul — SEED_RFQS, onboarding card, upgrade CTAs, 5-free lead gating
+const SEED_VERSION = '2026-05-04-v3'; // Super admin panel, contact page, inquiries, provider listing management
 
 const TRADE_TYPES = [
   'Boilermaker','Carpentry','Cleaning & Janitorial','Concrete & Masonry',
@@ -5159,6 +5246,9 @@ function loadStorage() {
   const sap = localStorage.getItem('to_applications');
   if (sap) App.applications = JSON.parse(sap);
 
+  const sinq = localStorage.getItem('to_inquiries');
+  App.inquiries = sinq ? JSON.parse(sinq) : [];
+
   // Initialize dynamic blog posts (falls back to static BLOG_POSTS)
   initBlogPosts();
 
@@ -5174,6 +5264,7 @@ function saveRFQs()          { localStorage.setItem('to_rfqs',    JSON.stringify
 function saveProviders() { localStorage.setItem('to_providers', JSON.stringify(App.providers)); }
 function saveUsers()     { localStorage.setItem('to_users',     JSON.stringify(App.users));     }
 function saveBookings()  { localStorage.setItem('to_bookings',  JSON.stringify(App.bookings));  }
+function saveInquiries() { localStorage.setItem('to_inquiries', JSON.stringify(App.inquiries)); }
 
 /* ============================================================
    TRADE NEWS
@@ -5708,6 +5799,9 @@ function router() {
   } else if (page === 'disclaimer') {
     document.getElementById('page-disclaimer').classList.add('active');
     updateSEO({ title: 'Contractor Disclaimer | BookYourTrades', description: 'Important disclaimers regarding trade contractor listings and booking on BookYourTrades.' });
+  } else if (page === 'contact') {
+    document.getElementById('page-contact').classList.add('active');
+    updateSEO({ title: 'Contact Us | BookYourTrades', description: 'Get in touch with BookYourTrades — support, listing issues, partnerships, and general inquiries.' });
   } else {
     document.getElementById('page-home').classList.add('active');
     renderHome();
@@ -7964,7 +8058,7 @@ function renderDashboard_OLD_REMOVED() {
               `;
             }).join('')}
           </div>
-          <button class="btn btn-orange" onclick="showToast('Availability saved!','success')">Save Availability</button>
+          <button class="btn btn-orange" onclick="saveAvailability()">Save Availability</button>
         </div>
       </div>
 
@@ -9351,6 +9445,7 @@ function renderDashboard() {
         <button class="tab-btn" onclick="switchTab('tab-avail',this)">&#128336; Availability</button>
         <button class="tab-btn" onclick="switchTab('tab-post-job',this)">&#128226; Post a Job</button>
         <button class="tab-btn" onclick="switchTab('tab-photos',this)">&#128247; Photos</button>
+        <button class="tab-btn" onclick="switchTab('tab-my-listing',this)">&#127970; My Listing</button>
       </div>
 
       <!-- Leads Tab -->
@@ -9776,6 +9871,52 @@ function renderDashboard() {
         </div>
       </div>
 
+      <!-- My Listing -->
+      <div id="tab-my-listing" class="tab-content">
+        <div style="max-width:700px;">
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:28px;margin-bottom:20px;">
+            <h3 style="font-size:20px;color:white;margin-bottom:6px;">My Company Listing</h3>
+            <p style="font-size:13px;color:var(--s400);margin-bottom:24px;">This information appears on your public profile. Keep it up-to-date to attract more clients.</p>
+            <div id="myListingAlert"></div>
+            <form onsubmit="saveMyListing(event)">
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Company Name</label><input class="form-control" name="companyName" value="${prov.companyName}" required /></div>
+                <div class="form-group"><label class="form-label">Trade Type</label><select class="form-control" name="tradeType">${TRADE_TYPES.map(t=>`<option ${t===prov.tradeType?'selected':''}>${t}</option>`).join('')}</select></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Contact Name</label><input class="form-control" name="contactName" value="${prov.contactName||''}" /></div>
+                <div class="form-group"><label class="form-label">Phone</label><input class="form-control" type="tel" name="phone" value="${prov.phone||''}" /></div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Website</label><input class="form-control" type="url" name="website" value="${prov.website||''}" placeholder="https://yourcompany.com" /></div>
+                <div class="form-group"><label class="form-label">License Number</label><input class="form-control" name="licenseNumber" value="${prov.licenseNumber||''}" /></div>
+              </div>
+              <div class="form-group"><label class="form-label">Description</label><textarea class="form-control" name="description" style="min-height:120px;">${prov.description||''}</textarea></div>
+              <div class="form-group"><label class="form-label">Service Areas <span style="font-size:12px;color:var(--s400);font-weight:400;">comma separated</span></label><input class="form-control" name="serviceAreas" value="${(prov.serviceAreas||[]).join(', ')}" /></div>
+              <div class="form-group"><label class="form-label">Certifications <span style="font-size:12px;color:var(--s400);font-weight:400;">comma separated</span></label><input class="form-control" name="certifications" value="${(prov.certifications||[]).join(', ')}" /></div>
+              <div class="form-group" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--n500);">
+                <label class="form-label">Change Password <span style="font-size:12px;color:var(--s400);font-weight:400;">(leave blank to keep current)</span></label>
+                <input class="form-control" type="password" name="newPassword" placeholder="New password (min 6 chars)" style="max-width:320px;" />
+              </div>
+              <div style="display:flex;gap:12px;margin-top:20px;flex-wrap:wrap;">
+                <button type="submit" class="btn btn-orange">Save Listing &#8594;</button>
+                <a class="btn btn-outline" onclick="navigate('/provider/${prov.id}')" style="cursor:pointer;">View Public Profile</a>
+              </div>
+            </form>
+          </div>
+          <div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:24px;">
+            <h4 style="font-size:16px;color:white;margin-bottom:14px;">Listing Status</h4>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+              <div style="flex:1;min-width:100px;background:var(--n800);border-radius:8px;padding:14px;"><div style="font-size:12px;color:var(--s400);margin-bottom:6px;">Status</div><span class="badge badge-green">${prov.status||'active'}</span></div>
+              <div style="flex:1;min-width:100px;background:var(--n800);border-radius:8px;padding:14px;"><div style="font-size:12px;color:var(--s400);margin-bottom:6px;">Plan</div><span class="badge ${prov.plan==='pro'||prov.plan==='enterprise'?'badge-orange':'badge-navy'}">${prov.plan||'free'}</span></div>
+              <div style="flex:1;min-width:100px;background:var(--n800);border-radius:8px;padding:14px;"><div style="font-size:12px;color:var(--s400);margin-bottom:6px;">Claimed</div><span class="badge ${prov.claimed?'badge-green':'badge-yellow'}">${prov.claimed?'Yes':'No'}</span></div>
+            </div>
+            ${(!prov.plan||prov.plan==='free')?`<div style="padding:14px;background:rgba(224,98,26,0.08);border:1px solid rgba(224,98,26,0.3);border-radius:8px;font-size:14px;color:var(--s200);">&#128081; Upgrade to <strong style="color:var(--o400);">Pro ($49/mo)</strong> for featured placement, unlimited leads, and priority support. <a onclick="navigate('/pricing')" style="color:var(--o400);cursor:pointer;text-decoration:underline;">View plans &rarr;</a></div>`:''}
+          </div>
+        </div>
+      </div>
+
+
     </div>
   `;
   renderMyJobs();
@@ -9787,361 +9928,618 @@ function renderDashboard() {
 ============================================================ */
 function renderAdmin() {
   if (!App.currentUser || App.currentUser.role !== 'admin') { navigate('/login'); return; }
-  const el = document.getElementById('adminContent');
-  const allProviders = App.providers;
-  const allUsers     = App.users;
-  const allClients   = App.clients || [];
+  var el = document.getElementById('adminContent');
+  if (!el) return;
 
-  el.innerHTML = `
-    <div style="background:var(--n800);border-bottom:3px solid var(--o500);padding:32px 0;">
-      <div class="container">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
-          <div>
-            <div style="font-size:12px;color:var(--o400);font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">&#9889; Super Admin</div>
-            <h1 style="font-size:32px;color:white;">Admin Panel</h1>
-          </div>
-          <div style="display:flex;gap:24px;flex-wrap:wrap;">
-            <div style="text-align:center;"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;color:var(--o400);">${allProviders.length}</div><div style="font-size:12px;color:var(--s400);">Listings</div></div>
-            <div style="text-align:center;"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;color:var(--o400);">${allUsers.length + allClients.length}</div><div style="font-size:12px;color:var(--s400);">Accounts</div></div>
-            <div style="text-align:center;"><div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:28px;color:var(--o400);">${App.bookings.length}</div><div style="font-size:12px;color:var(--s400);">Bookings</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
+  var allProviders = App.providers || [];
+  var allUsers     = App.users || [];
+  var allClients   = App.clients || [];
+  var allBookings  = App.bookings || [];
+  var allInquiries = App.inquiries || [];
+  var allRFQs      = App.rfqs || [];
+  var pending      = allProviders.filter(function(p){ return p.status === 'pending'; });
+  var proPlans     = allProviders.filter(function(p){ return p.plan === 'pro' || p.plan === 'enterprise'; });
+  var inquiryNew   = allInquiries.filter(function(i){ return i.status === 'new'; }).length;
+  var totalRevenue = (proPlans.length * 49).toLocaleString('en-CA');
+  var blogPosts    = getBlogPosts();
+  var allJobPosts  = App.jobPostings || [];
 
-    <div class="container" style="padding-top:36px;padding-bottom:80px;">
-      <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('admin-tab-listings',this)">&#127970; Listings (${allProviders.length})</button>
-        <button class="tab-btn" onclick="switchTab('admin-tab-accounts',this)">&#128100; Accounts (${allUsers.length + allClients.length})</button>
-      </div>
+  var pendingBadge = pending.length > 0
+    ? ' <span style="background:#F59E0B;color:#000;border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px;">' + pending.length + '</span>'
+    : '';
+  var inquiryBadge = inquiryNew > 0
+    ? ' <span style="background:#EF4444;color:white;border-radius:999px;padding:1px 7px;font-size:11px;margin-left:4px;">' + inquiryNew + '</span>'
+    : '';
 
-      <!-- Listings -->
-      <div id="admin-tab-listings" class="tab-content active">
-        <div style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
-          <input id="adminListingSearch" class="form-control" style="max-width:320px;" placeholder="Search by name or trade..." oninput="adminFilterListings()" />
-        </div>
-        <div id="adminListingsTable">
-          ${renderAdminListingsTable(allProviders)}
-        </div>
-      </div>
+  var overviewStats = [
+    {label:'Total Listings',  val: allProviders.length,                                                      color:'var(--o400)'},
+    {label:'Claimed',         val: allProviders.filter(function(p){ return p.claimed; }).length,              color:'#22C55E'},
+    {label:'Pending Approval',val: pending.length,                                                           color:'#F59E0B'},
+    {label:'Pro / Enterprise',val: proPlans.length,                                                          color:'var(--o400)'},
+    {label:'Client Accounts', val: allClients.length,                                                        color:'var(--s200)'},
+    {label:'Open RFQs',       val: allRFQs.filter(function(r){ return r.status==='open'; }).length,          color:'#60A5FA'},
+    {label:'Bookings',        val: allBookings.length,                                                       color:'var(--s200)'},
+    {label:'Est. MRR (CAD)',  val: '$' + totalRevenue,                                                       color:'#22C55E'},
+  ];
 
-      <!-- Accounts -->
-      <div id="admin-tab-accounts" class="tab-content">
-        <h3 style="font-size:18px;margin-bottom:16px;color:white;">Provider Accounts</h3>
-        <div style="overflow-x:auto;margin-bottom:36px;">
-          <table style="width:100%;border-collapse:collapse;font-size:14px;">
-            <thead><tr style="background:var(--n700);color:var(--s300);">
-              <th style="padding:10px 14px;text-align:left;">Email</th>
-              <th style="padding:10px 14px;text-align:left;">Linked Listing</th>
-              <th style="padding:10px 14px;text-align:left;">Actions</th>
-            </tr></thead>
-            <tbody>
-              ${allUsers.map(u => {
-                const prov = App.providers.find(p=>p.id===u.providerId);
-                return `<tr style="border-top:1px solid var(--n500);">
-                  <td style="padding:10px 14px;color:var(--s200);">${u.email}</td>
-                  <td style="padding:10px 14px;color:var(--s300);">${prov ? prov.companyName : '<em style="color:var(--s500);">No listing</em>'}</td>
-                  <td style="padding:10px 14px;">
-                    <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteUser('${u.id}','provider')">Remove Account</button>
-                  </td>
-                </tr>`;
-              }).join('')}
-            </tbody>
-          </table>
-        </div>
-        <h3 style="font-size:18px;margin-bottom:16px;color:white;">Client / Seeker Accounts</h3>
-        <div style="overflow-x:auto;">
-          <table style="width:100%;border-collapse:collapse;font-size:14px;">
-            <thead><tr style="background:var(--n700);color:var(--s300);">
-              <th style="padding:10px 14px;text-align:left;">Name</th>
-              <th style="padding:10px 14px;text-align:left;">Email</th>
-              <th style="padding:10px 14px;text-align:left;">Role</th>
-              <th style="padding:10px 14px;text-align:left;">Actions</th>
-            </tr></thead>
-            <tbody>
-              ${allClients.map(c => `<tr style="border-top:1px solid var(--n500);">
-                <td style="padding:10px 14px;color:var(--s200);">${c.name||'—'}</td>
-                <td style="padding:10px 14px;color:var(--s300);">${c.email}</td>
-                <td style="padding:10px 14px;"><span class="badge badge-navy">${c.role||'client'}</span></td>
-                <td style="padding:10px 14px;">
-                  <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteUser('${c.id}','client')">Remove Account</button>
-                </td>
-              </tr>`).join('')}
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- Admin Edit Modal -->
-    <div id="adminEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:2000;overflow-y:auto;padding:40px 20px;">
-      <div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;max-width:720px;margin:0 auto;padding:32px;position:relative;">
-        <button onclick="closeAdminEdit()" style="position:absolute;top:16px;right:20px;background:none;border:none;color:var(--s300);font-size:24px;cursor:pointer;">&times;</button>
-        <h2 style="font-size:24px;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Edit Listing</h2>
-        <div id="adminEditFormContainer"></div>
-      </div>
-    </div>
-  `;
-}
-
-function renderAdminListingsTable(providers) {
-  if (!providers.length) return '<div style="padding:40px;text-align:center;color:var(--s400);">No listings found.</div>';
-  return `<div style="overflow-x:auto;">
-    <table style="width:100%;border-collapse:collapse;font-size:14px;">
-      <thead><tr style="background:var(--n700);color:var(--s300);">
-        <th style="padding:10px 14px;text-align:left;">Company</th>
-        <th style="padding:10px 14px;text-align:left;">Trade</th>
-        <th style="padding:10px 14px;text-align:left;">City</th>
-        <th style="padding:10px 14px;text-align:left;">Status</th>
-        <th style="padding:10px 14px;text-align:left;">Actions</th>
-      </tr></thead>
-      <tbody>
-        ${providers.map(p => `<tr style="border-top:1px solid var(--n500);">
-          <td style="padding:10px 14px;">
-            <div style="font-weight:600;color:white;">${p.companyName}</div>
-            <div style="font-size:12px;color:var(--s400);">${p.email||''}</div>
-          </td>
-          <td style="padding:10px 14px;"><span class="badge badge-orange" style="font-size:11px;">${p.tradeType}</span></td>
-          <td style="padding:10px 14px;color:var(--s300);">${(p.serviceAreas||[])[0]||'—'}</td>
-          <td style="padding:10px 14px;">${p.claimed ? '<span class="badge badge-green" style="font-size:11px;">Claimed</span>' : '<span class="badge badge-yellow" style="font-size:11px;">Unclaimed</span>'}</td>
-          <td style="padding:10px 14px;">
-            <div style="display:flex;gap:6px;flex-wrap:wrap;">
-              <button class="btn btn-sm btn-navy" onclick="adminOpenEdit('${p.id}')">Edit</button>
-              <button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteProvider('${p.id}')">Remove</button>
-            </div>
-          </td>
-        </tr>`).join('')}
-      </tbody>
-    </table>
-  </div>`;
-}
-
-function adminFilterListings() {
-  const q = (document.getElementById('adminListingSearch')?.value||'').toLowerCase();
-  const filtered = q ? App.providers.filter(p =>
-    p.companyName.toLowerCase().includes(q) || p.tradeType.toLowerCase().includes(q)
-  ) : App.providers;
-  const el = document.getElementById('adminListingsTable');
-  if (el) el.innerHTML = renderAdminListingsTable(filtered);
-}
-
-function adminOpenEdit(pid) {
-  const p = App.providers.find(x=>x.id===pid);
-  if (!p) return;
-  const container = document.getElementById('adminEditFormContainer');
-  if (!container) return;
-  container.innerHTML = `
-    <div id="adminEditAlert"></div>
-    <form onsubmit="adminSaveEdit(event,'${p.id}')">
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Company Name</label><input class="form-control" name="companyName" value="${p.companyName}" required /></div>
-        <div class="form-group"><label class="form-label">Trade Type</label><select class="form-control" name="tradeType">${TRADE_TYPES.map(t=>`<option ${t===p.tradeType?'selected':''}>${t}</option>`).join('')}</select></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Contact Name</label><input class="form-control" name="contactName" value="${p.contactName||''}" /></div>
-        <div class="form-group"><label class="form-label">Email</label><input class="form-control" type="email" name="email" value="${p.email||''}" /></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">Phone</label><input class="form-control" type="tel" name="phone" value="${p.phone||''}" /></div>
-        <div class="form-group"><label class="form-label">Website</label><input class="form-control" type="url" name="website" value="${p.website||''}" /></div>
-      </div>
-      <div class="form-row">
-        <div class="form-group"><label class="form-label">License Number</label><input class="form-control" name="licenseNumber" value="${p.licenseNumber||''}" /></div>
-        <div class="form-group"><label class="form-label">Years in Business</label><select class="form-control" name="yearsInBusiness">
-          ${['Under 1 year','1-2 years','3-5 years','6-10 years','11-20 years','20+ years'].map(y=>`<option ${y===p.yearsInBusiness?'selected':''}>${y}</option>`).join('')}
-        </select></div>
-      </div>
-      <div class="form-group"><label class="form-label">Certifications <span style="font-size:12px;color:var(--s400);font-weight:400;">comma separated</span></label>
-        <input class="form-control" name="certifications" value="${(p.certifications||[]).join(', ')}" /></div>
-      <div class="form-group"><label class="form-label">Description</label>
-        <textarea class="form-control" name="description" style="min-height:100px;">${p.description||''}</textarea></div>
-      <div class="form-group"><label class="form-label">Service Areas <span style="font-size:12px;color:var(--s400);font-weight:400;">comma separated</span></label>
-        <input class="form-control" name="serviceAreas" value="${(p.serviceAreas||[]).join(', ')}" /></div>
-      <div class="form-row" style="margin-top:8px;">
-        <div class="form-group">
-          <label class="form-label">Claimed?</label>
-          <select class="form-control" name="claimed">
-            <option value="true" ${p.claimed?'selected':''}>Yes — Claimed</option>
-            <option value="false" ${!p.claimed?'selected':''}>No — Unclaimed</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label class="form-label">Featured?</label>
-          <select class="form-control" name="featured">
-            <option value="true" ${p.featured?'selected':''}>Yes — Featured</option>
-            <option value="false" ${!p.featured?'selected':''}>No</option>
-          </select>
-        </div>
-      </div>
-      <div style="display:flex;gap:10px;margin-top:8px;">
-        <button type="submit" class="btn btn-orange">Save Changes</button>
-        <button type="button" class="btn btn-navy" onclick="closeAdminEdit()">Cancel</button>
-      </div>
-    </form>
-  `;
-  document.getElementById('adminEditModal').style.display = 'block';
-}
-
-function adminSaveEdit(e, pid) {
-  e.preventDefault();
-  const data  = Object.fromEntries(new FormData(e.target));
-  const idx   = App.providers.findIndex(p=>p.id===pid);
-  if (idx === -1) return;
-  App.providers[idx] = {
-    ...App.providers[idx],
-    companyName:  data.companyName,
-    tradeType:    data.tradeType,
-    contactName:  data.contactName,
-    email:        data.email,
-    phone:        data.phone,
-    website:      data.website,
-    licenseNumber:data.licenseNumber,
-    yearsInBusiness: data.yearsInBusiness,
-    certifications: data.certifications.split(',').map(c=>c.trim()).filter(Boolean),
-    description:  data.description,
-    serviceAreas: data.serviceAreas.split(',').map(s=>s.trim()).filter(Boolean),
-    claimed:      data.claimed === 'true',
-    featured:     data.featured === 'true',
-  };
-  saveProviders();
-  closeAdminEdit();
-  showToast('Listing updated.', 'success');
-  renderAdmin();
-}
-
-function closeAdminEdit() {
-  document.getElementById('adminEditModal').style.display = 'none';
-}
-
-function adminDeleteProvider(pid) {
-  if (!confirm('Permanently remove this listing and its associated account? This cannot be undone.')) return;
-  App.providers = App.providers.filter(p=>p.id!==pid);
-  App.users = App.users.filter(u=>u.providerId!==pid);
-  saveProviders();
-  localStorage.setItem('to_users', JSON.stringify(App.users));
-  showToast('Listing removed.', 'success');
-  renderAdmin();
-}
-
-function adminDeleteUser(uid, type) {
-  if (!confirm('Permanently remove this account? This cannot be undone.')) return;
-  if (type === 'client') {
-    App.clients = App.clients.filter(c=>c.id!==uid);
-    localStorage.setItem('to_clients', JSON.stringify(App.clients));
-  } else {
-    const user = App.users.find(u=>u.id===uid);
-    if (user) App.providers = App.providers.filter(p=>p.id!==user.providerId);
-    App.users = App.users.filter(u=>u.id!==uid);
-    saveProviders();
-    localStorage.setItem('to_users', JSON.stringify(App.users));
+  /* ─── recent inquiries ─── */
+  var recentInqHtml = allInquiries.length === 0
+    ? '<div style="color:var(--s400);font-size:14px;padding:20px 0;text-align:center;">No inquiries yet.</div>'
+    : allInquiries.slice(0,5).map(function(i){
+        return '<div style="padding:12px 0;border-bottom:1px solid var(--n500);display:flex;align-items:center;gap:12px;">'
+          + '<div style="flex:1;min-width:0;">'
+          + '<div style="font-size:14px;color:white;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">' + i.name + ' — ' + i.subject + '</div>'
+          + '<div style="font-size:12px;color:var(--s400);">' + i.email + ' &bull; ' + new Date(i.createdAt).toLocaleDateString('en-CA') + '</div>'
+          + '</div>'
+          + '<span class="badge ' + (i.status==='new'?'badge-orange':'badge-navy') + '" style="font-size:11px;">' + i.status + '</span>'
+          + '</div>';
+      }).join('');
+  if (allInquiries.length > 5) {
+    recentInqHtml += '<button class="btn btn-navy btn-sm" style="margin-top:14px;" onclick="switchTab(\'atab-inquiries\',document.querySelectorAll(\'.tab-btn\')[7])">View All ' + allInquiries.length + ' Inquiries</button>';
   }
-  showToast('Account removed.', 'success');
+
+  /* ─── pending approvals mini list ─── */
+  var pendingMiniHtml = pending.length === 0
+    ? '<div style="color:var(--s400);font-size:14px;padding:20px 0;text-align:center;">No pending approvals.</div>'
+    : pending.slice(0,5).map(function(p){
+        return '<div style="padding:12px 0;border-bottom:1px solid var(--n500);display:flex;align-items:center;gap:12px;">'
+          + '<div style="flex:1;min-width:0;">'
+          + '<div style="font-size:14px;color:white;font-weight:600;">' + p.companyName + '</div>'
+          + '<div style="font-size:12px;color:var(--s400);">' + p.tradeType + ' &bull; ' + ((p.serviceAreas||[])[0]||'—') + '</div>'
+          + '</div>'
+          + '<div style="display:flex;gap:6px;">'
+          + '<button class="btn btn-sm" style="background:rgba(34,197,94,0.15);color:#22C55E;border:1px solid rgba(34,197,94,0.3);" onclick="adminApproveProvider(\'' + p.id + '\')">&#10003;</button>'
+          + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminRejectProvider(\'' + p.id + '\')">&#10005;</button>'
+          + '</div>'
+          + '</div>';
+      }).join('');
+
+  /* ─── memberships table ─── */
+  var claimedProviders = allProviders.filter(function(p){ return p.claimed; });
+  var membershipsRows = claimedProviders.length === 0
+    ? '<tr><td colspan="4" style="padding:30px;text-align:center;color:var(--s400);">No claimed listings yet.</td></tr>'
+    : claimedProviders.map(function(p){
+        return '<tr style="border-top:1px solid var(--n500);">'
+          + '<td style="padding:10px 14px;color:white;font-weight:600;">' + p.companyName + '<div style="font-size:12px;color:var(--s400);">' + (p.email||'') + '</div></td>'
+          + '<td style="padding:10px 14px;color:var(--s300);">' + p.tradeType + '</td>'
+          + '<td style="padding:10px 14px;"><span class="badge ' + (p.plan==='enterprise'?'badge-orange':p.plan==='pro'?'badge-orange':'badge-navy') + '">' + (p.plan||'free') + '</span></td>'
+          + '<td style="padding:10px 14px;"><select class="form-control" style="max-width:140px;padding:5px 8px;font-size:12px;" onchange="adminChangePlan(\'' + p.id + '\',this.value)">'
+          + '<option ' + ((!p.plan||p.plan==='free')?'selected':'') + ' value="free">Free</option>'
+          + '<option ' + (p.plan==='pro'?'selected':'') + ' value="pro">Pro ($49/mo)</option>'
+          + '<option ' + (p.plan==='enterprise'?'selected':'') + ' value="enterprise">Enterprise</option>'
+          + '</select></td>'
+          + '</tr>';
+      }).join('');
+
+  /* ─── accounts rows ─── */
+  var userRows = allUsers.map(function(u){
+    var prov = App.providers.find(function(p){ return p.id===u.providerId; });
+    return '<tr style="border-top:1px solid var(--n500);">'
+      + '<td style="padding:10px 14px;color:var(--s200);">' + u.email + '</td>'
+      + '<td style="padding:10px 14px;color:var(--s300);">' + (prov ? prov.companyName : '<em style="color:var(--s500);">No listing</em>') + '</td>'
+      + '<td style="padding:10px 14px;">' + (prov ? '<span class="badge ' + (prov.plan==='pro'?'badge-orange':'badge-navy') + '">' + (prov.plan||'free') + '</span>' : '—') + '</td>'
+      + '<td style="padding:10px 14px;"><button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteUser(\'' + u.id + '\',\'provider\')">Remove</button></td>'
+      + '</tr>';
+  }).join('');
+
+  var clientRows = allClients.map(function(c){
+    return '<tr style="border-top:1px solid var(--n500);">'
+      + '<td style="padding:10px 14px;color:var(--s200);">' + (c.name||'—') + '</td>'
+      + '<td style="padding:10px 14px;color:var(--s300);">' + c.email + '</td>'
+      + '<td style="padding:10px 14px;"><span class="badge badge-navy">' + (c.role||'client') + '</span></td>'
+      + '<td style="padding:10px 14px;"><button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteUser(\'' + c.id + '\',\'client\')">Remove</button></td>'
+      + '</tr>';
+  }).join('');
+
+  /* ─── jobs table ─── */
+  var jobRows = allJobPosts.length === 0
+    ? '<tr><td colspan="5" style="padding:40px;text-align:center;color:var(--s400);">No job postings yet.</td></tr>'
+    : allJobPosts.slice().reverse().map(function(j){
+        var prov2 = App.providers.find(function(p){ return p.id===j.providerId; });
+        return '<tr style="border-top:1px solid var(--n500);">'
+          + '<td style="padding:10px 14px;color:white;font-weight:600;">' + j.title + '<div style="font-size:12px;color:var(--s400);">' + j.trade + ' &bull; ' + j.city + '</div></td>'
+          + '<td style="padding:10px 14px;color:var(--s300);">' + (prov2 ? prov2.companyName : 'Unknown') + '</td>'
+          + '<td style="padding:10px 14px;"><span class="badge badge-navy">' + j.type + '</span></td>'
+          + '<td style="padding:10px 14px;"><span class="badge ' + (j.status==='open'?'badge-green':'badge-yellow') + '">' + j.status + '</span></td>'
+          + '<td style="padding:10px 14px;"><button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteJobPost(\'' + j.id + '\')">Remove</button></td>'
+          + '</tr>';
+      }).join('');
+
+  /* ─── inquiries list ─── */
+  var autoApproveChecked = localStorage.getItem('byt_autoApprove') === 'true';
+  var regOpenChecked     = localStorage.getItem('byt_regOpen') !== 'false';
+
+  var inquiriesHtml = allInquiries.length === 0
+    ? '<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">&#128140;</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;color:white;margin-bottom:8px;">No inquiries yet</div><div style="font-size:14px;">Contact form submissions will appear here.</div></div>'
+    : allInquiries.map(function(i){
+        var replyBoxId  = 'replyBox_'  + i.id;
+        var replyTextId = 'replyText_' + i.id;
+        var inqDivId    = 'inq_'       + i.id;
+        var safeEmail   = i.email.replace(/'/g, '');
+        var safeName    = i.name.replace(/'/g, '');
+        return '<div id="' + inqDivId + '" style="background:var(--n700);border:1px solid ' + (i.status==='new'?'rgba(239,68,68,0.4)':'var(--n500)') + ';border-radius:10px;padding:20px 24px;margin-bottom:12px;">'
+          + '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:12px;">'
+          + '<div>'
+          + '<div style="font-weight:700;font-size:17px;color:white;">' + i.name + ' &mdash; <span style="color:var(--s300);font-weight:400;">' + i.subject + '</span></div>'
+          + '<div style="font-size:13px;color:var(--s400);margin-top:3px;">' + i.email + (i.phone?' &bull; '+i.phone:'') + ' &bull; ' + new Date(i.createdAt).toLocaleString('en-CA',{dateStyle:'medium',timeStyle:'short'}) + '</div>'
+          + '</div>'
+          + '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">'
+          + '<span class="badge ' + (i.status==='new'?'badge-orange':'badge-navy') + '">' + i.status + '</span>'
+          + (i.replied ? '<span class="badge badge-green">Replied</span>' : '')
+          + '<button class="btn btn-sm btn-navy" onclick="adminMarkInquiryRead(\'' + i.id + '\')">Mark Read</button>'
+          + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteInquiry(\'' + i.id + '\')">Delete</button>'
+          + '</div>'
+          + '</div>'
+          + '<div style="background:var(--n800);border-radius:6px;padding:14px 16px;font-size:14px;color:var(--s200);line-height:1.7;white-space:pre-wrap;margin-bottom:14px;">' + i.message + '</div>'
+          + '<div style="border-top:1px solid var(--n500);padding-top:14px;">'
+          + '<div style="font-size:13px;color:var(--s400);margin-bottom:8px;">Reply from info@bookyourtrades.com:</div>'
+          + '<div id="' + replyBoxId + '" style="display:none;">'
+          + '<textarea id="' + replyTextId + '" class="form-control" style="min-height:100px;margin-bottom:10px;" placeholder="Type your reply to ' + safeName + '..."></textarea>'
+          + '<div style="display:flex;gap:8px;">'
+          + '<button class="btn btn-orange btn-sm" onclick="adminSendReply(\'' + i.id + '\',\'' + safeEmail + '\',\'' + safeName + '\')">Send Reply &#8594;</button>'
+          + '<button class="btn btn-navy btn-sm" onclick="document.getElementById(\'' + replyBoxId + '\').style.display=\'none\'">Cancel</button>'
+          + '</div>'
+          + '</div>'
+          + (!i.replied
+            ? '<button class="btn btn-outline btn-sm" onclick="document.getElementById(\'' + replyBoxId + '\').style.display=\'block\'">&#128140; Reply to ' + safeEmail + '</button>'
+            : '<div style="color:#22C55E;font-size:13px;">&#10003; Reply sent</div>')
+          + '</div>'
+          + '</div>';
+      }).join('');
+
+  el.innerHTML =
+    '<div style="background:var(--n800);border-bottom:3px solid var(--o500);padding:32px 0;">'
+    + '<div class="container">'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">'
+    + '<div>'
+    + '<div style="font-size:12px;color:var(--o400);font-family:\'Barlow Condensed\',sans-serif;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:4px;">&#9889; Super Admin</div>'
+    + '<h1 style="font-size:32px;color:white;">BookYourTrades Control Panel</h1>'
+    + '</div>'
+    + '<div style="display:flex;gap:24px;flex-wrap:wrap;">'
+    + '<div style="text-align:center;"><div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:28px;color:var(--o400);">' + allProviders.length + '</div><div style="font-size:12px;color:var(--s400);">Listings</div></div>'
+    + '<div style="text-align:center;"><div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:28px;color:var(--o400);">' + (allUsers.length + allClients.length) + '</div><div style="font-size:12px;color:var(--s400);">Accounts</div></div>'
+    + '<div style="text-align:center;"><div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:28px;color:#F59E0B;">' + pending.length + '</div><div style="font-size:12px;color:var(--s400);">Pending</div></div>'
+    + (inquiryNew > 0 ? '<div style="text-align:center;"><div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:28px;color:#F87171;">' + inquiryNew + '</div><div style="font-size:12px;color:var(--s400);">New Inquiries</div></div>' : '')
+    + '</div>'
+    + '</div>'
+    + '</div>'
+    + '</div>'
+
+    + '<div class="container" style="padding-top:36px;padding-bottom:80px;">'
+    + '<div class="tab-bar" style="flex-wrap:wrap;">'
+    + '<button class="tab-btn active" onclick="switchTab(\'atab-overview\',this)">&#128200; Overview</button>'
+    + '<button class="tab-btn" onclick="switchTab(\'atab-listings\',this)">&#127970; Listings (' + allProviders.length + ')</button>'
+    + '<button class="tab-btn" onclick="switchTab(\'atab-pending\',this)">&#9203; Pending' + pendingBadge + '</button>'
+    + '<button class="tab-btn" onclick="switchTab(\'atab-accounts\',this)">&#128100; Accounts</button>'
+    + '<button class="tab-btn" onclick="switchTab(\'atab-memberships\',this)">&#128081; Memberships</button>'
+    + '<button class="tab-btn" onclick="switchTab(\'atab-blog\',this)">&#128221; Blog</button>'
+    + '<button class="tab-btn" onclick="switchTab(\'atab-jobs\',this)">&#128188; Careers &amp; Jobs</button>'
+    + '<button class="tab-btn" onclick="switchTab(\'atab-inquiries\',this)">&#128140; Inquiries' + inquiryBadge + '</button>'
+    + '<button class="tab-btn" onclick="switchTab(\'atab-settings\',this)">&#9881;&#65039; Settings</button>'
+    + '</div>'
+
+    /* OVERVIEW */
+    + '<div id="atab-overview" class="tab-content active">'
+    + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:20px;margin-bottom:40px;">'
+    + overviewStats.map(function(s){ return '<div class="stat-card"><div class="stat-value" style="color:' + s.color + ';">' + s.val + '</div><div class="stat-label">' + s.label + '</div></div>'; }).join('')
+    + '</div>'
+    + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;flex-wrap:wrap;">'
+    + '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:24px;">'
+    + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:18px;color:white;margin-bottom:16px;">Recent Inquiries</div>'
+    + recentInqHtml
+    + '</div>'
+    + '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:24px;">'
+    + '<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:18px;color:white;margin-bottom:16px;">Pending Approvals</div>'
+    + pendingMiniHtml
+    + '</div>'
+    + '</div>'
+    + '</div>'
+
+    /* LISTINGS */
+    + '<div id="atab-listings" class="tab-content">'
+    + '<div style="margin-bottom:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;">'
+    + '<input id="adminListingSearch" class="form-control" style="max-width:320px;" placeholder="Search by name or trade..." oninput="adminFilterListings2()" />'
+    + '<select id="adminListingStatusFilter" class="form-control" style="max-width:160px;" onchange="adminFilterListings2()">'
+    + '<option value="">All statuses</option><option value="active">Active</option><option value="pending">Pending</option>'
+    + '</select>'
+    + '<button class="btn btn-orange btn-sm" onclick="adminOpenEdit2(null)">+ Add Listing</button>'
+    + '</div>'
+    + '<div id="adminListingsTable2">' + renderAdminListingsTable2(allProviders) + '</div>'
+    + '</div>'
+
+    /* PENDING */
+    + '<div id="atab-pending" class="tab-content">'
+    + (pending.length === 0
+      ? '<div style="text-align:center;padding:60px;color:var(--s400);"><div style="font-size:40px;margin-bottom:12px;">&#9989;</div><div style="font-family:\'Barlow Condensed\',sans-serif;font-size:22px;color:white;margin-bottom:8px;">All caught up!</div><div style="font-size:14px;">No listings awaiting approval.</div></div>'
+      : pending.map(function(p){
+          return '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:20px 24px;margin-bottom:12px;display:flex;align-items:flex-start;gap:20px;flex-wrap:wrap;">'
+            + '<div style="flex:1;min-width:240px;">'
+            + '<div style="font-weight:700;font-size:18px;color:white;margin-bottom:6px;">' + p.companyName + '</div>'
+            + '<div style="display:flex;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--s400);margin-bottom:8px;">'
+            + '<span>&#128296; ' + p.tradeType + '</span>'
+            + '<span>&#128205; ' + ((p.serviceAreas||[])[0]||'—') + '</span>'
+            + (p.email ? '<span>&#128140; ' + p.email + '</span>' : '')
+            + '</div>'
+            + (p.description ? '<div style="font-size:13px;color:var(--s300);line-height:1.6;">' + p.description.slice(0,180) + (p.description.length>180?'…':'') + '</div>' : '')
+            + '</div>'
+            + '<div style="display:flex;flex-direction:column;gap:8px;min-width:140px;">'
+            + '<button class="btn btn-sm" style="background:rgba(34,197,94,0.15);color:#22C55E;border:1px solid rgba(34,197,94,0.3);justify-content:center;" onclick="adminApproveProvider(\'' + p.id + '\')">&#10003; Approve</button>'
+            + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;justify-content:center;" onclick="adminRejectProvider(\'' + p.id + '\')">&#10005; Reject</button>'
+            + '<button class="btn btn-sm btn-navy" onclick="adminOpenEdit2(\'' + p.id + '\')">&#9998; Edit</button>'
+            + '</div>'
+            + '</div>';
+        }).join(''))
+    + '</div>'
+
+    /* ACCOUNTS */
+    + '<div id="atab-accounts" class="tab-content">'
+    + '<h3 style="font-size:18px;margin-bottom:16px;color:white;">Provider Accounts (' + allUsers.length + ')</h3>'
+    + '<div style="overflow-x:auto;margin-bottom:36px;"><table style="width:100%;border-collapse:collapse;font-size:14px;">'
+    + '<thead><tr style="background:var(--n700);color:var(--s300);"><th style="padding:10px 14px;text-align:left;">Email</th><th style="padding:10px 14px;text-align:left;">Linked Listing</th><th style="padding:10px 14px;text-align:left;">Plan</th><th style="padding:10px 14px;text-align:left;">Actions</th></tr></thead>'
+    + '<tbody>' + userRows + '</tbody></table></div>'
+    + '<h3 style="font-size:18px;margin-bottom:16px;color:white;">Client Accounts (' + allClients.length + ')</h3>'
+    + '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:14px;">'
+    + '<thead><tr style="background:var(--n700);color:var(--s300);"><th style="padding:10px 14px;text-align:left;">Name</th><th style="padding:10px 14px;text-align:left;">Email</th><th style="padding:10px 14px;text-align:left;">Role</th><th style="padding:10px 14px;text-align:left;">Actions</th></tr></thead>'
+    + '<tbody>' + clientRows + '</tbody></table></div>'
+    + '</div>'
+
+    /* MEMBERSHIPS */
+    + '<div id="atab-memberships" class="tab-content">'
+    + '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px;margin-bottom:24px;">'
+    + [
+        {label:'Total Listings', val:allProviders.length},
+        {label:'Free Plan', val:allProviders.filter(function(p){ return !p.plan||p.plan==='free'; }).length},
+        {label:'Pro Plan', val:allProviders.filter(function(p){ return p.plan==='pro'; }).length},
+        {label:'Enterprise', val:allProviders.filter(function(p){ return p.plan==='enterprise'; }).length},
+      ].map(function(s){ return '<div class="stat-card"><div class="stat-value" style="font-size:28px;">' + s.val + '</div><div class="stat-label">' + s.label + '</div></div>'; }).join('')
+    + '</div>'
+    + '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:14px;">'
+    + '<thead><tr style="background:var(--n700);color:var(--s300);"><th style="padding:10px 14px;text-align:left;">Company</th><th style="padding:10px 14px;text-align:left;">Trade</th><th style="padding:10px 14px;text-align:left;">Plan</th><th style="padding:10px 14px;text-align:left;">Change Plan</th></tr></thead>'
+    + '<tbody>' + membershipsRows + '</tbody></table></div>'
+    + '</div>'
+
+    /* BLOG */
+    + '<div id="atab-blog" class="tab-content">'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">'
+    + '<h3 style="font-size:20px;color:white;">' + blogPosts.length + ' Blog Posts</h3>'
+    + '<button class="btn btn-orange btn-sm" onclick="adminOpenBlogForm(\'\')">+ New Post</button>'
+    + '</div>'
+    + '<div id="adminBlogList">' + adminRenderBlogList() + '</div>'
+    + '<div id="adminBlogFormWrap" style="display:none;"></div>'
+    + '</div>'
+
+    /* JOBS */
+    + '<div id="atab-jobs" class="tab-content">'
+    + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;flex-wrap:wrap;gap:12px;">'
+    + '<h3 style="font-size:20px;color:white;">' + allJobPosts.length + ' Job Postings</h3>'
+    + '</div>'
+    + '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:14px;">'
+    + '<thead><tr style="background:var(--n700);color:var(--s300);"><th style="padding:10px 14px;text-align:left;">Title</th><th style="padding:10px 14px;text-align:left;">Company</th><th style="padding:10px 14px;text-align:left;">Type</th><th style="padding:10px 14px;text-align:left;">Status</th><th style="padding:10px 14px;text-align:left;">Actions</th></tr></thead>'
+    + '<tbody>' + jobRows + '</tbody></table></div>'
+    + '</div>'
+
+    /* INQUIRIES */
+    + '<div id="atab-inquiries" class="tab-content">' + inquiriesHtml + '</div>'
+
+    /* SETTINGS */
+    + '<div id="atab-settings" class="tab-content">'
+    + '<div style="max-width:680px;">'
+    + '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:28px;margin-bottom:24px;">'
+    + '<h3 style="font-size:20px;color:white;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Registration Settings</h3>'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--n600);">'
+    + '<div><div style="font-size:15px;color:white;font-weight:600;">Auto-approve new listings</div><div style="font-size:13px;color:var(--s400);margin-top:2px;">When enabled, new listings go live immediately without review</div></div>'
+    + '<label style="position:relative;display:inline-block;width:48px;height:26px;cursor:pointer;flex-shrink:0;">'
+    + '<input type="checkbox" id="settingAutoApprove" style="opacity:0;width:0;height:0;" onchange="adminSaveSetting(\'autoApprove\',this.checked)" ' + (autoApproveChecked?'checked':'') + '>'
+    + '<span style="position:absolute;inset:0;background:' + (autoApproveChecked?'var(--o500)':'var(--n400)') + ';border-radius:26px;transition:0.3s;"></span>'
+    + '<span style="position:absolute;left:' + (autoApproveChecked?'24':'4') + 'px;top:4px;width:18px;height:18px;background:white;border-radius:50%;transition:0.3s;"></span>'
+    + '</label></div>'
+    + '<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;">'
+    + '<div><div style="font-size:15px;color:white;font-weight:600;">Allow new registrations</div><div style="font-size:13px;color:var(--s400);margin-top:2px;">When disabled, registration page shows a closed message</div></div>'
+    + '<label style="position:relative;display:inline-block;width:48px;height:26px;cursor:pointer;flex-shrink:0;">'
+    + '<input type="checkbox" id="settingRegOpen" style="opacity:0;width:0;height:0;" onchange="adminSaveSetting(\'regOpen\',this.checked)" ' + (regOpenChecked?'checked':'') + '>'
+    + '<span style="position:absolute;inset:0;background:' + (regOpenChecked?'var(--o500)':'var(--n400)') + ';border-radius:26px;transition:0.3s;"></span>'
+    + '<span style="position:absolute;left:' + (regOpenChecked?'24':'4') + 'px;top:4px;width:18px;height:18px;background:white;border-radius:50%;transition:0.3s;"></span>'
+    + '</label></div>'
+    + '</div>'
+    + '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:28px;">'
+    + '<h3 style="font-size:20px;color:white;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Data Management</h3>'
+    + '<div style="display:flex;flex-direction:column;gap:12px;">'
+    + '<button class="btn btn-navy" onclick="adminExportData()">&#11015; Export All Listings (JSON)</button>'
+    + '<button class="btn btn-navy" onclick="adminClearInquiries()">&#128465; Clear All Inquiries</button>'
+    + '<button class="btn" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="if(confirm(\'Reset ALL localStorage data? This cannot be undone.\'))adminHardReset()">&#9888; Hard Reset — Wipe All Data</button>'
+    + '</div>'
+    + '</div>'
+    + '</div>'
+    + '</div>'
+
+    + '</div>'
+
+    /* Edit Modal */
+    + '<div id="adminEditModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;overflow-y:auto;padding:40px 20px;">'
+    + '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;max-width:720px;margin:0 auto;padding:32px;position:relative;">'
+    + '<button onclick="closeAdminEdit()" style="position:absolute;top:16px;right:20px;background:none;border:none;color:var(--s300);font-size:24px;cursor:pointer;">&times;</button>'
+    + '<h2 style="font-size:24px;margin-bottom:24px;padding-bottom:14px;border-bottom:1px solid var(--n500);">Edit Listing</h2>'
+    + '<div id="adminEditFormContainer"></div>'
+    + '</div>'
+    + '</div>';
+}
+
+/* ─── Admin helper functions ─── */
+
+function renderAdminListingsTable2(providers) {
+  if (!providers.length) return '<div style="padding:40px;text-align:center;color:var(--s400);">No listings found.</div>';
+  return '<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:14px;">'
+    + '<thead><tr style="background:var(--n700);color:var(--s300);">'
+    + '<th style="padding:10px 14px;text-align:left;">Company</th>'
+    + '<th style="padding:10px 14px;text-align:left;">Trade</th>'
+    + '<th style="padding:10px 14px;text-align:left;">City</th>'
+    + '<th style="padding:10px 14px;text-align:left;">Status</th>'
+    + '<th style="padding:10px 14px;text-align:left;">Plan</th>'
+    + '<th style="padding:10px 14px;text-align:left;">Actions</th>'
+    + '</tr></thead><tbody>'
+    + providers.map(function(p){
+        var statusBadge = p.status==='pending'
+          ? '<span class="badge badge-yellow" style="font-size:11px;">Pending</span>'
+          : p.claimed ? '<span class="badge badge-green" style="font-size:11px;">Claimed</span>'
+          : '<span class="badge badge-navy" style="font-size:11px;">Unclaimed</span>';
+        return '<tr style="border-top:1px solid var(--n500);">'
+          + '<td style="padding:10px 14px;"><div style="font-weight:600;color:white;">' + p.companyName + '</div><div style="font-size:12px;color:var(--s400);">' + (p.email||'') + '</div></td>'
+          + '<td style="padding:10px 14px;"><span class="badge badge-orange" style="font-size:11px;">' + p.tradeType + '</span></td>'
+          + '<td style="padding:10px 14px;color:var(--s300);">' + ((p.serviceAreas||[])[0]||'—') + '</td>'
+          + '<td style="padding:10px 14px;">' + statusBadge + '</td>'
+          + '<td style="padding:10px 14px;"><span class="badge ' + (p.plan==='pro'||p.plan==='enterprise'?'badge-orange':'badge-navy') + '" style="font-size:11px;">' + (p.plan||'free') + '</span></td>'
+          + '<td style="padding:10px 14px;"><div style="display:flex;gap:6px;flex-wrap:wrap;">'
+          + (p.status==='pending' ? '<button class="btn btn-sm" style="background:rgba(34,197,94,0.15);color:#22C55E;border:1px solid rgba(34,197,94,0.3);" onclick="adminApproveProvider(\'' + p.id + '\')">Approve</button>' : '')
+          + '<button class="btn btn-sm btn-navy" onclick="adminOpenEdit2(\'' + p.id + '\')">Edit</button>'
+          + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteProvider(\'' + p.id + '\')">Remove</button>'
+          + '</div></td>'
+          + '</tr>';
+      }).join('')
+    + '</tbody></table></div>';
+}
+
+function adminFilterListings2() {
+  var q  = (document.getElementById('adminListingSearch')? document.getElementById('adminListingSearch').value : '').toLowerCase();
+  var st = document.getElementById('adminListingStatusFilter') ? document.getElementById('adminListingStatusFilter').value : '';
+  var filtered = App.providers.slice();
+  if (q)  filtered = filtered.filter(function(p){ return p.companyName.toLowerCase().includes(q)||p.tradeType.toLowerCase().includes(q); });
+  if (st) filtered = filtered.filter(function(p){ return p.status===st; });
+  var el = document.getElementById('adminListingsTable2');
+  if (el) el.innerHTML = renderAdminListingsTable2(filtered);
+}
+
+function adminApproveProvider(pid) {
+  var idx = App.providers.findIndex(function(p){ return p.id===pid; });
+  if (idx<0) return;
+  App.providers[idx].status = 'active';
+  App.providers[idx].claimed = true;
+  saveProviders();
+  renderAdmin();
+  showToast('Listing approved and activated.','success');
+  var prov = App.providers[idx];
+  if (prov.email) {
+    fetch('/api/send-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'application_approved',email:prov.email,data:{name:prov.contactName||prov.companyName,company:prov.companyName,trade:prov.tradeType,city:(prov.serviceAreas||[])[0]||'',plan:prov.plan||'Free'}})}).catch(function(){});
+  }
+}
+
+function adminRejectProvider(pid) {
+  var reason = prompt('Reason for rejection (optional):') || '';
+  var idx = App.providers.findIndex(function(p){ return p.id===pid; });
+  if (idx<0) return;
+  var prov = App.providers[idx];
+  App.providers.splice(idx,1);
+  saveProviders();
+  renderAdmin();
+  showToast('Listing rejected and removed.','error');
+  if (prov.email) {
+    fetch('/api/send-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({type:'application_rejected',email:prov.email,data:{name:prov.contactName||prov.companyName,company:prov.companyName,reason:reason}})}).catch(function(){});
+  }
+}
+
+function adminChangePlan(pid, plan) {
+  var idx = App.providers.findIndex(function(p){ return p.id===pid; });
+  if (idx<0) return;
+  App.providers[idx].plan = plan;
+  saveProviders();
+  showToast('Plan updated to ' + plan + '.','success');
+}
+
+function adminMarkInquiryRead(id) {
+  var idx = App.inquiries.findIndex(function(i){ return i.id===id; });
+  if (idx<0) return;
+  App.inquiries[idx].status = 'read';
+  saveInquiries();
+  var el = document.getElementById('inq_'+id);
+  if (el) el.style.borderColor = 'var(--n500)';
+  showToast('Marked as read.','success');
+}
+
+function adminDeleteInquiry(id) {
+  if (!confirm('Delete this inquiry?')) return;
+  App.inquiries = App.inquiries.filter(function(i){ return i.id!==id; });
+  saveInquiries();
+  var el = document.getElementById('inq_'+id);
+  if (el) el.remove();
+  showToast('Inquiry deleted.','success');
+}
+
+async function adminSendReply(inquiryId, toEmail, toName) {
+  var txt = document.getElementById('replyText_'+inquiryId);
+  if (!txt || !txt.value.trim()) { showToast('Please enter a reply message.','error'); return; }
+  var message = txt.value.trim();
+  try {
+    await fetch('/api/contact', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ name:'BookYourTrades Team', email:toEmail, subject:'Re: Your Inquiry', message: message })
+    });
+    // Also send via send-email for branded template
+    await fetch('/api/send-email', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        type:'admin_alert', email:toEmail,
+        data:{ subject:'Re: Your BookYourTrades Inquiry — ' + toName, details:{ Reply:message } }
+      })
+    });
+  } catch(e) {}
+  var idx = App.inquiries.findIndex(function(i){ return i.id===inquiryId; });
+  if (idx>=0) { App.inquiries[idx].replied=true; App.inquiries[idx].status='read'; saveInquiries(); }
+  showToast('Reply sent to ' + toEmail,'success');
   renderAdmin();
 }
 
-function markAllRead(pid) {
-  App.notifications.filter(n=>n.providerId===pid).forEach(n=>n.read=true);
-  saveNotifications();
-  renderDashboard();
-  showToast('All notifications marked as read.');
-}
-
-function handlePostJob(e) {
-  e.preventDefault();
-  if (!App.currentUser) return;
-  const data = Object.fromEntries(new FormData(e.target));
-  const prov = App.providers.find(function(p) { return p.id === App.currentUser.providerId; });
-
-  const TRADE_ICONS = { Electrical:'⚡', Plumbing:'🔧', HVAC:'❄️', Roofing:'🏚️', 'Welding & Fabrication':'⚙️', Millwright:'🔩', Carpentry:'🪵', 'General Contracting':'🏗️', 'Sheet Metal':'🔨', Pipefitting:'🔩', 'Concrete & Masonry':'🧱', Other:'💼' };
-  const job = {
-    id: 'job' + Date.now(),
-    providerId: App.currentUser.providerId,
-    companyName: prov ? prov.companyName : '',
-    title: data.jobTitle,
-    type: data.jobType,
-    trade: data.jobTrade,
-    city: data.jobCity,
-    wage: data.jobWage || '',
-    experience: data.jobExperience,
-    description: data.jobDescription,
-    icon: TRADE_ICONS[data.jobTrade] || '💼',
-    status: 'open',
-    createdAt: new Date().toISOString()
-  };
-
-  App.jobPostings = App.jobPostings || [];
-  App.jobPostings.push(job);
+function adminDeleteJobPost(id) {
+  if (!confirm('Remove this job posting?')) return;
+  App.jobPostings = (App.jobPostings||[]).filter(function(j){ return j.id!==id; });
   localStorage.setItem('to_jobpostings', JSON.stringify(App.jobPostings));
-
-  e.target.reset();
-  document.getElementById('postJobAlert').innerHTML = '<div class="alert alert-success">Job posting published! It\'s now live on the <a onclick="navigate(\'/jobs\')" style="color:var(--o400);cursor:pointer;">Jobs Board</a>.</div>';
-  setTimeout(function() { var el = document.getElementById('postJobAlert'); if (el) el.innerHTML = ''; }, 5000);
-
-  // Refresh my jobs list
-  renderMyJobs();
+  renderAdmin();
+  showToast('Job posting removed.','success');
 }
 
-/* ============================================================
-   PHOTO UPLOAD
-============================================================ */
-function renderPhotosTab(prov) {
-  const countEl = document.getElementById('photoCount');
-  const grid    = document.getElementById('photoManageGrid');
-  if (!countEl || !grid) return;
-  const photos = prov.photos || [];
-  countEl.textContent = photos.length + ' / 20 photos';
-  if (photos.length === 0) { grid.innerHTML = ''; return; }
-  grid.innerHTML = photos.map(function(ph, i) {
-    return '<div class="photo-manage-item">'
-      + '<img class="photo-manage-img" src="' + ph.data + '" alt="Project photo ' + (i+1) + '" loading="lazy">'
-      + '<button class="photo-manage-remove" onclick="removePhoto(' + i + ')" title="Remove">&times;</button>'
-      + '<div class="photo-manage-caption"><input type="text" placeholder="Add a caption..." value="' + (ph.caption || '').replace(/"/g, '&quot;') + '" onchange="savePhotoCaption(' + i + ', this.value)"></div>'
+function adminRenderBlogList() {
+  var posts = getBlogPosts();
+  if (!posts.length) return '<div style="color:var(--s400);padding:40px;text-align:center;">No blog posts yet.</div>';
+  return posts.map(function(p){
+    return '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:8px;padding:16px 20px;margin-bottom:10px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;">'
+      + '<div style="flex:1;min-width:0;">'
+      + '<div style="font-weight:700;color:white;margin-bottom:3px;">' + p.title + '</div>'
+      + '<div style="font-size:12px;color:var(--s400);">' + (p.category||'') + ' &bull; ' + (p.date||'') + ' &bull; ' + (p.readTime||'') + '</div>'
+      + '</div>'
+      + '<div style="display:flex;gap:8px;flex-wrap:wrap;">'
+      + '<button class="btn btn-sm btn-navy" onclick="adminOpenBlogForm(\'' + p.slug + '\')">Edit</button>'
+      + '<button class="btn btn-sm" style="background:#4D1A1A;color:#F08080;border:1px solid #6D2A2A;" onclick="adminDeleteBlogPost(\'' + p.slug + '\')">Delete</button>'
+      + '</div>'
       + '</div>';
   }).join('');
 }
 
-function handlePhotoUpload(e) {
-  if (!App.currentUser) return;
-  const prov = App.providers.find(function(p) { return p.id === App.currentUser.providerId; });
-  if (!prov) return;
-  if (!prov.photos) prov.photos = [];
-  const remaining = 20 - prov.photos.length;
-  if (remaining <= 0) { showToast('Maximum 20 photos reached. Remove some to add more.', 'error'); return; }
-  const files = Array.from(e.target.files).slice(0, remaining);
-  let loaded = 0;
-  files.forEach(function(file) {
-    const reader = new FileReader();
-    reader.onload = function(ev) {
-      prov.photos.push({ data: ev.target.result, caption: '' });
-      loaded++;
-      if (loaded === files.length) {
-        saveProviders();
-        renderPhotosTab(prov);
-        showToast(loaded + ' photo' + (loaded !== 1 ? 's' : '') + ' uploaded.', 'success');
-      }
-    };
-    reader.readAsDataURL(file);
-  });
-  e.target.value = '';
+function adminDeleteBlogPost(slug) {
+  if (!confirm('Delete this blog post?')) return;
+  var posts = getBlogPosts().filter(function(p){ return p.slug!==slug; });
+  saveBlogPosts(posts);
+  var el = document.getElementById('adminBlogList');
+  if (el) el.innerHTML = adminRenderBlogList();
+  showToast('Post deleted.','success');
 }
 
-function removePhoto(idx) {
-  if (!App.currentUser) return;
-  const prov = App.providers.find(function(p) { return p.id === App.currentUser.providerId; });
-  if (!prov || !prov.photos) return;
-  prov.photos.splice(idx, 1);
-  saveProviders();
-  renderPhotosTab(prov);
-  showToast('Photo removed.');
+function adminOpenBlogForm(slug) {
+  var wrap = document.getElementById('adminBlogFormWrap');
+  if (!wrap) return;
+  var post = slug ? getBlogPosts().find(function(p){ return p.slug===slug; }) : null;
+  wrap.style.display = 'block';
+  wrap.innerHTML =
+    '<div style="background:var(--n700);border:1px solid var(--n500);border-radius:10px;padding:28px;margin-top:20px;">'
+    + '<h3 style="font-size:18px;color:white;margin-bottom:20px;">' + (slug?'Edit':'New') + ' Blog Post</h3>'
+    + '<form onsubmit="saveBlogPostForm(event,\'' + (slug||'') + '\')">'
+    + '<div class="form-row">'
+    + '<div class="form-group"><label class="form-label">Title *</label><input class="form-control" name="title" value="' + (post?post.title:'') + '" required /></div>'
+    + '<div class="form-group"><label class="form-label">Category</label><input class="form-control" name="category" value="' + (post?post.category||'':'') + '" placeholder="e.g. Hiring Guides" /></div>'
+    + '</div>'
+    + '<div class="form-row">'
+    + '<div class="form-group"><label class="form-label">Author</label><input class="form-control" name="author" value="' + (post?post.author||'BookYourTrades':'BookYourTrades') + '" /></div>'
+    + '<div class="form-group"><label class="form-label">Read Time</label><input class="form-control" name="readTime" value="' + (post?post.readTime||'5 min read':'5 min read') + '" /></div>'
+    + '</div>'
+    + '<div class="form-group"><label class="form-label">Excerpt *</label><textarea class="form-control" name="excerpt" style="min-height:80px;" required>' + (post?post.excerpt||'':'') + '</textarea></div>'
+    + '<div class="form-group"><label class="form-label">Full Body (HTML OK)</label><textarea class="form-control" name="body" style="min-height:200px;">' + (post?post.body||'':'') + '</textarea></div>'
+    + '<div style="display:flex;gap:10px;margin-top:8px;">'
+    + '<button type="submit" class="btn btn-orange">Save Post</button>'
+    + '<button type="button" class="btn btn-navy" onclick="document.getElementById(\'adminBlogFormWrap\').style.display=\'none\'">Cancel</button>'
+    + '</div>'
+    + '</form>'
+    + '</div>';
+  wrap.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
-function savePhotoCaption(idx, val) {
-  if (!App.currentUser) return;
-  const prov = App.providers.find(function(p) { return p.id === App.currentUser.providerId; });
-  if (!prov || !prov.photos || !prov.photos[idx]) return;
-  prov.photos[idx].caption = val;
-  saveProviders();
+function adminOpenEdit2(pid) {
+  var p = pid ? App.providers.find(function(x){ return x.id===pid; }) : null;
+  var container = document.getElementById('adminEditFormContainer');
+  if (!container) return;
+  var tradeOpts = TRADE_TYPES.map(function(t){ return '<option ' + (p&&t===p.tradeType?'selected':'') + '>' + t + '</option>'; }).join('');
+  var yrOpts = ['Under 1 year','1-2 years','3-5 years','6-10 years','11-20 years','20+ years'].map(function(y){ return '<option ' + (p&&y===p.yearsInBusiness?'selected':'') + '>' + y + '</option>'; }).join('');
+  container.innerHTML =
+    '<div id="adminEditAlert"></div>'
+    + '<form onsubmit="adminSaveEdit2(event,\'' + (pid||'') + '\')">'
+    + '<div class="form-row">'
+    + '<div class="form-group"><label class="form-label">Company Name</label><input class="form-control" name="companyName" value="' + (p?p.companyName:'') + '" required /></div>'
+    + '<div class="form-group"><label class="form-label">Trade Type</label><select class="form-control" name="tradeType">' + tradeOpts + '</select></div>'
+    + '</div>'
+    + '<div class="form-row">'
+    + '<div class="form-group"><label class="form-label">Contact Name</label><input class="form-control" name="contactName" value="' + (p?p.contactName||'':'') + '" /></div>'
+    + '<div class="form-group"><label class="form-label">Email</label><input class="form-control" type="email" name="email" value="' + (p?p.email||'':'') + '" /></div>'
+    + '</div>'
+    + '<div class="form-row">'
+    + '<div class="form-group"><label class="form-label">Phone</label><input class="form-control" type="tel" name="phone" value="' + (p?p.phone||'':'') + '" /></div>'
+    + '<div class="form-group"><label class="form-label">Website</label><input class="form-control" type="url" name="website" value="' + (p?p.website||'':'') + '" /></div>'
+    + '</div>'
+    + '<div class="form-row">'
+    + '<div class="form-group"><label class="form-label">License Number</label><input class="form-control" name="licenseNumber" value="' + (p?p.licenseNumber||'':'') + '" /></div>'
+    + '<div class="form-group"><label class="form-label">Status</label><select class="form-control" name="status"><option ' + (!p||p.status==='active'?'selected':'') + ' value="active">Active</option><option ' + (p&&p.status==='pending'?'selected':'') + ' value="pending">Pending</option></select></div>'
+    + '</div>'
+    + '<div class="form-group"><label class="form-label">Certifications (comma separated)</label><input class="form-control" name="certifications" value="' + (p?(p.certifications||[]).join(', '):'') + '" /></div>'
+    + '<div class="form-group"><label class="form-label">Description</label><textarea class="form-control" name="description" style="min-height:100px;">' + (p?p.description||'':'') + '</textarea></div>'
+    + '<div class="form-group"><label class="form-label">Service Areas (comma separated)</label><input class="form-control" name="serviceAreas" value="' + (p?(p.serviceAreas||[]).join(', '):'') + '" /></div>'
+    + '<div class="form-row" style="margin-top:8px;">'
+    + '<div class="form-group"><label class="form-label">Claimed?</label><select class="form-control" name="claimed"><option value="true" ' + (p&&p.claimed?'selected':'') + '>Yes — Claimed</option><option value="false" ' + (!p||!p.claimed?'selected':'') + '>No — Unclaimed</option></select></div>'
+    + '<div class="form-group"><label class="form-label">Featured?</label><select class="form-control" name="featured"><option value="true" ' + (p&&p.featured?'selected':'') + '>Yes — Featured</option><option value="false" ' + (!p||!p.featured?'selected':'') + '>No</option></select></div>'
+    + '<div class="form-group"><label class="form-label">Plan</label><select class="form-control" name="plan"><option value="free" ' + (!p||!p.plan||p.plan==='free'?'selected':'') + '>Free</option><option value="pro" ' + (p&&p.plan==='pro'?'selected':'') + '>Pro</option><option value="enterprise" ' + (p&&p.plan==='enterprise'?'selected':'') + '>Enterprise</option></select></div>'
+    + '</div>'
+    + '<div style="display:flex;gap:10px;margin-top:8px;">'
+    + '<button type="submit" class="btn btn-orange">' + (pid?'Save Changes':'Add Listing') + '</button>'
+    + '<button type="button" class="btn btn-navy" onclick="closeAdminEdit()">Cancel</button>'
+    + '</div>'
+    + '</form>';
+  document.getElementById('adminEditModal').style.display = 'block';
 }
+
+function adminSaveEdit2(e, pid) {
+  e.preventDefault();
+  var data = {};
+  var fd = new FormData(e.target);
+  fd.forEach(function(v, k){ data[k] = v; });
+  data.claimed  = data.claimed  === 'true';
+  data.featured = data.featured === 'true';
+  data.certifications = data.certifications ? data.certifications.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+  data.serviceAreas   = data.serviceAreas   ? data.serviceAreas.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [];
+  if (pid) {
+    var idx = App.providers.findIndex(function(p){ return p.id===pid; });
+    if (idx<0) return;
+    App.providers[idx] = Object.assign({}, App.providers[idx], data);
+  } else {
+    var newId = 'p_' + Date.now();
+    App.providers.push(Object.assign({id:newId, rating:0, reviewCount:0, requestCount:0, logoData:null, password:'', source:'admin', province:'ON'}, data));
+  }
+  saveProviders();
+  closeAdminEdit();
+  renderAdmin();
+  showToast(pid ? 'Listing updated.' : 'Listing added.','success');
+}
+
+function adminSaveSetting(key, val) {
+  localStorage.setItem('byt_' + key, String(val));
+  showToast('Setting saved.','success');
+}
+
+function adminExportData() {
+  var blob = new Blob([JSON.stringify({providers:App.providers,users:App.users,clients:App.clients,inquiries:App.inquiries},null,2)],{type:'application/json'});
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'bookyourtrades_export_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+}
+
+function adminClearInquiries() {
+  if (!confirm('Delete all inquiries?')) return;
+  App.inquiries = [];
+  saveInquiries();
+  renderAdmin();
+  showToast('All inquiries cleared.','success');
+}
+
+function adminHardReset() {
+  localStorage.clear();
+  sessionStorage.clear();
+  location.reload();
+}
+
 
 function renderMyJobs() {
   const el = document.getElementById('myJobsList');
@@ -10159,6 +10557,103 @@ function renderMyJobs() {
         + '</div></div>';
     }).join('');
 }
+
+/* ============================================================
+   CONTACT FORM HANDLER
+============================================================ */
+async function handleContactSubmit(e) {
+  e.preventDefault();
+  var form = e.target;
+  var btn  = document.getElementById('contactSubmitBtn');
+  var alertEl = document.getElementById('contactAlert');
+  var fd = new FormData(form);
+  var body = {
+    name:    fd.get('name'),
+    email:   fd.get('email'),
+    phone:   fd.get('phone') || '',
+    subject: fd.get('subject') || 'General Inquiry',
+    message: fd.get('message'),
+  };
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  alertEl.innerHTML = '';
+
+  // Store locally
+  var inq = Object.assign({
+    id: 'inq_' + Date.now(),
+    createdAt: new Date().toISOString(),
+    status: 'new',
+    replied: false,
+  }, body);
+  App.inquiries = App.inquiries || [];
+  App.inquiries.unshift(inq);
+  saveInquiries();
+
+  try {
+    await fetch('/api/contact', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+  } catch(_) {}
+
+  alertEl.innerHTML = '<div class="alert alert-success" style="margin-bottom:20px;">&#10003; Message sent! We\'ll respond to ' + body.email + ' within 1&#8211;2 business days.</div>';
+  form.reset();
+  btn.disabled = false;
+  btn.textContent = 'Send Message →';
+}
+
+/* ============================================================
+   AVAILABILITY — PERSIST TO localStorage
+============================================================ */
+function saveAvailability() {
+  var days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  var avail = {};
+  days.forEach(function(d) {
+    var cb    = document.getElementById('av_' + d);
+    var selEl = document.getElementById('hrs_' + d);
+    var sels  = selEl ? selEl.querySelectorAll('select') : [];
+    avail[d] = {
+      available: cb ? cb.checked : false,
+      open:  sels[0] ? sels[0].value : '8:00 AM',
+      close: sels[1] ? sels[1].value : '5:00 PM',
+    };
+  });
+  if (App.currentUser && App.currentUser.providerId) {
+    var idx = App.providers.findIndex(function(p){ return p.id === App.currentUser.providerId; });
+    if (idx >= 0) { App.providers[idx].availability = avail; saveProviders(); }
+  }
+  showToast('Availability saved!', 'success');
+}
+
+/* ============================================================
+   MY LISTING — SAVE OWN PROFILE FROM DASHBOARD
+============================================================ */
+function saveMyListing(e) {
+  e.preventDefault();
+  if (!App.currentUser) return;
+  var idx = App.providers.findIndex(function(p){ return p.id === App.currentUser.providerId; });
+  if (idx < 0) return;
+  var fd = new FormData(e.target);
+  var data = {};
+  fd.forEach(function(v, k){ data[k] = v; });
+  data.serviceAreas   = data.serviceAreas   ? data.serviceAreas.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : (App.providers[idx].serviceAreas || []);
+  data.certifications = data.certifications ? data.certifications.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : (App.providers[idx].certifications || []);
+  if (data.newPassword && data.newPassword.length >= 6) {
+    App.providers[idx].password = data.newPassword;
+    var uidx = App.users.findIndex(function(u){ return u.providerId === App.providers[idx].id; });
+    if (uidx >= 0) App.users[uidx].password = data.newPassword;
+    saveUsers();
+  }
+  delete data.newPassword;
+  App.providers[idx] = Object.assign({}, App.providers[idx], data);
+  saveProviders();
+  var alertEl = document.getElementById('myListingAlert');
+  if (alertEl) alertEl.innerHTML = '<div class="alert alert-success" style="margin-bottom:16px;">&#10003; Listing saved successfully!</div>';
+  showToast('Listing updated!', 'success');
+}
+
 
 /* ============================================================
    JOBS BOARD — multi-source, filterable, paginated
