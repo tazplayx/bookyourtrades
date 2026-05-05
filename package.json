@@ -1,0 +1,10 @@
+{
+  "name": "bookyourtrades",
+  "version": "1.0.0",
+  "description": "BookYourTrades — Canadian commercial trades directory",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.3",
+    "bcryptjs": "^2.4.3"
+  }
+}

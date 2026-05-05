@@ -4340,6 +4340,30 @@ nav, .navbar, .nav-inner {
 
 <script>
 /* ============================================================
+   BYT — API helpers  (Supabase via Vercel serverless routes)
+============================================================ */
+const BYT = {
+  get token() { return sessionStorage.getItem('byt_token'); },
+  set token(t) { t ? sessionStorage.setItem('byt_token', t) : sessionStorage.removeItem('byt_token'); },
+
+  async fetch(path, opts = {}) {
+    const headers = Object.assign({ 'Content-Type': 'application/json' }, opts.headers || {});
+    if (this.token) headers['Authorization'] = 'Bearer ' + this.token;
+    const res = await fetch(path, Object.assign({}, opts, { headers }));
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({ error: res.statusText }));
+      throw new Error(err.error || res.statusText);
+    }
+    return res.json();
+  },
+
+  get(path)         { return this.fetch(path); },
+  post(path, body)  { return this.fetch(path, { method: 'POST',   body: JSON.stringify(body) }); },
+  put(path, body)   { return this.fetch(path, { method: 'PUT',    body: JSON.stringify(body) }); },
+  del(path)         { return this.fetch(path, { method: 'DELETE' }); },
+};
+
+/* ============================================================
    SEED DATA
 ============================================================ */
 const TRADE_CATEGORIES = [
@@ -5185,101 +5209,93 @@ const TRADE_TYPES = [
   'Sheet Metal','Snow Removal','Welding & Fabrication'
 ];
 
-function loadStorage() {
-  const sp = localStorage.getItem('to_providers');
-  const su = localStorage.getItem('to_users');
-  const sb = localStorage.getItem('to_bookings');
-  const sr = localStorage.getItem('to_reviews');
-  const sn = localStorage.getItem('to_notifs');
-  const sv = localStorage.getItem('to_seed_version');
-  const sc = localStorage.getItem('to_clients');
-  const sq = localStorage.getItem('to_rfqs');
+async function loadStorage() {
+  try {
+    /* Restore session if page was refreshed */
+    const stored = sessionStorage.getItem('byt_session');
+    if (stored) { App.currentUser = JSON.parse(stored); }
 
-  /* Version bump: wipe old localStorage and re-seed fresh if version changed */
-  if (sv !== SEED_VERSION) {
-    localStorage.removeItem('to_providers');
-    localStorage.removeItem('to_users');
-    localStorage.removeItem('to_bookings');
-    localStorage.removeItem('to_reviews');
-    localStorage.removeItem('to_notifs');
-    localStorage.removeItem('to_blog_posts');
-    App.providers = [...SEED_PROVIDERS];
-    localStorage.setItem('to_seed_version', SEED_VERSION);
-    saveProviders();
-  } else if (sp) {
-    let saved = JSON.parse(sp);
-    /* Add any new seed providers not yet in localStorage */
-    const savedIds = new Set(saved.map(p => p.id));
-    const newOnes  = SEED_PROVIDERS.filter(p => !savedIds.has(p.id));
-    /* Remove old fake providers that no longer exist in SEED_PROVIDERS */
-    const validSeedIds = new Set(SEED_PROVIDERS.map(p => p.id));
-    saved = saved.filter(p => p.claimed || validSeedIds.has(p.id) || !p.id.startsWith('p'));
-    if (newOnes.length) { saved = [...saved, ...newOnes]; }
-    saved = saved.map(function(p) {
-      const fresh = SEED_PROVIDERS.find(s => s.id === p.id);
-      if (fresh) { p.requestCount = 0; }
-      return p;
-    });
-    localStorage.setItem('to_seed_version', SEED_VERSION);
-    App.providers = saved;
-    saveProviders();
-  } else {
-    App.providers = [...SEED_PROVIDERS];
-    localStorage.setItem('to_seed_version', SEED_VERSION);
-    saveProviders();
+    /* Fetch all public data from Supabase via API */
+    const isAdmin = App.currentUser && App.currentUser.role === 'admin';
+    const url = isAdmin ? '/api/db/load?admin=1' : '/api/db/load';
+    const data = await BYT.get(url);
+
+    App.providers     = (data.providers  || []).map(dbRowToProvider);
+    App.jobPosts      = data.jobPosts    || [];
+    App.blogPosts     = data.blogPosts   || [];
+    App.users         = data.users       || [];
+    App.inquiries     = data.inquiries   || [];
+    App.bookings      = data.bookings    || [];
+    App.reviews       = data.reviews     || [];
+    App.notifications = [];
+    App.clients       = [];
+    App.rfqs          = [];
+
+    console.log('[BYT] Loaded from Supabase:', App.providers.length, 'providers');
+  } catch (err) {
+    console.warn('[BYT] API unavailable, falling back to seed data:', err.message);
+    /* Fallback to seed data so the site still works during setup */
+    App.providers     = [...SEED_PROVIDERS];
+    App.users         = [];
+    App.jobPosts      = [];
+    App.blogPosts     = [];
+    App.inquiries     = [];
+    App.bookings      = [];
+    App.reviews       = [];
+    App.notifications = [];
+    App.clients       = [];
+    App.rfqs          = [];
   }
-
-  App.users = su ? JSON.parse(su) : SEED_PROVIDERS.map(p => ({
-    id:'u'+p.id, email:p.email, password:p.password, providerId:p.id
-  }));
-  if (!su) saveUsers();
-
-  App.bookings = sb ? JSON.parse(sb) : [...SEED_BOOKINGS];
-  if (!sb) saveBookings();
-
-  App.reviews = sr ? JSON.parse(sr) : [...SEED_REVIEWS];
-  if (!sr) saveReviews();
-
-  App.notifications = sn ? JSON.parse(sn) : [];
-  if (!sn) saveNotifications();
-
-  App.clients = sc ? JSON.parse(sc) : [];
-  if (!sc) saveClients();
-
-  App.rfqs = sq ? JSON.parse(sq) : [];
-  // Merge any SEED_RFQS not already present (by id)
-  const _rfqIds = new Set(App.rfqs.map(r => r.id));
-  SEED_RFQS.forEach(r => { if (!_rfqIds.has(r.id)) App.rfqs.push(r); });
-  if (!sq) saveRFQs();
-
-  const sk = localStorage.getItem('to_seekers');
-  if (sk) App.seekers = JSON.parse(sk);
-
-  const sjp = localStorage.getItem('to_jobpostings');
-  if (sjp) App.jobPostings = JSON.parse(sjp);
-
-  const sap = localStorage.getItem('to_applications');
-  if (sap) App.applications = JSON.parse(sap);
-
-  const sinq = localStorage.getItem('to_inquiries');
-  App.inquiries = sinq ? JSON.parse(sinq) : [];
-
-  // Initialize dynamic blog posts (falls back to static BLOG_POSTS)
-  initBlogPosts();
-
-  const sess = sessionStorage.getItem('to_session');
-  if (sess) App.currentUser = JSON.parse(sess);
 }
+
+/* Convert snake_case DB row back to camelCase for the SPA */
+function dbRowToProvider(p) {
+  return {
+    id:               p.id,
+    companyName:      p.company_name,
+    tradeType:        p.trade_type,
+    description:      p.description || '',
+    contactName:      p.contact_name || '',
+    email:            p.email || '',
+    phone:            p.phone || '',
+    website:          p.website || '',
+    licenseNumber:    p.license_number || '',
+    yearsInBusiness:  p.years_in_business || '',
+    serviceAreas:     p.service_areas || [],
+    city:             p.city || '',
+    province:         p.province || 'ON',
+    rating:           parseFloat(p.rating) || 0,
+    reviewCount:      p.review_count || 0,
+    certifications:   p.certifications || [],
+    featured:         p.featured || false,
+    claimed:          p.claimed || false,
+    requestCount:     p.request_count || 0,
+    status:           p.status || 'active',
+    plan:             p.plan || 'free',
+    logoData:         p.logo_url || null,
+    source:           p.source || '',
+    profileType:      p.profile_type || 'company',
+    registeredAt:     p.registered_at || p.created_at || '',
+    password:         '',   /* never returned from API */
+  };
+}
+
+
 
 function saveReviews()       { localStorage.setItem('to_reviews', JSON.stringify(App.reviews)); }
 function saveNotifications() { localStorage.setItem('to_notifs',  JSON.stringify(App.notifications)); }
 function saveClients()       { localStorage.setItem('to_clients', JSON.stringify(App.clients)); }
 function saveRFQs()          { localStorage.setItem('to_rfqs',    JSON.stringify(App.rfqs)); }
 
-function saveProviders() { localStorage.setItem('to_providers', JSON.stringify(App.providers)); }
-function saveUsers()     { localStorage.setItem('to_users',     JSON.stringify(App.users));     }
-function saveBookings()  { localStorage.setItem('to_bookings',  JSON.stringify(App.bookings));  }
-function saveInquiries() { localStorage.setItem('to_inquiries', JSON.stringify(App.inquiries)); }
+/* save* functions now sync to Supabase (fire-and-forget, keep local state first) */
+function saveProviders() {
+  /* Individual provider updates happen via adminSaveEdit2 / saveMyListing which call the API directly */
+}
+function saveUsers() { /* handled by /api/db/users */ }
+function saveBookings()  { /* handled by /api/db/bookings */ }
+function saveReviews()   { /* handled by /api/db/reviews */ }
+function saveNotifications() {}
+function saveInquiries() { /* handled by /api/db/inquiries */ }
 
 /* ============================================================
    TRADE NEWS
@@ -7465,56 +7481,40 @@ function resendVerificationEmail(email) {
 /* ============================================================
    AUTH
 ============================================================ */
-function handleLogin(e) {
+async function handleLogin(e) {
   e.preventDefault();
-  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-  const pass  = document.getElementById('loginPassword').value;
+  const form   = e.target;
+  const email  = form.querySelector('[name="email"]').value.trim();
+  const pw     = form.querySelector('[name="password"]').value;
+  const alertEl = document.getElementById('loginAlert');
+  const btn     = form.querySelector('button[type="submit"]');
 
-  // Super admin check
-  if (email === 'admin@bookyourtrades.com' && pass === 'BYT@dmin2026!') {
-    App.currentUser = { email, role: 'admin', name: 'Super Admin' };
-    sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
+  btn.disabled = true; btn.textContent = 'Signing in...';
+  alertEl.innerHTML = '';
+
+  try {
+    const res = await BYT.post('/api/auth/login', { email, password: pw });
+    BYT.token = res.token;
+    App.currentUser = res.user;
+    sessionStorage.setItem('byt_session', JSON.stringify(res.user));
+
+    /* Reload data now that we're authenticated (admin gets full dataset) */
+    await loadStorage();
     updateNav();
-    navigate('/admin');
-    showToast('Welcome, Super Admin.', 'success');
-    return;
-  }
 
-  // Try provider user first
-  const user = App.users.find(u => u.email.toLowerCase() === email && u.password === pass);
-  if (user) {
-    const prov = App.providers.find(p => p.id === user.providerId);
-    // Gate unverified emails
-    if (prov && prov.emailVerified === false) {
-      document.getElementById('loginAlert').innerHTML = '<div class="alert alert-error">Please verify your email address first. Check your inbox for a verification link. <a href="#" onclick="resendVerificationEmail(\'' + email + '\')" style="color:var(--o400);">Resend email →</a></div>';
-      return;
+    if (res.user.role === 'admin') {
+      navigate('/admin');
+    } else if (res.user.providerId) {
+      navigate('/dashboard');
+    } else {
+      navigate('/client-dashboard');
     }
-    // Gate accounts still pending approval
-    if (prov && prov.status === 'pending_approval') {
-      document.getElementById('loginAlert').innerHTML = '<div class="alert alert-error">Your application is under review. You\'ll receive an email when approved. Usually within 1–2 business days.</div>';
-      return;
-    }
-    App.currentUser = { ...user, provider: prov, role: 'provider' };
-    sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
-    updateNav();
-    navigate('/dashboard');
-    showToast('Welcome back, ' + (prov?.contactName || email) + '!', 'success');
-    return;
+  } catch (err) {
+    alertEl.innerHTML = '<div class="alert alert-error">' + (err.message || 'Invalid email or password') + '</div>';
+    btn.disabled = false; btn.textContent = 'Sign In →';
   }
-
-  // Try client/seeker account
-  const client = App.clients.find(c => c.email.toLowerCase() === email && c.password === pass);
-  if (client) {
-    App.currentUser = { ...client, role: client.role || 'client' };
-    sessionStorage.setItem('to_session', JSON.stringify(App.currentUser));
-    updateNav();
-    navigate('/dashboard');
-    showToast('Welcome back, ' + (client.name || email) + '!', 'success');
-    return;
-  }
-
-  document.getElementById('loginAlert').innerHTML = '<div class="alert alert-error">Invalid email or password.</div>';
 }
+
 
 function showApplyModal(providerId, companyName) {
   document.getElementById('applyModal').style.display = 'flex';
@@ -7583,8 +7583,10 @@ function handleApply(e) {
 }
 
 function handleLogout() {
-  App.currentUser = null;
+  BYT.token = null;
+  sessionStorage.removeItem('byt_session');
   sessionStorage.removeItem('to_session');
+  App.currentUser = null;
   updateNav();
   navigate('/');
   showToast('Logged out successfully.');
@@ -7655,141 +7657,57 @@ function handleClientRegister(e) {
   showToast('Account created! Welcome, ' + data.name + '.', 'success');
 }
 
-function handleRegister(e) {
+async function handleRegister(e) {
   e.preventDefault();
   const form = e.target;
   const data = Object.fromEntries(new FormData(form));
-  const areas = [...form.querySelectorAll('input[name="serviceAreas"]:checked')].map(c=>c.value);
+  const areas = [...form.querySelectorAll('input[name="serviceAreas"]:checked')].map(c => c.value);
+  const alertEl = document.getElementById('registerAlert');
+  const btn     = form.querySelector('button[type="submit"]');
 
   if (data.password !== data.confirmPassword) {
-    document.getElementById('registerAlert').innerHTML=`<div class="alert alert-error">Passwords do not match.</div>`; return;
+    alertEl.innerHTML = '<div class="alert alert-error">Passwords do not match.</div>'; return;
   }
-  if (App.users.find(u=>u.email.toLowerCase()===data.email.toLowerCase())) {
-    document.getElementById('registerAlert').innerHTML=`<div class="alert alert-error">An account with this email already exists.</div>`; return;
-  }
-  if (areas.length===0) {
-    document.getElementById('registerAlert').innerHTML=`<div class="alert alert-error">Please select at least one service area.</div>`; return;
+  if (areas.length === 0) {
+    alertEl.innerHTML = '<div class="alert alert-error">Please select at least one service area.</div>'; return;
   }
 
-  const file = document.getElementById('regLogoInput')?.files[0];
-  const finalize = (logoData) => {
-    const pid = 'p'+Date.now();
-    const prov = {
-      id:pid, companyName:data.companyName, tradeType:data.tradeType,
-      profileType: data.profileType || 'company',
-      licenseNumber:data.licenseNumber||'Pending Verification', yearsInBusiness:data.yearsInBusiness,
-      description:data.description, contactName:data.contactName,
-      email:data.email, phone:data.phone, website:data.website||'',
-      serviceAreas:areas, rating:0, reviewCount:0, certifications:[],
-      featured:false, claimed:false, requestCount:0,
-      logoData: logoData||null, password:data.password,
-      status: 'pending_approval', registeredAt: new Date().toISOString(),
-      emailVerified: false,
-      emailToken: 'evtk_' + Math.random().toString(36).substr(2,12) + Date.now().toString(36)
-    };
-    const user = { id:'u'+pid, email:data.email, password:data.password, providerId:pid };
-    const newUser = user;
-    App.providers.push(prov); App.users.push(user);
-    saveProviders(); saveUsers();
+  btn.disabled = true; btn.textContent = 'Creating account...';
+  alertEl.innerHTML = '';
 
-    // Save seeker profile if selected
-    if (data.purposeSeeker === 'on' && data.seekerTrade) {
-      const seeker = {
-        id: 's' + Date.now(),
-        userId: newUser.id,
-        name: data.contactName,
-        email: data.email,
-        phone: data.phone || '',
-        trade: data.seekerTrade || '',
-        experience: data.seekerExperience || '',
-        bio: data.seekerBio || '',
-        city: data.seekerCity || '',
-        availability: data.seekerAvailability || '',
-        createdAt: new Date().toISOString(),
-        active: true
-      };
-      App.seekers = App.seekers || [];
-      App.seekers.push(seeker);
-      localStorage.setItem('to_seekers', JSON.stringify(App.seekers));
-    }
-
-    // Send email verification — awaited so we can surface failures
-    var _verifyUrl = 'https://bookyourtrades.com/verify?token=' + prov.emailToken;
-    fetch('/api/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'email_verification',
-        email: prov.email,
-        data: { name: prov.contactName, company: prov.companyName, verifyUrl: _verifyUrl }
-      })
-    }).then(function(r){ return r.json(); }).then(function(result) {
-      if (result && result.ok === false) {
-        // Email delivery failed — show the verify link directly so the user isn't blocked
-        console.warn('[send-email] delivery failed:', result.error || result.note);
-        var _alertEl = document.getElementById('registerAlert');
-        if (_alertEl) _alertEl.innerHTML = '<div class="alert" style="background:rgba(234,179,8,0.12);border:1px solid rgba(234,179,8,0.4);color:#FDE047;border-radius:8px;padding:14px 18px;font-size:14px;line-height:1.6;">'
-          + '<strong>Email delivery issue</strong> — our email service may not be configured yet. '
-          + 'Copy and paste this link in your browser to verify your account:<br>'
-          + '<a href="' + _verifyUrl + '" style="color:#FDE047;word-break:break-all;">' + _verifyUrl + '</a></div>';
-      }
-    }).catch(function(err) {
-      console.warn('[send-email] network error:', err);
+  try {
+    const res = await BYT.post('/api/auth/register', {
+      email:           data.email,
+      password:        data.password,
+      companyName:     data.companyName,
+      tradeType:       data.tradeType,
+      contactName:     data.contactName || '',
+      phone:           data.phone || '',
+      website:         data.website || '',
+      licenseNumber:   data.licenseNumber || '',
+      yearsInBusiness: data.yearsInBusiness || '',
+      description:     data.description || '',
+      serviceAreas:    areas,
+      city:            data.city || '',
+      province:        data.province || 'ON',
+      profileType:     data.profileType || 'company',
     });
-    // Fire-and-forget — welcome + admin alert
-    fetch('/api/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'contractor_welcome',
-        email: prov.email,
-        data: { name: prov.contactName, company: prov.companyName, trade: prov.tradeType, city: (prov.serviceAreas || [])[0] || '' }
-      })
-    }).catch(function(){});
-    fetch('/api/send-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        type: 'admin_alert', email: '',
-        data: { subject: 'New Trade Contractor Registered', details: { 'Company': prov.companyName, 'Trade': prov.tradeType, 'Contact': prov.contactName, 'Email': prov.email, 'City': (prov.serviceAreas || [])[0] || '', 'Time': new Date().toLocaleString('en-CA') } }
-      })
-    }).catch(function(){});
-    navigate('/');
-    showToast('Registration submitted! Check your email (' + data.email + ') for a verification link. Open the link in this same browser to verify.', 'success');
-  };
-  if (file) {
-    // Validate file type
-    if (!file.type.startsWith('image/')) {
-      document.getElementById('registerAlert').innerHTML=`<div class="alert alert-error">Logo must be an image file (JPG, PNG, WEBP, etc.).</div>`; return;
-    }
-    // Validate file size (max 2 MB)
-    if (file.size > 2 * 1024 * 1024) {
-      document.getElementById('registerAlert').innerHTML=`<div class="alert alert-error">Logo file must be under 2 MB. Please resize or compress your image.</div>`; return;
-    }
-    // Canvas-based compression to max 400×400 px at 85% JPEG quality
-    const img = new Image();
-    const objectUrl = URL.createObjectURL(file);
-    img.onload = function() {
-      URL.revokeObjectURL(objectUrl);
-      const maxDim = 400;
-      let w = img.width, h = img.height;
-      if (w > maxDim || h > maxDim) {
-        if (w > h) { h = Math.round(h * maxDim / w); w = maxDim; }
-        else       { w = Math.round(w * maxDim / h); h = maxDim; }
-      }
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-      finalize(canvas.toDataURL('image/jpeg', 0.85));
-    };
-    img.onerror = function() { URL.revokeObjectURL(objectUrl); finalize(null); };
-    img.src = objectUrl;
-  } else finalize(null);
+
+    BYT.token = res.token;
+    App.currentUser = res.user;
+    sessionStorage.setItem('byt_session', JSON.stringify(res.user));
+
+    await loadStorage();
+    updateNav();
+    navigate('/dashboard');
+    showToast('Account created! Your listing is pending approval.', 'success');
+  } catch (err) {
+    alertEl.innerHTML = '<div class="alert alert-error">' + (err.message || 'Registration failed. Please try again.') + '</div>';
+    btn.disabled = false; btn.textContent = 'Create Account →';
+  }
 }
 
-/* ============================================================
-   DASHBOARD
-============================================================ */
+
 function renderDashboard_OLD_REMOVED() {
   // removed — see ENHANCED DASHBOARD section below
   const prov = null;
@@ -10783,16 +10701,8 @@ async function handleContactSubmit(e) {
   btn.textContent = 'Sending...';
   alertEl.innerHTML = '';
 
-  // Store locally
-  var inq = Object.assign({
-    id: 'inq_' + Date.now(),
-    createdAt: new Date().toISOString(),
-    status: 'new',
-    replied: false,
-  }, body);
-  App.inquiries = App.inquiries || [];
-  App.inquiries.unshift(inq);
-  saveInquiries();
+  // Store in Supabase
+  try { await BYT.post('/api/db/inquiries', body); } catch(_) {}
 
   try {
     await fetch('/api/contact', {
@@ -10834,28 +10744,42 @@ function saveAvailability() {
 /* ============================================================
    MY LISTING — SAVE OWN PROFILE FROM DASHBOARD
 ============================================================ */
-function saveMyListing(e) {
+async function saveMyListing(e) {
   e.preventDefault();
-  if (!App.currentUser) return;
-  var idx = App.providers.findIndex(function(p){ return p.id === App.currentUser.providerId; });
-  if (idx < 0) return;
+  if (!App.currentUser || !App.currentUser.providerId) return;
   var fd = new FormData(e.target);
   var data = {};
   fd.forEach(function(v, k){ data[k] = v; });
-  data.serviceAreas   = data.serviceAreas   ? data.serviceAreas.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : (App.providers[idx].serviceAreas || []);
-  data.certifications = data.certifications ? data.certifications.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : (App.providers[idx].certifications || []);
-  if (data.newPassword && data.newPassword.length >= 6) {
-    App.providers[idx].password = data.newPassword;
-    var uidx = App.users.findIndex(function(u){ return u.providerId === App.providers[idx].id; });
-    if (uidx >= 0) App.users[uidx].password = data.newPassword;
-    saveUsers();
+
+  var updates = {
+    company_name:      data.companyName,
+    trade_type:        data.tradeType,
+    contact_name:      data.contactName || '',
+    phone:             data.phone || '',
+    website:           data.website || '',
+    license_number:    data.licenseNumber || '',
+    description:       data.description || '',
+    service_areas:     data.serviceAreas ? data.serviceAreas.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [],
+    certifications:    data.certifications ? data.certifications.split(',').map(function(s){ return s.trim(); }).filter(Boolean) : [],
+  };
+
+  try {
+    var prov = await BYT.put('/api/db/providers?id=' + App.currentUser.providerId, updates);
+    /* Update local copy */
+    var idx = App.providers.findIndex(function(p){ return p.id === App.currentUser.providerId; });
+    if (idx >= 0) App.providers[idx] = Object.assign(App.providers[idx], dbRowToProvider(prov));
+
+    /* Password change */
+    if (data.newPassword && data.newPassword.length >= 6) {
+      await BYT.put('/api/db/users?id=' + App.currentUser.id, { password: data.newPassword });
+    }
+
+    var alertEl = document.getElementById('myListingAlert');
+    if (alertEl) alertEl.innerHTML = '<div class="alert alert-success" style="margin-bottom:16px;">&#10003; Listing saved successfully!</div>';
+    showToast('Listing updated!', 'success');
+  } catch (err) {
+    showToast('Save failed: ' + err.message, 'error');
   }
-  delete data.newPassword;
-  App.providers[idx] = Object.assign({}, App.providers[idx], data);
-  saveProviders();
-  var alertEl = document.getElementById('myListingAlert');
-  if (alertEl) alertEl.innerHTML = '<div class="alert alert-success" style="margin-bottom:16px;">&#10003; Listing saved successfully!</div>';
-  showToast('Listing updated!', 'success');
 }
 
 
@@ -11334,7 +11258,7 @@ function handleClientAccountUpdate(e) {
    INIT
 ============================================================ */
 window.addEventListener('popstate', router);
-document.addEventListener('DOMContentLoaded', () => { loadStorage(); router(); });
+document.addEventListener('DOMContentLoaded', async () => { await loadStorage(); router(); });
 </script>
 
 <script>
